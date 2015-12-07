@@ -8,16 +8,16 @@ function parse(line) {
 
 let ops = {
     PUT: x => +x,
-    NOT: x => ~x >>> 0 & 65535, // signal must be positive and 16-bit
+    NOT: x => ~x & 0xFFFF, // signal must be positive and 16-bit
     AND: (x, y) => x & y,
     OR:  (x, y) => x | y,
-    LSHIFT: (x, y) => x << +y & 65535,
-    RSHIFT: (x, y) => x >>> +y
+    LSHIFT: (x, y) => x << y & 0xFFFF,
+    RSHIFT: (x, y) => x >>> y
 };
 
 function signal(circuit, id) {
     let wire = circuit[id];
-    if (wire === undefined) return id; // op arg was a number, not a wire id
+    if (wire === undefined) return +id; // op arg was a number, not a wire id
     if (wire.val === undefined) {
         let x = signal(circuit, wire.x),
             y = wire.y && signal(circuit, wire.y); // some ops are unary
