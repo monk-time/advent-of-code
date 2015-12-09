@@ -1,4 +1,4 @@
-// JavaScript (ES2015) with [emn178's js-md5 library](https://www.npmjs.com/package/js-md5).
+// Using [emn178's js-md5 library](https://www.npmjs.com/package/js-md5).
 // A lot of boilerplate to load a third-party lib in browser and be able to change md5 library.
 // Average exec. time (i7-4710HQ): 1.9 sec in FF42 (Scratchpad), 2.1 sec in Chrome 47 (Snippets).
 

@@ -1,4 +1,3 @@
-// JavaScript (ES2015), run in Firefox console/Scratchpad or Chrome Snippets:
 'use strict';
 let input = document.querySelector('pre').textContent.trim().split('\n'),
     countNice = regexes => input.filter(s => regexes.every(re => re.test(s))).length;
