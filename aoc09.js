@@ -40,7 +40,7 @@ function travel(dists, route) {
     { prev, sum: 0 }).sum;
 }
 
-function minmax(n, { min, max }) {
+function minmax({ min, max }, n) {
     min = min === undefined ? n : Math.min(n, min);
     max = max === undefined ? n : Math.max(n, max);
     return { min, max };
@@ -49,6 +49,5 @@ function minmax(n, { min, max }) {
 let input = document.body.textContent.trim().split('\n'),
     dists = input.reduce(addDist, {}),
     cities = Object.keys(dists),
-    trackMinmax = (acc, r) => Object.assign(acc, minmax(travel(dists, r), acc)),
-    lenArr = permute(cities, trackMinmax, {});
-console.log(lenArr);
+    trackMinmax = (acc, r) => Object.assign(acc, minmax(acc, travel(dists, r)));
+console.log(permute(cities, trackMinmax, {}));
