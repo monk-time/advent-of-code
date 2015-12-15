@@ -1,34 +1,34 @@
 'use strict';
-function* posTracker(deer) {
-    let [pos, remaining, resting] = [0, deer.tFly, false];
+function* posTracker({ v, tFly, tRest }) {
+    let [pos, remaining, resting] = [0, tFly, false];
     while (true) {
         if (!resting) {
-            pos += deer.v;
+            pos += v;
         }
 
         if (--remaining === 0) {
             resting = !resting;
-            remaining = resting ? deer.tRest : deer.tFly;
+            remaining = resting ? tRest : tFly;
         }
 
         yield pos;
     }
 }
 
-function contest(deerArr, time, awardF = pos => pos) {
+function contest(deerArr, time, awardF = state => state) {
     let trackers = deerArr.map(posTracker),
         points = new Array(deerArr.length).fill(0);
     for (let i = 0; i < time; i++) {
-        let pos = trackers.map(g => g.next().value);
-        points = awardF(pos, points);
+        let state = trackers.map(g => g.next().value);
+        points = awardF(state, points);
     }
 
     return Math.max(...points);
 }
 
-function awardLeader(pos, points) {
-    let leader = Math.max(...pos);
-    return points.map((p, i) => pos[i] === leader ? p + 1 : p);
+function awardLeader(state, points) {
+    let leader = Math.max(...state);
+    return points.map((p, i) => state[i] === leader ? p + 1 : p);
 }
 
 let input = document.body.textContent.trim().split('\n'),
