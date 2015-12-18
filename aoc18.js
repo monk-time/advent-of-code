@@ -1,7 +1,7 @@
 'use strict';
 function parse(input) {
     let grid = input.split('\n').map(s => ['.', ...s, '.'].map(ch => ch === '#')),
-        emptyRow = () => [...new Array(grid.length + 2)].fill(0);
+        emptyRow = () => [...new Array(grid.length + 2)].fill(false);
     return [emptyRow(), ...grid, emptyRow()];
 }
 
