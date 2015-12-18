@@ -1,28 +1,25 @@
 'use strict';
 function parse(input) {
     let grid = input.split('\n').map(s => ['.', ...s, '.'].map(ch => ch === '#')),
-        dim = grid.length,
-        emptyRow = dim => [...new Array(dim + 2)].fill(0);
-    return [emptyRow(dim), ...grid, emptyRow(dim)];
+        emptyRow = () => [...new Array(grid.length + 2)].fill(0);
+    return [emptyRow(), ...grid, emptyRow()];
 }
 
-let isCorner = (dim, i, j) => (i === 1 || i === dim - 2) && (j === 1 || j === dim - 2),
-    nbsDelta = [
-        [-1, -1], [-1, 0], [-1, 1],
-        [ 0, -1],          [ 0, 1],
-        [ 1, -1], [ 1, 0], [ 1, 1]
-    ],
-    nbs = (i, j) => nbsDelta.map(([di, dj]) => [i + di, j + dj]),
-    countTruthy = arr => arr.filter(x => x).length;
+let countTruthy = arr => arr.filter(x => x).length,
+    nbs = (i, j) => [
+        [i - 1, j - 1], [i - 1, j], [i - 1, j + 1],
+        [i,     j - 1],             [i,     j + 1],
+        [i + 1, j - 1], [i + 1, j], [i + 1, j + 1]
+    ];
 
 function update(grid, cornersOn = false) {
     let gridNew = grid.map(row => row.slice()),
-        dim = grid.length, // grid must be square
-        isOn = ([x, y]) => cornersOn && isCorner(dim, x, y) || grid[x][y];
-    for (let i = 1; i < dim - 1; i++) {
-        for (let j = 1; j < dim - 1; j++) {
+        maxI = grid.length - 2, // grid must be square
+        isOn = ([x, y]) => cornersOn && (x === 1 || x === maxI) && (y === 1 || y === maxI) || grid[x][y];
+    for (let i = 1; i <= maxI; i++) {
+        for (let j = 1; j <= maxI; j++) {
             let on = countTruthy(nbs(i, j).map(isOn));
-            gridNew[i][j] = cornersOn && isCorner(dim, i, j) ||
+            gridNew[i][j] = cornersOn && (i === 1 || i === maxI) && (j === 1 || j === maxI) ||
                 (grid[i][j] ? on === 2 || on === 3 : on === 3);
         }
     }
