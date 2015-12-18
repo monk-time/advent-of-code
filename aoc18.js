@@ -34,4 +34,4 @@ let grid = parse(document.body.textContent.trim()),
     nSteps = (n, corners) => [...new Array(n)].reduce(x => update(x, corners), grid),
     countAll = arr => arr.reduce((sum, row) => sum + countTruthy(row), 0);
 
-console.log(countAll(nSteps(10)), countAll(nSteps(10, true)));
+console.log(countAll(nSteps(100)), countAll(nSteps(100, true)));
