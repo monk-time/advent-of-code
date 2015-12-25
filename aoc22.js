@@ -119,11 +119,12 @@ function minWinningSeq(state, spellsObj) {
         stack.state.push(state); // game state before casting
         let lastSpell = spells[stack.castedInd[stack.castedInd.length - 1]];
         ({ state, winner } = nextRound(lastSpell, state));
-        if (!winner) { // cast next spell
+        let overMin = manaSpent >= minMana.mana;
+        if (!overMin && !winner) { // cast next spell
             stack.castedInd.push(0);
             manaSpent += costs[0];
         } else {
-            if (winner === 'player' && manaSpent < minMana.mana) {
+            if (!overMin && winner === 'player') {
                 minMana = { mana: manaSpent, seq: stack.castedInd.map(i => spells[i]) };
             }
 
@@ -152,4 +153,4 @@ let [hp, dmg] = document.body.textContent.match(/\d+/g).map(s => +s),
 console.time('main');
 console.log(minWinningSeq(state, spellsObj));
 console.timeEnd('main');
-// part 1 takes ~ 3 min, part 2 - 7 sec
+// part 1 takes ~ 2 min, part 2 - 7 sec
