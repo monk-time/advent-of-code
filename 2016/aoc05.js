@@ -1,24 +1,39 @@
 'use strict';
 
 {
-    const input = document.body.textContent,
-        main = () => console.log(password8('ffykfhsq'));
-    
-    const password8 = function (salt) {
-        let [passLen, i, pass] = [0, 0, Array(8)];
-        while (passLen < 8) {
-            let hash = md5(salt + i++);
+    const [input, cache] = ['ffykfhsq', []],
+        getHash = n => md5(input + n);
+    const hashes5x0 = function* () {
+        yield* cache.map(getHash);
+        let i = cache.length ? cache[cache.length - 1] : -1;
+        while (true) {
+            const hash = getHash(++i);
             if (hash.startsWith('00000')) {
-                let [pos, ch] = [+hash[5], hash[6]];
-                if ((pos < 8) && (pass[pos] === undefined)) {
-                    passLen++;
-                    pass[pos] = ch;
-                }
+                cache.push(i);
+                yield hash;
             }
         }
-        return pass.join('');
-    }
+    };
+    const updateL = (arr, pos, val) => arr.map((x, i) => i === pos ? val : x);
+    const algs = [
+        (pass, hash) => updateL(pass, pass.indexOf(undefined), hash[5]),
+        (pass, hash) => {
+            const pos = +hash[5]; // NaN if in a..e
+            return pos < 8 && pass[pos] === undefined ?
+                updateL(pass, pos, hash[6]) : pass;
+        }
+    ];
+    const password = alg => {
+        let pass = [...new Array(8)];
+        for (let hash of hashes5x0()) {
+            pass = alg(pass, hash);
+            if (!pass.includes(undefined)) {
+                return pass.join('');
+            }
+        }
+    };
 
+    const main = () => console.log(...algs.map(password));
     fetch('//cdn.jsdelivr.net/js-md5/0.4.1/md5.min.js')
         .then(r => r.text()).then(eval).then(main);
 }
