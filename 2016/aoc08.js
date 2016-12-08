@@ -2,7 +2,7 @@
 
 {
     const getGrid = (n, m) => [...new Array(m)].map(() => new Array(n).fill(0)),
-        on = n => a => Array(n).fill(1).concat(a.slice(n)),
+        on = n => a => new Array(n).fill(1).concat(a.slice(n)),
         shift = d => a => a.slice(-(d % a.length)).concat(a.slice(0, -(d % a.length))),
         replace = (i, el, a) => [...a.slice(0, i), el, ...a.slice(i + 1)],
         replaceCol = (j, col, grid) => grid.map((a, i) => replace(j, col[i], a));
