@@ -166,4 +166,5 @@
     console.log('Keys in cache:', Object.keys(dist).length);
     
     // TODO: re-do using a hash of [curFloor, [pairs]], where each pair consists of [chp, rtg]
+    // TODO: BFS with the queue as a sparse array of dists; q[Object.keys(q)[0]] for dequeueing.
 }

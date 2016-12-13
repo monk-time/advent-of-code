@@ -4,7 +4,7 @@ inspired by: https://github.com/NiXXeD/adventofcode/blob/
              deeca50d7c75102afdbc61ae3aecfb05552937bb/2016/day10/part1.js
 notes:
   Bot values are stored in lambdas instead of arrays.
-  Proxy reloads set operation of the bot array so that bins and bots
+  Proxy overloads the set operation of the bot array so that bins and bots
     can be updated similarly.
   A crucial step for this semi-functional solution was a realization
     that there's no way around looping over one type of instructions first.
