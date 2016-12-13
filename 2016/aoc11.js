@@ -164,4 +164,6 @@
     dist = {};
     timed(() => console.log('Shortest path length (part 2):', bfs(area, 0)))();
     console.log('Keys in cache:', Object.keys(dist).length);
+    
+    // TODO: re-do using a hash of [curFloor, [pairs]], where each pair consists of [chp, rtg]
 }
