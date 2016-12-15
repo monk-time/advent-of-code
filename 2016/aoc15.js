@@ -2,13 +2,10 @@
 
 {
     const input = document.body.textContent.trim().split('\n');
-    const discs = input.map(s => (([, n, , start]) => [+n, +start])(s.match(/\d+/g)));
-    const minTime = discs => {
-        let [time, bounced] = [-1, true];
-        while (bounced) {
-            time++;
-            bounced = discs.some(([n, start], i) => (start + time + i + 1) % n !== 0);
-        }
+    const discs = input.map(s => (([, n, , n0]) => [+n, +n0])(s.match(/\d+/g)));
+    const bounces = (discs, time) => discs.some(([n, n0], i) => (n0 + time + i + 1) % n !== 0);
+    const minTime = (discs, time = -1) => {
+        while (bounces(discs, ++time));
         return time;
     };
 
