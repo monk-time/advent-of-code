@@ -1,4 +1,3 @@
-// JavaScript (JS, ES2015/ES6), both parts in one, runs in the FF/Chrome browser console on the /input page.
 'use strict';
 
 {
@@ -7,16 +6,18 @@
         if (s.length >= n) return s.slice(0, n);
         return data(s + '0' + [...s].reverse().map(b => '10'[+b]).join(''), n);
     };
-    const checksum = s => {
-        let crc = '';
-        while (s.length % 2 === 0) {
-            for (let i = 0; i < s.length; i += 2) {
-                crc += s[i] === s[i + 1] ? '1' : '0';
-            }
-            [s, crc] = [crc, ''];
+    const checksum = (s, n) => {
+        // max power of 2 dividing n = how many symbols of data correspond to one in crc
+        const chunkSize = n & -n;
+        let [d, crc] = [data(s, n), ''];
+        while (d.length) {
+            let chunk = d.slice(0, chunkSize);
+            d = d.slice(chunkSize);
+            // add '1' if a chunk has an even amount of 1
+            crc += (chunk.split('1').length - 1) % 2 === 0 ? '1' : '0';
         }
-        return s;
+        return crc;
     };
 
-    console.log(...[272, 35651584].map(n => checksum(data(input, n))));
+    console.log(...[272, 35651584].map(n => checksum(input, n)));
 }
