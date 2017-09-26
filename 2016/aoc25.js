@@ -1,97 +1,92 @@
 'use strict';
+
 {
-    let reg, program, signal;
+    // Source optimizations
+    const ptnAdd = `
+        inc ([a-d])
+        dec (?!\\1)([a-d])
+        jnz \\2 -2
+    `; // TODO: the first might commands can be reversed
+    const ptnSub = ptnAdd.replace('inc', 'dec');
+    const ptnMul = `
+        cpy (\\w+) ([a-d])
+        inc (?!\\1|\\2)([a-d])
+        dec \\2
+        jnz \\2 -2
+        dec (?!\\1|\\2|\\3)([a-d])
+        jnz \\4 -5
+    `;
+    const ptnToRegex = ptn => new RegExp(ptn.trim().split('\n').map(s => s.trim()).join('\n'), 'g');
+    // mul pattern contains add, so the order is important
+    const optimizations = [
+        [ptnToRegex(ptnMul), 'mul $1 $4\nadd $4 $3\ncpy 0 $4\ncpy 0 $2\nnop\nnop'],
+        [ptnToRegex(ptnAdd), 'add $2 $1\ncpy 0 $2\nnop'],
+        [ptnToRegex(ptnSub), 'sub $2 $1\ncpy 0 $2\nnop'],
+    ];
+    const optimize = s => optimizations
+        .reduce((acc, [re, repl]) => acc.replace(re, repl), s);
+
+    // Assembunny operations
     const isReg = x => 'abcd'.includes(x);
-    const set = (r, value) => ptr => (reg[r] = value(), ptr + 1);
-    const nop = ptr => ptr + 1;
-    const ops = {
-        inc: r => set(r, () => reg[r] + 1),
-        dec: r => set(r, () => reg[r] - 1),
-        cpy: (x, r) => isReg(r) ? set(r, isReg(x) ? () => reg[x] : () => x) : nop,
-        jnz: (x, y) => isReg(x) ?
-            isReg(y) ?
-                ptr => reg[x] !== 0 ? ptr + reg[y] : ptr + 1 :
-                ptr => reg[x] !== 0 ? ptr + y      : ptr + 1 :
-            x !== 0 ? (isReg(y) ? ptr => ptr + reg[y] : ptr => ptr + y) : nop,
-        out: x => ptr => (signal.push(reg[x]), ptr + 1)
-    };
-    const parseLine = s => s.match(/([a-z]{3}) (-?\w+)(?: (-?\w+))?/);
-    const parseArg = x => x && (isReg(x) ? x : +x);
-    const compile = arr => arr.map(parseLine).map(([, op, ...args]) => {
-        if (args[1] === undefined) {
-            args = [args[0]];
-        }
-        const line = { op, args: args.map(parseArg) };
-        return line;
+    const get = (x, reg) => (isReg(x) ? reg[x] : x);
+    const set = (r, getValue) => ({ reg, out, ptr }) => ({
+        reg: { ...reg, [r]: getValue(reg) },
+        out,
+        ptr: ptr + 1,
     });
-
-    const mulOps = 'cpy,cpy,cpy,inc,dec,jnz,dec,jnz';
-    const mulRe = /([a-z]),(?!\1)([a-z]);0,\1;(?!\1|\2)([a-z]),(?!\1|\2|\3)([a-z]);\1;\4;\4,-2;\2;\2,-5/;
-    // const logBefore = (ptr, op, x, y) => `Executing ${('@' + ptr).padStart(4)}: ` +
-    //     `|${op.padEnd(4)} ${(x + '').padStart(3)} ${((y || '') + '').padStart(3)}|`;
-    // const logAfter = (msg, mark = ' ') => console.log(
-    //     `${msg}${mark} --> reg: ${[...'abcd'].map(x => (reg[x] + '').padStart(7)).join('')}`);
-    let execute = (regA = 0) => {
-        signal = [];
-        reg = { a: 0, b: 0, c: 0, d: 0 };
-        reg.a = regA;
-        let [ptr, counter] = [0, 0];
-        let [msg, stop] = ['', 30000];
-        // console.log(ptr, reg);
-        while (ptr >= 0 && ptr < program.length && counter < stop) {
-            counter++;
-            const { op, args } = program[ptr];
-            if (['inc', 'dec'].includes(op) && ptr + 2 < program.length) {
-                // ADD optimization
-                const [line2, line3] = [program[ptr + 1], program[ptr + 2]];
-                const properArgs = line2.args[0] === line3.args[0] && line3.args[1] === -2;
-                if (line2.op === 'dec' && line3.op === 'jnz' && properArgs) {
-                    // msg = logBefore(ptr, 'add', line2.args[0], args[0]);
-                    if (op === 'inc') {
-                        reg[args[0]] += reg[line2.args[0]];
-                    } else {
-                        reg[args[0]] -= reg[line2.args[0]];
-                    }
-                    reg[line2.args[0]] = 0;
-                    ptr += 3;
-                    // if (counter < stop) logAfter(msg, '+');
-                    continue;
-                }
-            } else if (ptr + 7 < program.length && op === 'cpy' && program[ptr + 1].op === 'cpy') {
-                // MUL optimization
-                const fragment = program.slice(ptr, ptr + 8);
-                const properOps = () => fragment.map(l => l.op).join(',') === mulOps;
-                const properArgs = () => mulRe.test(fragment.map(l => l.args.join(',')).join(';'));
-                if (properOps() && properArgs()) {
-                    // msg = logBefore(ptr, 'mul', program[ptr + 2].args[0], args[0]);
-                    reg[args[0]] *= reg[program[ptr + 2].args[0]];
-                    reg[args[1]] = 0;
-                    reg[program[ptr + 2].args[1]] = 0;
-                    ptr += 8;
-                    // if (counter < stop) logAfter(msg, '*');
-                    continue;
-                }
-            }
-            // msg = logBefore(ptr, op, ...args);
-            ptr = ops[op](...args)(ptr);
-            if (op === 'out') {
-                if (signal.length >= 2) {
-                    if (signal[signal.length - 1] === signal[signal.length - 2]) {
-                        return false;
-                    }
-                }
-            }
-            // if (counter < stop) logAfter(msg);
-        }
-        // console.log(`Executed ${counter} instructions`);
-        return reg;
+    const ops = {
+        dec: r => set(r, reg => reg[r] - 1),
+        inc: r => set(r, reg => reg[r] + 1),
+        cpy: (x, r) => set(r, isReg(x) ? reg => reg[x] : () => x),
+        jnz: (x, y) => ({ reg, out, ptr }) => ({
+            reg,
+            out,
+            ptr: ptr + (get(x, reg) !== 0 ? get(y, reg) : 1),
+        }),
+        out: x => ({ reg, out, ptr }) => ({ reg, out: [...out, get(x, reg)], ptr: ptr + 1 }),
+        // extended opset
+        nop: () => ({ reg, out, ptr }) => ({ reg, out, ptr: ptr + 1 }),
+        add: (r1, r2) => set(r2, reg => reg[r2] + reg[r1]),
+        sub: (r1, r2) => set(r2, reg => reg[r2] - reg[r1]),
+        mul: (x, r) => set(r, isReg(x) ? reg => reg[r] * reg[x] : reg => reg[r] * x),
     };
 
-    const input = document.body.textContent.trim().split('\n');
-    program = compile(input);
+    // Source parsing
+    const parseArg = x => x && (isReg(x) ? x : +x);
+    const parseLine = s => {
+        const [, op, ...args] = s.match(/^([a-z]{3})(?: (-?\w+)(?: (-?\w+))?)?$/);
+        return { op, args: args.map(parseArg) };
+    };
+
+    const parse = s => s.split('\n').map(parseLine);
+
+    // Execution
+    const regZero = { a: 0, b: 0, c: 0, d: 0 };
+    const execute = (program, reg = regZero) => {
+        let state = { reg, out: [], ptr: 0 };
+        let counter = 0;
+        const stop = 30000;
+        while (state.ptr >= 0 && state.ptr < program.length && counter++ < stop) {
+            const { op, args } = program[state.ptr];
+            state = ops[op](...args)(state);
+            if (op === 'out' && state.out.length >= 2 &&
+                state.out[state.out.length - 1] === state.out[state.out.length - 2]) {
+                return null;
+            }
+        }
+
+        return state;
+    };
+
+    const input = document.body.textContent.trim();
+    const program = parse(optimize(input));
+
+    let state;
     let regA = 0;
-    while (!execute(regA)) {
-        regA++;
-    }
+    do {
+        regA++; // "the lowest positive" means we need to start from 1
+        state = execute(program, { ...regZero, a: regA });
+    } while (state === null);
+
     console.log(regA);
 }
