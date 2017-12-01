@@ -1,17 +1,14 @@
 'use strict';
-function paper([l, w, h]) {
-    let [lw, wh, hl] = [l * w, w * h, h * l];
-    return 2 * (lw + wh + hl) + Math.min(lw, wh, hl);
+
+{
+    const wrappers = ([l, w, h]) => [
+        2 * (l * w + w * h + h * l) + l * w,
+        2 * (l + w) + l * w * h,
+    ];
+
+    const input = document.body.textContent.trim();
+    const parseBox = line => line.split('x').map(s => +s).sort((x, y) => x - y);
+    const boxes = input.split('\n').map(parseBox);
+    console.log(boxes.map(wrappers)
+        .reduce(([p, r], [p0, r0]) => [p + p0, r + r0], [0, 0]));
 }
-
-function ribbon([l, w, h]) {
-    let minPerim = 2 * Math.min(l + w, w + h, h + l);
-    return minPerim + l * w * h;
-}
-
-let input = document.querySelector('pre').textContent.trim(),
-    parseBox = line => line.split('x').map(s => parseInt(s, 10)),
-    boxes = input.split('\n').map(parseBox),
-    calc = f => boxes.reduce((sum, box) => sum + f(box), 0);
-
-console.log([paper, ribbon].map(calc));
