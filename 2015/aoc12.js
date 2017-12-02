@@ -1,14 +1,12 @@
 'use strict';
-let input = JSON.parse(document.body.textContent),
-    vals = obj => Object.keys(obj).map(k => obj[k]);
 
-function sumNumbers(obj, part2 = false) {
-    if (obj instanceof Object) {
-        let rec = !part2 || obj instanceof Array || vals(obj).indexOf('red') === -1;
-        return rec ? vals(obj).reduce((sum, v) => sum + sumNumbers(v, part2), 0) : 0;
-    } else {
-        return Number.isInteger(obj) ? obj : 0;
-    }
+{
+    const sumNumbers = o => part2 => {
+        if (!(o instanceof Object)) return Number.isInteger(o) ? o : 0;
+        if (!(o instanceof Array) && part2 && Object.values(o).includes('red')) return 0;
+        return Object.values(o).reduce((sum, v) => sum + sumNumbers(v)(part2), 0);
+    };
+
+    const input = JSON.parse(document.body.textContent);
+    console.log([false, true].map(sumNumbers(input)));
 }
-
-console.log(sumNumbers(input), sumNumbers(input, true));
