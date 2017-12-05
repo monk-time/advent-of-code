@@ -15,7 +15,7 @@ browser console on the /input page (F12 → Console):
 
     // Inputs (from /input or the puzzle itself)
     const input = document.body.textContent.trim();
-    const input2 = document.querySelector('.puzzle-input').textContent.trim();
+    const input2 = document.querySelector('.puzzle-input').textContent;
 
     // Generate nxn grid
     const getGrid = n => new Array(n).fill().map(() => new Array(n).fill(0));

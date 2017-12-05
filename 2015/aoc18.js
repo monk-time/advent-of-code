@@ -7,22 +7,24 @@
         return [emptyRow(), ...grid, emptyRow()];
     };
 
-    const countTruthy = arr => arr.filter(x => x).length;
+    const sumMap = f => arr => arr.reduce((sum, x) => sum + f(x), 0);
+    const sumMapAll = sumMap(sumMap(x => x));
     const nbs = (i, j) => [
         [i - 1, j - 1], [i - 1, j], [i - 1, j + 1],
         [i,     j - 1],             [i,     j + 1],
-        [i + 1, j - 1], [i + 1, j], [i + 1, j + 1]
+        [i + 1, j - 1], [i + 1, j], [i + 1, j + 1],
     ];
 
-    const update = (grid, cornersOn = false) => {
+    const update = (cornersOn = false) => grid => {
         const gridNew = grid.map(row => row.slice());
         const maxI = grid.length - 2; // grid must be square
-        const isOn = ([x, y]) => cornersOn && (x === 1 || x === maxI) && (y === 1 || y === maxI) || grid[x][y];
+        const onEdge = x => x === 1 || x === maxI;
+        const isOn = ([x, y]) => grid[x][y] || cornersOn && onEdge(x) && onEdge(y);
         for (let i = 1; i <= maxI; i++) {
             for (let j = 1; j <= maxI; j++) {
-                const on = countTruthy(nbs(i, j).map(isOn));
-                gridNew[i][j] = cornersOn && (i === 1 || i === maxI) && (j === 1 || j === maxI) ||
-                    (grid[i][j] ? on === 2 || on === 3 : on === 3);
+                const on = sumMap(isOn)(nbs(i, j));
+                gridNew[i][j] = on === 3 || on === 2 && grid[i][j] ||
+                    cornersOn && onEdge(i) && onEdge(j);
             }
         }
 
@@ -30,8 +32,6 @@
     };
 
     const grid = parse(document.body.textContent.trim());
-    const nSteps = (n, corners) => [...new Array(n)].reduce(x => update(x, corners), grid);
-    const countAll = arr => arr.reduce((sum, row) => sum + countTruthy(row), 0);
-
-    console.log(countAll(nSteps(100)), countAll(nSteps(100, true)));
+    const nSteps = (n, cornersOn) => [...new Array(n)].reduce(update(cornersOn), grid);
+    console.log([false, true].map(b => sumMapAll(nSteps(100, b))));
 }
