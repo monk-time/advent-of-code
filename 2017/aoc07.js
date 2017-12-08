@@ -7,7 +7,7 @@
         Object.assign(o, { [key]: { key, w: +w, nodes: nodes && nodes.split(', ') } }), {});
     const towers = Object.values(towerMap);
     const isNotAParentOf = ({ key }) => ({ nodes }) => !nodes || !nodes.includes(key);
-    const head = towers.filter(t => towers.every(isNotAParentOf(t)))[0];
+    const root = towers.filter(t => towers.every(isNotAParentOf(t)))[0];
 
     // Only for arrays with at least 2 elements and only one outlier
     const getNorm = ([x, y, z]) => (x === y ? x : z);
@@ -23,5 +23,5 @@
         return [w + sum(ws) + norm - ws[i], towerMap[nodes[i]].w + norm - ws[i]];
     };
 
-    console.log(head.key, correctError(head)[1]);
+    console.log(root.key, correctError(root)[1]);
 }
