@@ -1,24 +1,25 @@
 'use strict';
 
 {
-    /* eslint-disable key-spacing, space-in-parens */
+    /* eslint-disable space-in-parens */
     const transitions = {
-        '1!': ({ i      }) => ({ i:   i + 1               }),
-        '1>': (          ) => ({ gb:  false               }),
-        '1g': ({ gbN    }) => ({ gbN: gbN + 1             }),
-        '0<': (          ) => ({ gb:  true                }),
-        '0}': ({ lv     }) => ({ lv:  lv - 1              }),
-        '0{': ({ lv, sc }) => ({ lv:  lv + 1, sc: sc + lv }),
+        '1!': ({ i            }) => ({ i: i + 1 }),
+        '1>': (                ) => ({ inGarbage: false }),
+        '1g': ({ garbageCount }) => ({ garbageCount: garbageCount + 1 }),
+        '0<': (                ) => ({ inGarbage: true }),
+        '0}': ({ depth        }) => ({ depth: depth - 1 }),
+        '0{': ({ depth, score }) => ({ depth: depth + 1, score: score + depth }),
     };
 
     const norm = key => (/1[^!>]/.test(key) ? '1g' : key);
-    const nextState = tr => o => Object.assign(o, tr && tr(o));
-    const getScore = (s, st = { i: -1, gb: false, gbN: 0, lv: 1, sc: 0 }) => {
+    const nextState = tr => state => Object.assign(state, tr && tr(state));
+    const start = { i: -1, inGarbage: false, garbageCount: 0, depth: 1, score: 0 };
+    const getScore = (s, st = start) => {
         while (++st.i < s.length) {
-            st = nextState(transitions[norm(+st.gb + s[st.i])])(st);
+            st = nextState(transitions[norm(+st.inGarbage + s[st.i])])(st);
         }
 
-        return [st.sc, st.gbN];
+        return [st.score, st.garbageCount];
     };
 
     const input = document.body.textContent.trim();
