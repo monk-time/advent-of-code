@@ -1,15 +1,21 @@
 'use strict';
-function* selectSumN(arr, n) { // arr must be sorted
-    let [stack, i, sum] = [[], 0, 0];
-    do {
-        let nextSum = sum + arr[i];
-        if (nextSum < n && i < arr.length - 1) {
-            stack.push(i++);
-            sum = nextSum;
-        } else {
+
+{
+    const selectSumN = function* (arr, n) {
+        arr = [...arr].sort((a, b) => a - b);
+        const stack = [];
+        let [i, sum] = [0, 0];
+        while (i < arr.length) {
+            const nextSum = sum + arr[i];
+            if (nextSum < n && i < arr.length - 1) {
+                stack.push(i++);
+                sum = nextSum;
+                continue;
+            }
+
             if (nextSum === n) {
-                let seq = [...stack, i].map(ind => arr[ind]),
-                    rest = arr.filter(el => !seq.includes(el));
+                const seq = [...stack, i].map(ind => arr[ind]);
+                const rest = arr.filter(el => !seq.includes(el));
                 yield { seq, rest };
             }
 
@@ -20,35 +26,33 @@ function* selectSumN(arr, n) { // arr must be sorted
 
             i++;
         }
-    } while (i < arr.length);
-}
+    };
 
-function* splitEqual(arr, parts) {
-    arr.sort((a, b) => a - b);
-    let onePart = arr.reduce((a, b) => a + b, 0) / parts;
-    for (let { seq, rest } of selectSumN(arr, onePart)) {
-        let secondGroup = selectSumN(rest, onePart);
-        if (secondGroup.next().value) { // undefined if can't split the rest in two
-            yield seq;
+    const splitEqual = function* (arr, parts) {
+        const onePart = arr.reduce((a, b) => a + b) / parts;
+        for (const { seq, rest } of selectSumN(arr, onePart)) {
+            const secondGroup = selectSumN(rest, onePart);
+            if (secondGroup.next().value) { // undefined if can't split the rest in two
+                yield seq;
+            }
         }
-    }
-}
+    };
 
-function minGroupQE(arr, parts) {
-    let [minLength, minQE] = [Infinity, Infinity];
-    for (let seq of splitEqual(arr, parts)) {
-        if (seq.length < minLength) {
-            minQE = seq.reduce((a, b) => a * b, 1);
-            minLength = seq.length;
-        } else if (seq.length === minLength) {
-            minQE = Math.min(minQE, seq.reduce((a, b) => a * b, 1));
+    const mul = arr => arr.reduce((a, b) => a * b);
+    const minGroupQE = (arr, groups) => {
+        let [minLength, minQE] = [Infinity, Infinity];
+        for (const seq of splitEqual(arr, groups)) {
+            if (seq.length < minLength) {
+                minQE = mul(seq);
+                minLength = seq.length;
+            } else if (seq.length === minLength) {
+                minQE = Math.min(minQE, mul(seq));
+            }
         }
-    }
 
-    return minQE;
+        return minQE;
+    };
+
+    const input = document.body.textContent.trim().split('\n').map(Number);
+    console.log([3, 4].map(groups => minGroupQE(input, groups))); // 44 sec
 }
-
-let input = document.body.textContent.trim().split('\n').map(n => +n);
-
-console.log(minGroupQE(input, 4));
-// 70 sec for part 1, 25 sec for part 2

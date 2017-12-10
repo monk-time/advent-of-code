@@ -1,15 +1,12 @@
 'use strict';
-let nth = (r, c) => (r + c - 2) * ( r + c - 1) / 2 + c;
 
-function genCode(number) {
-    let code = 20151125;
-    while (--number) {
-        code = (code * 252533) % 33554393;
-    }
-    
-    return code;
+{
+    const nth = (row, col) => (row + col - 2) * (row + col - 1) / 2 + col;
+    const genCode = (n, code = 20151125) => {
+        while (--n) code = (code * 252533) % 33554393;
+        return code;
+    };
+
+    const [row, col] = document.body.textContent.match(/\d+/g).map(Number);
+    console.log(genCode(nth(row, col)));
 }
-
-let [row, column] = document.body.textContent.match(/\d+/g).map(s => +s);
-
-console.log(genCode(nth(row, column)));

@@ -5,7 +5,7 @@
     const start = [0, 0];
     const moveX = dx => ([x, y]) => [x + dx, y];
     const moveY = dy => ([x, y]) => [x, y + dy];
-    const movers = { '^': moveY(1), 'v': moveY(-1), '>': moveX(1), '<': moveX(-1) };
+    const movers = { '^': moveY(1), v: moveY(-1), '>': moveX(1), '<': moveX(-1) };
 
     // if a set is passed, it is mutated; otherwise a new set is returned
     const travel = (path, visited = new Set([start.join()])) => {
