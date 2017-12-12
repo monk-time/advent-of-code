@@ -6,7 +6,7 @@
         inc ([a-d])
         dec (?!\\1)([a-d])
         jnz \\2 -2
-    `; // TODO: the first might commands can be reversed
+    `; // TODO: the first two commands might be reversed
     const ptnSub = ptnAdd.replace('inc', 'dec');
     const ptnMul = `
         cpy (\\w+) ([a-d])
