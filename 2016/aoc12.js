@@ -1,63 +1,73 @@
 'use strict';
-// note: Part 1 is A000045[_26_ + 2] + _19_ * _14_,
-//       Part 2 is A000045[_26_ + _7_ + 2] + _19_ * _14_
-//         where A000045 is the Fibonacci seq starting from 0,
-//         and the underscored numbers are taken from the input in the same order.
+
+// Note:
+// Part 1 is A000045[_26_       + 2] + _19_ * _14_,
+// Part 2 is A000045[_26_ + _7_ + 2] + _19_ * _14_
+//   where A000045 is the Fibonacci sequence starting from 0,
+//   and the underscored numbers are taken from the input in the same order.
 
 {
-    let reg;
-    const set = (r, value) => ptr => (reg[r] = value(), ptr + 1);
+    // Source optimizations
+    const ptnMul = `
+        cpy (\\w+) ([a-d])
+        inc (?!\\1|\\2)([a-d])
+        dec \\2
+        jnz \\2 -2
+        dec (?!\\1|\\2|\\3)([a-d])
+        jnz \\4 -5
+    `;
+    const ptnAdd = `
+        inc ([a-d])
+        dec (?!\\1)([a-d])
+        jnz \\2 -2
+    `;
+    const ptnToRegex = ptn => new RegExp(ptn.trim().split('\n').map(s => s.trim()).join('\n'), 'g');
+    // mul pattern contains add, so the order is important
+    const optimizations = [
+        [ptnMul, 'mul $1 $4\nadd $4 $3\ncpy 0 $4\ncpy 0 $2\nnop\nnop'],
+        [ptnAdd, 'add $2 $1\ncpy 0 $2\nnop'],
+    ];
+    const optimize = s => optimizations
+        .reduce((acc, [ptn, repl]) => acc.replace(ptnToRegex(ptn), repl), s);
+
+    // Assembunny operations
+    const isReg = x => 'abcd'.includes(x);
+    const get = (x, reg) => (isReg(x) ? reg[x] : x);
+    const set = (r, getValue) => ({ reg, ptr }) => // mutates reg
+        ({ reg: Object.assign(reg, { [r]: getValue(reg) }), ptr: ptr + 1 });
     const ops = {
-        inc:  r        => set(r, () => reg[r] + 1),
-        dec:  r        => set(r, () => reg[r] - 1),
-        cpy:  (src, r) => set(r, () => reg[src]),
-        cpyN: (num, r) => set(r, () => num),
-        jnz:  (src, d) => ptr => reg[src] !== 0 ? ptr + d : ptr + 1,
-        jnzN: (num, d) => num !== 0 ? (ptr => ptr + d) : ops.nop(),
-        nop:  () => ptr => ptr + 1,
-        add:  (src, r) => set(r, () => reg[r] + reg[src]),
+        dec: r => set(r, reg => reg[r] - 1),
+        inc: r => set(r, reg => reg[r] + 1),
+        cpy: (x, r) => set(r, isReg(x) ? reg => reg[x] : () => x),
+        jnz: (x, y) => ({ reg, ptr }) =>
+            ({ reg, ptr: ptr + (get(x, reg) !== 0 ? get(y, reg) : 1) }),
+        // extended opset
+        nop: () => ({ reg, ptr }) => ({ reg, ptr: ptr + 1 }),
+        add: (r1, r2) => set(r2, reg => reg[r2] + reg[r1]),
+        mul: (x, r) => set(r, isReg(x) ? reg => reg[r] * reg[x] : reg => reg[r] * x),
     };
-    const isReg = x => Number.isNaN(+x);
-    const arg = x => isReg(x) ? 'abcd'.indexOf(x) : +x;
-    const parse = s => s.match(/([a-z]{3}) (\w+)(?: (-?\w+))?/);
-    const compile = arr => arr.map(parse).map(([, op, l, r], i, lines) => {
-        op += isReg(l) ? '' : 'N';
-        if (i + 2 < arr.length) { // optimization
-            const [[, op2, l2], [, op3, l3, r3]] = [lines[i + 1], lines[i + 2]];
-            if (op === 'inc' && op2 === 'dec' && op3 === 'jnz' && l2 === l3 && r3 === '-2') {
-                [op, l, r] = ['add', l2, l];
-                lines[i + 1] = [, 'cpy', '0', l2];
-                lines[i + 2][1] = 'nop';
-            }
-        }
-        // const f = ops[op](arg(l), arg(r));
-        // f.code = `${op.padEnd(4)} ${(op !== 'nop' ? l : '').padStart(2)} ${(op !== 'nop' ? (r || '') : '').padStart(2)}`;
-        // return f;
-        return ops[op](arg(l), arg(r));
-    });
-    let execute = (program, newReg = [0, 0, 0, 0]) => {
-        reg = newReg;
-        let ptr = 0;
-        // let [counter, msg] = [0, ''];
-        // console.log(ptr, reg);
+
+    // Source parsing
+    const parseArg = x => x && (isReg(x) ? x : +x);
+    const parseLine = s => {
+        const [, op, ...args] = s.match(/^([a-z]{3})(?: (-?\w+)(?: (-?\w+))?)?$/);
+        return { op, args: args.map(parseArg) };
+    };
+
+    const parse = s => s.split('\n').map(parseLine);
+
+    // Execution
+    const regZero = { a: 0, b: 0, c: 0, d: 0 };
+    const execute = (program, reg = { ...regZero }, ptr = 0) => {
         while (ptr >= 0 && ptr < program.length) {
-            // counter++;
-            // if (counter < 400) msg = `Executing |${program[ptr].code.padEnd(9)}| `;
-            ptr = program[ptr](ptr);
-            // if (counter < 400) console.log(msg   , (ptr + '').padStart(3), reg);
+            const { op, args } = program[ptr];
+            ({ reg, ptr } = ops[op](...args)({ reg, ptr }));
         }
-        // console.log(`Executed ${counter} instructions`);
+
         return reg;
     };
 
-    const input = document.body.textContent.trim().split('\n');
-    const program = compile(input);
-    // const timed = f => (...args) => {
-    //     console.time('main');
-    //     const res = f(...args);
-    //     console.timeEnd('main');
-    //     return res;
-    // };
-    // execute = timed(execute);
-    console.log(execute(program)[0], execute(program, [0, 0, 1, 0])[0]);
+    const input = document.body.textContent.trim();
+    const program = parse(optimize(input));
+    console.log(execute(program).a, execute(program, { ...regZero, c: 1 }).a);
 }

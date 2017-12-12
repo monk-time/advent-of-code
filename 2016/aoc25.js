@@ -29,21 +29,16 @@
     // Assembunny operations
     const isReg = x => 'abcd'.includes(x);
     const get = (x, reg) => (isReg(x) ? reg[x] : x);
-    const set = (r, getValue) => ({ reg, out, ptr }) => ({
-        reg: { ...reg, [r]: getValue(reg) },
-        out,
-        ptr: ptr + 1,
-    });
+    const set = (r, getValue) => ({ reg, out, ptr }) =>
+        ({ reg: { ...reg, [r]: getValue(reg) }, out, ptr: ptr + 1 });
     const ops = {
         dec: r => set(r, reg => reg[r] - 1),
         inc: r => set(r, reg => reg[r] + 1),
         cpy: (x, r) => set(r, isReg(x) ? reg => reg[x] : () => x),
-        jnz: (x, y) => ({ reg, out, ptr }) => ({
-            reg,
-            out,
-            ptr: ptr + (get(x, reg) !== 0 ? get(y, reg) : 1),
-        }),
-        out: x => ({ reg, out, ptr }) => ({ reg, out: [...out, get(x, reg)], ptr: ptr + 1 }),
+        jnz: (x, y) => ({ reg, out, ptr }) =>
+            ({ reg, out, ptr: ptr + (get(x, reg) !== 0 ? get(y, reg) : 1) }),
+        out: x => ({ reg, out, ptr }) =>
+            ({ reg, out: [...out, get(x, reg)], ptr: ptr + 1 }),
         // extended opset
         nop: () => ({ reg, out, ptr }) => ({ reg, out, ptr: ptr + 1 }),
         add: (r1, r2) => set(r2, reg => reg[r2] + reg[r1]),

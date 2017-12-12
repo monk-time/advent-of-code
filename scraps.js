@@ -22,8 +22,11 @@ browser console on the /input page (F12 → Console):
     const getGrid2 = n => [...new Array(n)].map(() => new Array(n).fill(0));
 
     // Timed execution
-    var timed = f => { console.time('main'); f(); console.timeEnd('main'); }; // eslint-disable-line
-    timed(() => {});
+    (f => { console.time('main'); f(); console.timeEnd('main'); })(() => { // eslint-disable-line
+    });
+
+    // Timed execution for Promises
+    const timed = f => () => { console.time('main'); f(); console.timeEnd('main'); }; // eslint-disable-line
 
     // Permutation generator and minmax tracker (separate)
     const permute = function* (arr, used = []) {
