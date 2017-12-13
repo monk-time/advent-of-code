@@ -3,25 +3,28 @@
 'use strict';
 
 {
-    const input = document.querySelector('.puzzle-input').textContent;
-    const data = (s, n) => {
-        if (s.length >= n) return s.slice(0, n);
-        return data(`${s}0${[...s].reverse().map(b => '10'[+b]).join('')}`, n);
-    };
+    // Each char in crc corresponds to (max power of 2 dividing n) symbols of data;
+    // it's equal to '1' if such a chunk has an even amount of 1
+    const popcount = a => a.reduce((n, c) => n + c);
+    const checksum = (s, len) => {
+        const [a, chunkSize] = [[...s].map(Number), len & -len];
+        let [pos, crc]  = [0, ''];
+        while (a.length < len) {
+            a.push(0);
+            for (let i = a.length - 2; i >= 0; i--) { // skip 0 added above
+                a.push(1 - a[i]);
+            }
 
-    const checksum = (s, n) => {
-        // max power of 2 dividing n = how many symbols of data correspond to one in crc
-        const chunkSize = n & -n;
-        let [d, crc] = [data(s, n), ''];
-        while (d.length) {
-            const chunk = d.slice(0, chunkSize);
-            d = d.slice(chunkSize);
-            // add '1' if a chunk has an even amount of 1
-            crc += (chunk.split('1').length - 1) % 2 === 0 ? '1' : '0';
+            while (a.length >= pos + chunkSize) {
+                const chunk = a.slice(pos, pos + chunkSize);
+                crc += String(1 - (popcount(chunk) % 2));
+                pos += chunkSize;
+            }
         }
 
         return crc;
     };
 
+    const input = document.querySelector('.puzzle-input').textContent;
     console.log([272, 35651584].map(n => checksum(input, n)));
 }

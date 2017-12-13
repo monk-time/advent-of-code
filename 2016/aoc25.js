@@ -19,12 +19,12 @@
     const ptnToRegex = ptn => new RegExp(ptn.trim().split('\n').map(s => s.trim()).join('\n'), 'g');
     // mul pattern contains add, so the order is important
     const optimizations = [
-        [ptnToRegex(ptnMul), 'mul $1 $4\nadd $4 $3\ncpy 0 $4\ncpy 0 $2\nnop\nnop'],
-        [ptnToRegex(ptnAdd), 'add $2 $1\ncpy 0 $2\nnop'],
-        [ptnToRegex(ptnSub), 'sub $2 $1\ncpy 0 $2\nnop'],
+        [ptnMul, 'mul $1 $4\nadd $4 $3\ncpy 0 $4\ncpy 0 $2\nnop\nnop'],
+        [ptnAdd, 'add $2 $1\ncpy 0 $2\nnop'],
+        [ptnSub, 'sub $2 $1\ncpy 0 $2\nnop'],
     ];
     const optimize = s => optimizations
-        .reduce((acc, [re, repl]) => acc.replace(re, repl), s);
+        .reduce((acc, [ptn, repl]) => acc.replace(ptnToRegex(ptn), repl), s);
 
     // Assembunny operations
     const isReg = x => 'abcd'.includes(x);

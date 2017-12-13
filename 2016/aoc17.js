@@ -1,3 +1,6 @@
+/* eslint-disable no-eval */
+/* global md5 */
+
 'use strict';
 
 {
@@ -10,8 +13,8 @@
         [...md5(code).slice(0, 4)].map(isDoorOpen(x, y)).filter(o => o);
 
     const bfs = function* (passcode) {
-        let [dist, maxSteps, path, x, y] = [{}, 0, '', 0, 0];
-        dist[path] = 0; // empty string is a valid key
+        let [maxSteps, path, x, y] = [0, '', 0, 0];
+        const dist = { [path]: 0 }; // empty string is a valid key
         let queue = [[path, x, y]];
         while (queue.length) {
             [[path, x, y], ...queue] = queue; // dequeue
@@ -20,7 +23,8 @@
                 maxSteps = dist[path];
                 continue;
             }
-            for (let { dir, coords: [x2, y2] } of openDoors(passcode + path, x, y)) {
+
+            for (const { dir, coords: [x2, y2] } of openDoors(passcode + path, x, y)) {
                 const path2 = path + dir;
                 if (dist[path2] === undefined) { // unvisited
                     dist[path2] = dist[path] + 1;
@@ -28,9 +32,10 @@
                 }
             }
         }
+
         yield maxSteps;
     };
 
-    fetch('//cdn.jsdelivr.net/js-md5/0.4.1/md5.min.js').then(r => r.text()).then(eval)
-        .then(() => console.log(...bfs(input)));
+    fetch('//cdn.jsdelivr.net/npm/js-md5@0.7.2/src/md5.min.js')
+        .then(r => r.text()).then(eval).then(() => console.log(...bfs(input)));
 }

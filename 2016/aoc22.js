@@ -9,16 +9,20 @@
         const [l, h] = ['x', 'y'].map(key => values(key, nodes).slice(-1)[0]);
         const grid = [...new Array(h + 1)].map(() => new Array(l + 1));
         const minSize = values('size', nodes)[0];
-        for (let n of nodes) {
+        for (const n of nodes) {
             grid[n.y][n.x] = n.x === l && n.y === 0 ? goal :
                 n.used === 0 ? empty :
                     n.size < minSize * 2 ? avg : full;
         }
+
         return grid;
     };
-    const viablePairs = grid => grid.reduce((sum, row) => sum + row.filter(n => n >= avg).length, 0);
+
+    const viablePairs = grid => grid.reduce((sum, row) =>
+        sum + row.filter(n => n >= avg).length, 0);
     const minSteps = grid => {
-        let posEmpty, posLeftWall;
+        let posEmpty;
+        let posLeftWall;
         for (let y = 0; y < grid.length; y++) {
             for (let x = 0; x < grid[0].length; x++) {
                 if (grid[y][x] === empty) {
@@ -28,6 +32,7 @@
                 }
             }
         }
+
         const upToTheWall = posEmpty.y - posLeftWall.y - 1;
         const aroundTheWall = posEmpty.x - posLeftWall.x + 1;
         const toTheGoal = posLeftWall.y + 1 + (grid[0].length - posLeftWall.x);

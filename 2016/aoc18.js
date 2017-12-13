@@ -11,12 +11,12 @@
         let n = safe(row);
         while (--size) {
             row = nextRow(row);
-            n += safe(row);            
+            n += safe(row);
         }
+
         return n;
     };
 
     const row = [...document.body.textContent.trim()].map(ch => ch === '^'); // true === traps
     console.log(...[40, 400000].map(n => safeRows(row, n)));
 }
-
