@@ -24,13 +24,15 @@
         return a;
     };
 
-    const knotHash = sparse => [...new Array(16)].map((_, block) => sparse
+    const denseHash = sparse => [...new Array(16)].map((_, block) => sparse
         .slice(block * 16, (block + 1) * 16)
         .reduce((x, y) => x ^ y) // eslint-disable-line no-bitwise
         .toString(16).padStart(2, '0')).join('');
 
-    const input = document.body.textContent.trim();
+    const knotHash = s => denseHash(sparseHash(lengths2(s)));
     const size = 256;
+
+    const input = document.body.textContent.trim();
     const [a] = oneRound(lengths1(input));
-    console.log(a[0] * a[1], knotHash(sparseHash(lengths2(input))));
+    console.log(a[0] * a[1], knotHash(input));
 }
