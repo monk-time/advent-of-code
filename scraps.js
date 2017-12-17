@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars, no-eval, no-undef */
 
 /* Comment header
-JavaScript (JS, ES6+), both parts in one, runs in the FF/Chrome
+**JavaScript (JS, ES6+)**, both parts in one, runs in the FF/Chrome
 browser console on the /input page (F12 → Console):
 */
 
