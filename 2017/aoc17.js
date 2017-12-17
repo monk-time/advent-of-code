@@ -12,11 +12,10 @@
     console.log(buffer[(pos + 1) % buffer.length]);
 
     pos = 0;
-    let [bufferLen, afterZero] = [1, 0];
+    let afterZero = 0;
     for (let i = 1; i <= 50000000; i++) {
-        pos = ((pos + steps) % bufferLen) + 1;
+        pos = ((pos + steps) % i) + 1;
         if (pos === 1) afterZero = i;
-        bufferLen++;
     }
 
     console.log(afterZero);
