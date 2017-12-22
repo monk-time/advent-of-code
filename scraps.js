@@ -21,6 +21,32 @@ browser console on the /input page (F12 → Console):
     const getGrid = n => new Array(n).fill().map(() => new Array(n).fill(0));
     const getGrid2 = n => [...new Array(n)].map(() => new Array(n).fill(0));
 
+    // Generate and draw infinite grid from an odd-sized center segment
+    const halfWidth = Math.floor(input[0].length / 2);
+    const key = (i, j) => `${i},${j}`;
+    const parseLine = (s, i) => [...s.trim()].map((c, j) =>
+        [key(i - halfWidth, j - halfWidth), c]);
+    const nodes0 = [].concat(...input.map(parseLine))
+        .reduce((acc, [ij, v]) => Object.assign(acc, { [ij]: v }), {});
+
+    const draw = (nodes, [i0, j0] = [0, 0], zero = '.') => {
+        const entries = Object.entries(nodes).map(([k, v]) => [k.split(',').map(Number), v]);
+        const xs = entries.map(([[i]]) => i);
+        const ys = entries.map(([[, j]]) => j);
+        const [xMin, xMax] = [Math.min(...xs), Math.max(...xs)];
+        const [yMin, yMax] = [Math.min(...ys), Math.max(...ys)];
+        const offset = Math.max(...[xMin, xMax, yMin, yMax, i0, j0].map(Math.abs));
+        const a = [...new Array(2 * offset + 1)].map(() => []);
+        for (let i = -offset; i <= offset; i++) {
+            for (let j = -offset; j <= offset; j++) {
+                const node = nodes[key(i, j)] || zero;
+                a[i + offset][j + offset] = i === i0 && j === j0 ? `[${node}]` : ` ${node} `;
+            }
+        }
+
+        return a.map(row => row.join('').replace(/\] | {2}| \[/g, s => s.trim() || ' ')).join('\n');
+    };
+
     // Timed execution
     (f => { console.time('main'); f(); console.timeEnd('main'); })(() => { // eslint-disable-line
     });

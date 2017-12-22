@@ -46,16 +46,12 @@
         for (let i = 0; i < a.length; i += size) {
             for (let j = 0; j < a.length; j += size) {
                 const cell = [...cellAt(a, i, j, size)];
-                let yielded = false;
                 for (const op of allOps(size)) {
                     const match = rules[size][hash(op(cell))];
                     if (!match) continue;
                     yield match;
-                    yielded = true;
                     break;
                 }
-
-                if (!yielded) throw new Error('This should never happen.');
             }
         }
     };
@@ -84,6 +80,8 @@
     const step5 = nSteps(5);
     console.log(sum(step5), sum(nSteps(13, step5))); // 11 sec
 
-    // TODO: try replacng flips with x-y inversions
+    // TODO: try replacing flips with x-y inversions
     // TODO: 3 iterations of a 3x3 image is a 9x9 image
+    // TODO: get rid of bit twiddling, use Map? or not
+    // TODO: automatically add missing rules and skip the manual flipping on each step
 }
