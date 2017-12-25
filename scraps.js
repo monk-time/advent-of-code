@@ -21,6 +21,13 @@ browser console on the /input page (F12 → Console):
     const getGrid = n => new Array(n).fill().map(() => new Array(n).fill(0));
     const getGrid2 = n => [...new Array(n)].map(() => new Array(n).fill(0));
 
+    // Timed execution
+    (f => { console.time('main'); f(); console.timeEnd('main'); })(() => { // eslint-disable-line
+    });
+
+    // Timed execution for Promises
+    const timed = f => () => { console.time('main'); f(); console.timeEnd('main'); }; // eslint-disable-line
+
     // Generate and draw infinite grid from an odd-sized center segment
     const halfWidth = Math.floor(input[0].length / 2);
     const key = (i, j) => `${i},${j}`;
@@ -46,13 +53,6 @@ browser console on the /input page (F12 → Console):
 
         return a.map(row => row.join('').replace(/\] | {2}| \[/g, s => s.trim() || ' ')).join('\n');
     };
-
-    // Timed execution
-    (f => { console.time('main'); f(); console.timeEnd('main'); })(() => { // eslint-disable-line
-    });
-
-    // Timed execution for Promises
-    const timed = f => () => { console.time('main'); f(); console.timeEnd('main'); }; // eslint-disable-line
 
     // Permutation generator and minmax tracker (separate)
     const permute = function* (arr, used = []) {
