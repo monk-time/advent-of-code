@@ -1,10 +1,11 @@
 from year2018.aoc01 import calibrate, calibrate_until_repeat, parse
+from year2018.helpers import read_puzzle
 
 
 def test_parse():
-    assert parse('+1') == [1]
-    assert parse('+1, -2, +3') == [1, -2, 3]
-    assert parse('+1\n-2\n+3') == [1, -2, 3]
+    assert list(parse('+1')) == [1]
+    assert list(parse('+1, -2, +3')) == [1, -2, 3]
+    assert list(parse('+1\n-2\n+3')) == [1, -2, 3]
 
 
 def test_calibrate_basic():
@@ -33,3 +34,9 @@ def test_calibrate_until_repeat_other():
     assert calibrate_until_repeat('+3, +3, +4, -2, -4') == 10
     assert calibrate_until_repeat('-6, +3, +8, +5, -6') == 5
     assert calibrate_until_repeat('+7, +7, -2, -7, -4') == 14
+
+
+def test_full_puzzle():
+    puzzle = read_puzzle()
+    assert calibrate(puzzle) == 592
+    assert calibrate_until_repeat(puzzle) == 241
