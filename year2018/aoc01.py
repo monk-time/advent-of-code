@@ -1,7 +1,7 @@
 from itertools import cycle
 from typing import Iterable
 
-from year2018.helpers import read_puzzle
+from helpers import read_puzzle
 
 
 def parse(seq: str) -> Iterable[int]:

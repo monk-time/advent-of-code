@@ -1,5 +1,5 @@
-from year2018.aoc01 import calibrate, calibrate_until_repeat, parse
-from year2018.helpers import read_puzzle
+from aoc01 import calibrate, calibrate_until_repeat, parse
+from helpers import read_puzzle
 
 
 def test_parse():
