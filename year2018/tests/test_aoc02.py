@@ -39,6 +39,6 @@ def test_part2():
 
 
 def test_full_puzzle():
-    puzzle = read_puzzle().split()
+    puzzle = read_puzzle().splitlines()
     assert checksum(puzzle) == 5390
     assert part2(puzzle) == 'nvosmkcdtdbfhyxsphzgraljq'

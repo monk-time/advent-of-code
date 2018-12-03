@@ -29,6 +29,6 @@ def part2(box_ids: Iterable[str]) -> str:
 
 
 if __name__ == '__main__':
-    puzzle = read_puzzle().split()
+    puzzle = read_puzzle().splitlines()
     print(checksum(puzzle))
     print(part2(puzzle))
