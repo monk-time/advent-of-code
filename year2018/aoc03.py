@@ -9,7 +9,7 @@ Claim = namedtuple('Claim', 'id left top width height')
 
 
 def parse(claim: str) -> Claim:
-    return Claim(*[int(n) for n in re.findall(r'\d+', claim)])
+    return Claim(*map(int, re.findall(r'\d+', claim)))
 
 
 def overlap(a: Claim, b: Claim) -> Optional[Claim]:
@@ -35,6 +35,7 @@ def solve(claims: List[Claim]):
     overlaps = list(overlap_all(claims))
     points = map(claim_to_points, overlaps)
     inches = len(set(chain.from_iterable(points)))
+
     ids = [c.id for c in claims]
     used_ids = set(chain.from_iterable(c.id for c in overlaps))
     unused = next(id_ for id_ in ids if id_ not in used_ids)
