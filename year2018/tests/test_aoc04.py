@@ -1,4 +1,4 @@
-from aoc04 import Guard, parse_journal, parse_shift_start, strategy1, strategy2, sum_time_asleep
+from aoc04 import Guard, parse_journal, strategy1, strategy2, sum_time_asleep
 from helpers import read_puzzle
 
 sample = """
@@ -24,18 +24,13 @@ sample = """
 guards = list(parse_journal(sample))
 
 
-def test_parse_shift_start():
-    assert parse_shift_start('[1518-11-01 00:00] Guard #10 begins shift') == (11, 1)
-    assert parse_shift_start('[1518-11-01 23:58] Guard #99 begins shift') == (11, 2)
-
-
 def test_parse_journal():
     assert guards == [
-        Guard(id=10, start=(11, 1), sleep=[range(5, 25), range(30, 55)]),
-        Guard(id=99, start=(11, 2), sleep=[range(40, 50)]),
-        Guard(id=10, start=(11, 3), sleep=[range(24, 29)]),
-        Guard(id=99, start=(11, 4), sleep=[range(36, 46)]),
-        Guard(id=99, start=(11, 5), sleep=[range(45, 55)]),
+        Guard(id=10, sleep=[range(5, 25), range(30, 55)]),
+        Guard(id=99, sleep=[range(40, 50)]),
+        Guard(id=10, sleep=[range(24, 29)]),
+        Guard(id=99, sleep=[range(36, 46)]),
+        Guard(id=99, sleep=[range(45, 55)]),
     ]
 
 
