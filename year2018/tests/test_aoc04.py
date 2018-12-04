@@ -1,4 +1,4 @@
-from aoc04 import Guard, parse_journal, strategy1, strategy2, sum_time_asleep
+from aoc04 import get_snooziest_minute, parse_journal, strategy1, strategy2, sum_time_asleep
 from helpers import read_puzzle
 
 sample = """
@@ -21,21 +21,23 @@ sample = """
 [1518-11-05 00:55] wakes up
 """.strip()
 
-guards = list(parse_journal(sample))
+guards = parse_journal(sample)
 
 
 def test_parse_journal():
-    assert guards == [
-        Guard(id=10, sleep=[range(5, 25), range(30, 55)]),
-        Guard(id=99, sleep=[range(40, 50)]),
-        Guard(id=10, sleep=[range(24, 29)]),
-        Guard(id=99, sleep=[range(36, 46)]),
-        Guard(id=99, sleep=[range(45, 55)]),
-    ]
+    assert guards == {
+        10: [range(5, 25), range(30, 55), range(24, 29)],
+        99: [range(40, 50), range(36, 46), range(45, 55)],
+    }
 
 
 def test_sum_time_asleep():
-    assert sum_time_asleep(guards) == 80
+    assert [sum_time_asleep(g) for g in guards.values()] == [50, 30]
+
+
+def test_get_snooziest_minute():
+    assert get_snooziest_minute(guards[10]) == (24, 2)
+    assert get_snooziest_minute(guards[99]) == (45, 3)
 
 
 def test_strategy1():
@@ -47,6 +49,6 @@ def test_strategy2():
 
 
 def test_full_puzzle():
-    puzzle = list(parse_journal(read_puzzle()))
+    puzzle = parse_journal(read_puzzle())
     assert strategy1(puzzle) == 26281
     assert strategy2(puzzle) == 73001
