@@ -1,31 +1,27 @@
-from string import ascii_lowercase
+from typing import Iterable
 
 from helpers import read_puzzle
-
-reacting_pairs = {pair for c in ascii_lowercase for pair in (c + c.upper(), c.upper() + c)}
 
 
 def are_matching(a: str, b: str) -> bool:
     return a != b and (a.lower() == b or b.lower() == a)
-    # return a + b in reacting_pairs
 
 
-def react(poly: str):
-    i = 0
-    while i < len(poly) - 1:
-        if are_matching(poly[i], poly[i + 1]):
-            poly = poly[:i] + poly[i + 2:]
-            if i > 0:
-                i -= 1
+def react(poly: Iterable[str], skip: str = None) -> str:
+    new_poly = ''
+    for unit in iter(poly):
+        if unit.lower() == skip:
+            continue
+        if new_poly and are_matching(unit, new_poly[-1]):
+            new_poly = new_poly[:-1]
         else:
-            i += 1
-    return poly
+            new_poly += unit
+    return new_poly
 
 
 def improve(poly: str) -> int:
     units = set(poly.lower())
-    new_polymers = [''.join(c for c in poly if c.lower() != unit) for unit in units]
-    return min(len(react(p)) for p in new_polymers)
+    return min(len(react(poly, skip=unit)) for unit in units)
 
 
 if __name__ == '__main__':

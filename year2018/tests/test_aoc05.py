@@ -1,5 +1,7 @@
-from aoc05 import are_matching, react, improve
+from aoc05 import are_matching, improve, react
 from helpers import read_puzzle
+
+sample = 'dabAcCaCBAcCcaDA'
 
 
 def test_are_matching():
@@ -12,15 +14,22 @@ def test_are_matching():
 
 
 def test_react():
-    assert ''.join(react('aA')) == ''
-    assert ''.join(react('abBA')) == ''
-    assert ''.join(react('abAB')) == 'abAB'
-    assert ''.join(react('aabAAB')) == 'aabAAB'
-    assert ''.join(react('dabAcCaCBAcCcaDA')) == 'dabCBAcaDA'
+    assert react('aA') == ''
+    assert react('abBA') == ''
+    assert react('abAB') == 'abAB'
+    assert react('aabAAB') == 'aabAAB'
+    assert react(sample) == 'dabCBAcaDA'
+
+
+def test_react_with_skips():
+    assert react(sample, 'a') == 'dbCBcD'
+    assert react(sample, 'b') == 'daCAcaDA'
+    assert react(sample, 'c') == 'daDA'
+    assert react(sample, 'd') == 'abCBAc'
 
 
 def test_improve():
-    assert improve('dabAcCaCBAcCcaDA') == 4
+    assert improve(sample) == 4
 
 
 def test_full_puzzle():
