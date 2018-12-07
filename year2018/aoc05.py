@@ -25,5 +25,5 @@ def improve(poly: str) -> int:
 
 
 if __name__ == '__main__':
-    poly_ = read_puzzle()
-    print(len(react(poly_)), improve(poly_))
+    poly_ = react(read_puzzle())
+    print(len(poly_), improve(poly_))

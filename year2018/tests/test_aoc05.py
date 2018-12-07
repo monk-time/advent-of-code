@@ -33,6 +33,6 @@ def test_improve():
 
 
 def test_full_puzzle():
-    puzzle = read_puzzle()
-    assert len(react(puzzle)) == 9704
-    assert improve(puzzle) == 6942
+    poly = react(read_puzzle())
+    assert len(poly) == 9704
+    assert improve(poly) == 6942
