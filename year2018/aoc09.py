@@ -1,38 +1,36 @@
 import re
+from dataclasses import dataclass, field
 
 from helpers import read_puzzle, timed
+
+
+@dataclass
+class Marble:
+    value: int
+    prev: 'Marble' = field(default=None, repr=False)
+    next: 'Marble' = field(default=None, repr=False)
 
 
 @timed
 def high_score(s: str) -> int:
     players, last_marble = map(int, re.findall(r'\d+', s))
-    marble, index = 0, 0
-    circle, scores = [marble], [0] * players
-    # print(f'[{"-" * len(str(players))}] (0)')
-    for marble in range(1, last_marble + 1):
-        player = marble % players
-        if marble % 23 != 0:
-            index = ((index + 1) % len(circle)) + 1
-            circle.insert(index, marble)
+    marble, scores = Marble(0), [0] * players
+    marble.prev, marble.next = marble, marble
+    for value in range(1, last_marble + 1):
+        if value % 23 != 0:
+            a, b = marble.next, marble.next.next
+            marble = Marble(value, prev=a, next=b)
+            a.next = b.prev = marble
         else:
-            index = (index - 7) % len(circle)
-            scores[player] += marble + circle.pop(index)
-        # print_state(players, last_marble, circle, player, index)
+            for _ in range(7):
+                marble = marble.prev
+            scores[value % players] += value + marble.value
+            marble.prev.next = marble.next
+            marble = marble.next
     return max(scores)
-
-
-def print_state(players, last_marble, circle, player, index):
-    pad_pl, pad_mrbl = len(str(players)), len(str(last_marble))
-    marbles_str = ' '.join(f'{n:{pad_mrbl}d}' for n in circle)
-    s = f'[{player or players:{pad_pl}d}] {marbles_str} '
-    i = 2 + pad_pl + index * (pad_mrbl + 1)
-    s2 = s[:i] + '(' + s[i + 1:i + 1 + pad_mrbl] + ')' + s[i + 2 + pad_mrbl:]
-    assert len(s) == len(s2)
-    # Move an opening brace closer to a number
-    print(re.sub(r'\(( +)', r'\1(', s2))
 
 
 if __name__ == '__main__':
     puzzle = read_puzzle()
     print(high_score(puzzle))
-    # print(high_score(puzzle.replace(' points', '00 points')))
+    print(high_score(puzzle.replace(' points', '00 points')))
