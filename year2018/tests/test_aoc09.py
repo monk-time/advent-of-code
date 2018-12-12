@@ -21,3 +21,4 @@ def test_high_score(input_str, result):
 def test_full_puzzle():
     puzzle = read_puzzle()
     assert high_score(puzzle) == 383475
+    assert high_score(puzzle.replace(' points', '00 points')) == 3148209772

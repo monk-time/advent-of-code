@@ -1,4 +1,5 @@
 import inspect
+import psutil
 import re
 import time
 import timeit
@@ -43,3 +44,8 @@ def timed(f):
         return result
 
     return inner
+
+
+def print_peak_memory_used():
+    max_memory = round(psutil.Process().memory_info().peak_wset / 1024 / 1024)
+    print(f'Peak memory used: {max_memory} MB')
