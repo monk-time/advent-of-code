@@ -1,13 +1,13 @@
 import re
-from collections import deque
 
-from helpers import read_puzzle
+from helpers import read_puzzle, timed
 
 
+@timed
 def high_score(s: str) -> int:
     players, last_marble = map(int, re.findall(r'\d+', s))
     marble, index = 0, 0
-    circle, scores = deque([marble]), [0] * players
+    circle, scores = [marble], [0] * players
     # print(f'[{"-" * len(str(players))}] (0)')
     for marble in range(1, last_marble + 1):
         player = marble % players
@@ -16,9 +16,7 @@ def high_score(s: str) -> int:
             circle.insert(index, marble)
         else:
             index = (index - 7) % len(circle)
-            extra_marble = circle[index]
-            circle.remove(extra_marble)
-            scores[player] += marble + extra_marble
+            scores[player] += marble + circle.pop(index)
         # print_state(players, last_marble, circle, player, index)
     return max(scores)
 
@@ -37,4 +35,4 @@ def print_state(players, last_marble, circle, player, index):
 if __name__ == '__main__':
     puzzle = read_puzzle()
     print(high_score(puzzle))
-    print(high_score(puzzle.replace(' points', '00 points')))
+    # print(high_score(puzzle.replace(' points', '00 points')))
