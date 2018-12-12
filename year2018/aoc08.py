@@ -1,10 +1,14 @@
-from typing import List
+from dataclasses import dataclass, field
+from typing import Iterable, List
 
 from helpers import read_puzzle
 
 
-def metadata(s: str) -> List[int]:
-    nums = [int(n) for n in s.split()]
+def parse(s: str) -> List[int]:
+    return [int(n) for n in s.split()]
+
+
+def metadata_linear(nums: List[int]) -> List[int]:
     index, res = 2, []
     stack = [nums[:index]]
     while stack:
@@ -26,7 +30,43 @@ def metadata(s: str) -> List[int]:
     return res
 
 
+@dataclass
+class Node:
+    # end: Optional[int] = None
+    children: List['Node'] = field(default_factory=list)
+    meta: List[int] = field(default_factory=list)
+
+    def __str__(self):
+        meta_str = ' '.join(str(num) for num in self.meta)
+        children_str = ' '.join(str(node) for node in self.children)
+        if children_str:
+            children_str += ' '
+        return f'[{len(self.children)} {len(self.meta)} {children_str}({meta_str})]'
+
+
+def build_tree(nums: List[int]):
+    def parse_node(start):
+        n_children, n_meta = nums[start:start + 2]
+        root = Node()
+        start += 2
+        for _ in range(n_children):
+            child = parse_node(start)
+            root.children.append(child)
+            start = child.end + 1
+        root.end = start + n_meta - 1
+        root.meta = nums[start:root.end + 1]
+        return root
+
+    return parse_node(0)
+
+
+def metadata_rec(node: Node) -> Iterable[int]:
+    yield from node.meta
+    for child in node.children:
+        yield from metadata_rec(child)
+
+
 if __name__ == '__main__':
-    puzzle = read_puzzle()
-    # puzzle = '2 3 0 3 10 11 12 1 1 0 1 99 2 1 1 2'
-    print(sum(metadata(puzzle)))
+    puzzle = parse(read_puzzle())
+    print(sum(metadata_linear(puzzle)))
+    print(sum(metadata_rec(build_tree(puzzle))))
