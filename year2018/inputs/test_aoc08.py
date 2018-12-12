@@ -1,6 +1,6 @@
 import pytest
 
-from aoc08 import build_tree, metadata_linear, metadata_rec, parse
+from aoc08 import build_tree, metadata_as_indices, metadata_linear, metadata_rec, parse
 from helpers import read_puzzle
 
 samples = [
@@ -59,7 +59,15 @@ def test_build_tree(input_str, tree_str, metadata):
     assert str(build_tree(parse(input_str))) == tree_str
 
 
+def test_metadata_as_indices():
+    tree = build_tree(parse('2 3 0 3 10 11 12 1 1 0 1 99 2 1 1 2'))
+    assert list(metadata_as_indices(tree)) == [33, 33]
+
+
 def test_full_puzzle():
     puzzle = parse(read_puzzle())
     assert sum(metadata_linear(puzzle)) == 35852
-    assert sum(metadata_rec(build_tree(puzzle))) == 35852
+
+    tree = build_tree(puzzle)
+    assert sum(metadata_rec(tree)) == 35852
+    assert sum(metadata_as_indices(tree)) == 33422
