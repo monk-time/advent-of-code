@@ -1,5 +1,4 @@
 from dataclasses import dataclass, field
-from itertools import chain
 from typing import Iterable, List
 
 from helpers import read_puzzle
@@ -67,14 +66,12 @@ def metadata_rec(node: Node) -> Iterable[int]:
         yield from metadata_rec(child)
 
 
-def metadata_as_indices(node: Node) -> Iterable[int]:
-    if not node.children:
-        yield sum(node.meta)
-    else:
-        refs = [node.children[i - 1] for i in node.meta if i <= len(node.children)]
-        yield from chain(*map(metadata_as_indices, refs))
+def metadata_as_indices(node: Node) -> int:
+    return sum(node.meta if not node.children else
+               map(metadata_as_indices, (node.children[i - 1] for i in node.meta
+                                         if 0 < i <= len(node.children))))
 
 
 if __name__ == '__main__':
     tree = build_tree(parse(read_puzzle()))
-    print(sum(metadata_rec(tree)), sum(metadata_as_indices(tree)))
+    print(sum(metadata_rec(tree)), metadata_as_indices(tree))

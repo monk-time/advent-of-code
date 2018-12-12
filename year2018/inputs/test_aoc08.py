@@ -61,7 +61,7 @@ def test_build_tree(input_str, tree_str, metadata):
 
 def test_metadata_as_indices():
     tree = build_tree(parse('2 3 0 3 10 11 12 1 1 0 1 99 2 1 1 2'))
-    assert list(metadata_as_indices(tree)) == [33, 33]
+    assert metadata_as_indices(tree) == 66
 
 
 def test_full_puzzle():
@@ -70,4 +70,4 @@ def test_full_puzzle():
 
     tree = build_tree(puzzle)
     assert sum(metadata_rec(tree)) == 35852
-    assert sum(metadata_as_indices(tree)) == 33422
+    assert metadata_as_indices(tree) == 33422
