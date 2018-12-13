@@ -40,7 +40,8 @@ def timed(f):
         kwargs_str = ', '.join(f'{k}={repr(v)}' for k, v in kwargs.items())
         # 'a, b' if both not '' else 'a' or 'b'
         args_str = ', '.join(filter(None, [args_str, kwargs_str]))
-        print(f'{f.__name__}({args_str}): {total:.4g} sec')
+        dots = '...' if len(args_str) > 50 else ''
+        print(f'{f.__name__}({args_str[:50] + dots}): {total:.4g} sec')
         return result
 
     return inner
