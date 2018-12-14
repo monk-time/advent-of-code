@@ -1,4 +1,5 @@
 import re
+from collections import deque
 from itertools import islice
 from typing import Iterable, Set, Tuple
 
@@ -40,24 +41,52 @@ def pad(pots: str, i_zero: int) -> State:
     return pots, i_zero
 
 
-def next_gen(rules: Set[str], pots: str, i_zero: int = 4) -> State:
+def next_gen(rules: Set[str], pots: str, i_zero: int) -> State:
     """Get the next generation. Pots must be already padded."""
     pots = '..' + ''.join('#' if pots[i - 2:i + 3] in rules else '.'
                           for i in range(2, len(pots) - 2))
     return pad(pots, i_zero)
 
 
-def evolve(rules: Set[str], pots: str, i_zero: int = 4) -> Iterable[State]:
+def evolve(rules: Set[str], pots: str, i_zero: int) -> Iterable[State]:
     while True:
         yield pots, i_zero
         pots, i_zero = next_gen(rules, pots, i_zero)
+
+
+def str_n_gens(gens: int, rules: Set[str], pots: str, i_zero: int):
+    states = list(islice(evolve(rules, pots, i_zero), gens + 1))  # including gen. #0
+    max_i_zero = max(i_zero for _, i_zero in states)
+    lines = [(max_i_zero - i_zero) * "." + pots for pots, i_zero in states]
+    max_len = max(len(pots) for pots in lines)
+    return [f'{i:{len(str(gens))}d}: {pots.ljust(max_len, ".")}'
+            for i, pots in enumerate(lines)]
 
 
 def sum_of_pots(pots: str, i_zero: int) -> int:
     return sum(i - i_zero for i, p in enumerate(pots) if p == '#')
 
 
+def sum_of_pots_at_gen(gen: int, rules: Set[str], pots: str, i_zero: int) -> int:
+    gen_n = next(islice(evolve(rules, pots, i_zero), gen, None))
+    return sum_of_pots(*gen_n)
+
+
+def stabilize(rules: Set[str], pots: str, i_zero: int) -> Tuple[int, int, int]:
+    prev_sum = sum_of_pots(pots, i_zero)
+    deltas = deque([0, prev_sum], maxlen=5)
+    gen = 0
+    while len(set(deltas)) > 1:
+        gen += 1
+        pots, i_zero = next_gen(rules, pots, i_zero)
+        next_sum = sum_of_pots(pots, i_zero)
+        deltas.append(next_sum - prev_sum)
+        prev_sum = next_sum
+    return gen, prev_sum, deltas[0]
+
+
 if __name__ == '__main__':
     rules_, state = parse(read_puzzle())
-    gen20 = next(islice(evolve(rules_, *state), 20, None))
-    print(sum_of_pots(*gen20))
+    print(sum_of_pots_at_gen(20, rules_, *state))
+    gen_, sum_, delta = stabilize(rules_, *state)
+    print(sum_ + (50000000000 - gen_) * delta)

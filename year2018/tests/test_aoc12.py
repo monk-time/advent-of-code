@@ -1,6 +1,5 @@
-from itertools import islice
-
-from aoc12 import evolve, pad, parse, sum_of_pots
+from aoc12 import pad, parse, stabilize, str_n_gens, sum_of_pots_at_gen
+from helpers import read_puzzle
 
 sample = """initial state: #..#.#..##......###...###
 
@@ -50,11 +49,7 @@ def test_pad():
 
 def test_evolve():
     rules, state = parse(sample)
-    states = list(islice(evolve(rules, *state), 21))  # generations 0-20
-    max_i_zero = max(i_zero for _, i_zero in states)
-    lines = [(max_i_zero - i_zero) * "." + pots for pots, i_zero in states]
-    max_len = max(len(pots) for pots in lines)
-    lines = [f'{i:2d}: {pots.ljust(max_len, ".")}' for i, pots in enumerate(lines)]
+    lines = str_n_gens(20, rules, *state)
     assert lines == [
         ' 0: ......#..#.#..##......###...###..............',
         ' 1: ......#...#....#.....#..#..#..#..............',
@@ -80,7 +75,18 @@ def test_evolve():
     ]
 
 
-def test_sum_of_pots():
+def test_sum_of_pots_at_gen():
     rules, state = parse(sample)
-    gen20 = next(islice(evolve(rules, *state), 20, None))
-    assert sum_of_pots(*gen20) == 325
+    assert sum_of_pots_at_gen(20, rules, *state) == 325
+
+
+def test_stabilize():
+    rules, state = parse(sample)
+    assert stabilize(rules, *state) == (91, 1194, 20)
+
+
+def test_full_puzzle():
+    rules, state = parse(read_puzzle())
+    assert sum_of_pots_at_gen(20, rules, *state) == 3494
+    gen, sum_, delta = stabilize(rules, *state)
+    assert sum_ + (50000000000 - gen) * delta == 2850000002454
