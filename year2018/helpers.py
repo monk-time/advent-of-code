@@ -1,13 +1,13 @@
 import inspect
-import psutil
 import re
-import time
 import timeit
 from pathlib import Path
-from typing import Optional
+from typing import List, Optional
+
+import psutil
 
 
-def read_puzzle(number: Optional[int] = None) -> str:
+def read_puzzle(number: Optional[int] = None, stripchars=None) -> str:
     """Read the contents of the input file for the current puzzle."""
     # The number of the puzzle is determined by the filename of the caller
     if number:
@@ -22,7 +22,7 @@ def read_puzzle(number: Optional[int] = None) -> str:
         number = int(match.group())
         year_dir = Path(__file__).parent
     puzzle_input = year_dir / 'inputs' / f'aoc{number:02d}.txt'
-    return puzzle_input.read_text(encoding='utf-8').strip()
+    return puzzle_input.read_text(encoding='utf-8').strip(stripchars)
 
 
 def timed(f):
@@ -50,3 +50,17 @@ def timed(f):
 def print_peak_memory_used():
     max_memory = round(psutil.Process().memory_info().peak_wset / 1024 / 1024)
     print(f'Peak memory used: {max_memory} MB')
+
+
+def border_wrap(lines: List[str]) -> str:
+    """Draw a border around an equally sized set of lines."""
+    n = len(lines[0])
+    upper = f'┌{"─" * n}┐'
+    lower = f'└{"─" * n}┘'
+    lines = (f'│{s}│' for s in lines)
+    return '\n'.join((upper, *lines, lower))
+
+
+def border_unwrap(box: str) -> List[str]:
+    """Restore the original set of lines by removing the border and whitespace."""
+    return [s.strip()[1:-1] for s in box.strip().split('\n')[1:-1]]
