@@ -4,8 +4,6 @@ import timeit
 from pathlib import Path
 from typing import List, Optional
 
-import psutil
-
 
 def read_puzzle(number: Optional[int] = None, stripchars=None) -> str:
     """Read the contents of the input file for the current puzzle."""
@@ -48,6 +46,7 @@ def timed(f):
 
 
 def print_peak_memory_used():
+    import psutil
     max_memory = round(psutil.Process().memory_info().peak_wset / 1024 / 1024)
     print(f'Peak memory used: {max_memory} MB')
 
