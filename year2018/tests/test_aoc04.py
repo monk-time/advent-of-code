@@ -1,4 +1,4 @@
-from aoc04 import get_snooziest_minute, parse_journal, solve, strategy1, strategy2, sum_time_asleep
+from aoc04 import parse_journal, snooziest_minute, solve, strategy1, strategy2, total_time_asleep
 
 sample = """
 [1518-11-01 00:00] Guard #10 begins shift
@@ -30,13 +30,13 @@ def test_parse_journal():
     }
 
 
-def test_sum_time_asleep():
-    assert [sum_time_asleep(g) for g in guards.values()] == [50, 30]
+def test_total_time_asleep():
+    assert [total_time_asleep(g) for g in guards.values()] == [50, 30]
 
 
-def test_get_snooziest_minute():
-    assert get_snooziest_minute(guards[10]) == (24, 2)
-    assert get_snooziest_minute(guards[99]) == (45, 3)
+def test_snooziest_minute():
+    assert snooziest_minute(guards[10]) == (24, 2)
+    assert snooziest_minute(guards[99]) == (45, 3)
 
 
 def test_strategy1():
