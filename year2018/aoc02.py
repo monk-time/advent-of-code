@@ -28,7 +28,10 @@ def part2(box_ids: Iterable[str]) -> str:
     return matching_letters(*matching_pair)
 
 
-if __name__ == '__main__':
+def solve():
     puzzle = read_puzzle().splitlines()
-    print(checksum(puzzle))
-    print(part2(puzzle))
+    return checksum(puzzle), part2(puzzle)
+
+
+if __name__ == '__main__':
+    print(solve())

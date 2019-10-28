@@ -48,6 +48,10 @@ def strategy2(guards: Guards):
     return top[0] * top[1][0]
 
 
+def solve():
+    guards = parse_journal(read_puzzle())
+    return strategy1(guards), strategy2(guards)
+
+
 if __name__ == '__main__':
-    guards_ = parse_journal(read_puzzle())
-    print(strategy1(guards_), strategy2(guards_))
+    print(solve())

@@ -1,5 +1,4 @@
-from aoc04 import get_snooziest_minute, parse_journal, strategy1, strategy2, sum_time_asleep
-from helpers import read_puzzle
+from aoc04 import get_snooziest_minute, parse_journal, solve, strategy1, strategy2, sum_time_asleep
 
 sample = """
 [1518-11-01 00:00] Guard #10 begins shift
@@ -48,7 +47,5 @@ def test_strategy2():
     assert strategy2(guards) == 4455
 
 
-def test_full_puzzle():
-    puzzle = parse_journal(read_puzzle())
-    assert strategy1(puzzle) == 26281
-    assert strategy2(puzzle) == 73001
+def test_solve():
+    assert solve() == (26281, 73001)

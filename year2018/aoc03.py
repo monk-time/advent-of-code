@@ -20,12 +20,16 @@ def squares(a: Claim) -> Iterable[Tuple[int, int]]:
     return product(range(a.left, a.left + a.width), range(a.top, a.top + a.height))
 
 
-def solve(claims: List[Claim]):
+def overlap_and_count(claims: List[Claim]):
     layers = Counter(sq for c in claims for sq in squares(c))
     inches = sum(1 for v in layers.values() if v > 1)
     unused_id = next(c.id for c in claims if all(layers[sq] == 1 for sq in squares(c)))
     return inches, unused_id
 
 
+def solve():
+    return overlap_and_count(parse_puzzle())
+
+
 if __name__ == '__main__':
-    print(solve(parse_puzzle()))
+    print(solve())

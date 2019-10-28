@@ -24,6 +24,10 @@ def improve(poly: str) -> int:
     return min(len(react(poly, skip=unit)) for unit in units)
 
 
+def solve():
+    poly = react(read_puzzle())
+    return len(poly), improve(poly)
+
+
 if __name__ == '__main__':
-    poly_ = react(read_puzzle())
-    print(len(poly_), improve(poly_))
+    print(solve())

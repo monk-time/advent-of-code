@@ -1,5 +1,4 @@
-from aoc05 import are_matching, improve, react
-from helpers import read_puzzle
+from aoc05 import are_matching, improve, react, solve
 
 sample = 'dabAcCaCBAcCcaDA'
 
@@ -32,7 +31,5 @@ def test_improve():
     assert improve(sample) == 4
 
 
-def test_full_puzzle():
-    poly = react(read_puzzle())
-    assert len(poly) == 9704
-    assert improve(poly) == 6942
+def test_solve():
+    assert solve() == (9704, 6942)

@@ -1,5 +1,4 @@
-from aoc03 import Claim, parse, solve, squares
-from helpers import read_puzzle
+from aoc03 import Claim, overlap_and_count, parse, solve, squares
 
 a = parse('#1 @ 1,3: 4x4')
 b = parse('#2 @ 3,1: 4x4')
@@ -16,10 +15,9 @@ def test_squares():
     assert list(squares(c)) == [(5, 5), (5, 6), (6, 5), (6, 6)]
 
 
+def test_overlap_and_count():
+    assert overlap_and_count([a, b, c]) == (4, 3)
+
+
 def test_solve():
-    assert solve([a, b, c]) == (4, 3)
-
-
-def test_full_puzzle():
-    puzzle = [parse(line) for line in read_puzzle().splitlines()]
-    assert solve(puzzle) == (110891, 297)
+    assert solve() == (110891, 297)

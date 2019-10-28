@@ -22,7 +22,10 @@ def calibrate_until_repeat(seq: str) -> int:
         visited.add(freq)
 
 
-if __name__ == '__main__':
+def solve():
     puzzle = read_puzzle()
-    print(calibrate(puzzle))
-    print(calibrate_until_repeat(puzzle))
+    return calibrate(puzzle), calibrate_until_repeat(puzzle)
+
+
+if __name__ == '__main__':
+    print(solve())

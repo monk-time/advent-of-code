@@ -1,8 +1,7 @@
 import pytest
 
 from aoc02 import checksum, has_exactly_n_of_any_letter, is_correct_pair, \
-    matching_letters, part2
-from helpers import read_puzzle
+    matching_letters, part2, solve
 
 box_ids = ['abcdef', 'bababc', 'abbcde', 'abcccd', 'aabcdd', 'abcdee', 'ababab']
 bools2 = [False, True, True, False, True, True, False]
@@ -38,7 +37,5 @@ def test_part2():
     assert part2(box_ids2) == 'fgij'
 
 
-def test_full_puzzle():
-    puzzle = read_puzzle().splitlines()
-    assert checksum(puzzle) == 5390
-    assert part2(puzzle) == 'nvosmkcdtdbfhyxsphzgraljq'
+def test_solve():
+    assert solve() == (5390, 'nvosmkcdtdbfhyxsphzgraljq')

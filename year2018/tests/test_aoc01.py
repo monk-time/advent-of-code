@@ -1,5 +1,4 @@
-from aoc01 import calibrate, calibrate_until_repeat, parse
-from helpers import read_puzzle
+from aoc01 import calibrate, calibrate_until_repeat, parse, solve
 
 
 def test_parse():
@@ -36,7 +35,5 @@ def test_calibrate_until_repeat_other():
     assert calibrate_until_repeat('+7, +7, -2, -7, -4') == 14
 
 
-def test_full_puzzle():
-    puzzle = read_puzzle()
-    assert calibrate(puzzle) == 592
-    assert calibrate_until_repeat(puzzle) == 241
+def test_solve():
+    assert solve() == (592, 241)
