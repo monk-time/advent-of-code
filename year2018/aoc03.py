@@ -12,6 +12,10 @@ def parse(claim: str) -> Claim:
     return Claim(*map(int, re.findall(r'\d+', claim)))
 
 
+def parse_puzzle() -> List[Claim]:
+    return [parse(line) for line in read_puzzle().splitlines()]
+
+
 def squares(a: Claim) -> Iterable[Tuple[int, int]]:
     return product(range(a.left, a.left + a.width), range(a.top, a.top + a.height))
 
@@ -24,5 +28,4 @@ def solve(claims: List[Claim]):
 
 
 if __name__ == '__main__':
-    puzzle = [parse(line) for line in read_puzzle().splitlines()]
-    print(solve(puzzle))
+    print(solve(parse_puzzle()))
