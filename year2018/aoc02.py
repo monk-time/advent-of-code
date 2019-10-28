@@ -10,9 +10,8 @@ def has_exactly_n_of_any_letter(box_id: str, n: int) -> bool:
 
 
 def checksum(box_ids: Iterable[str]) -> int:
-    twice = sum(has_exactly_n_of_any_letter(box_id, 2) for box_id in box_ids)
-    thrice = sum(has_exactly_n_of_any_letter(box_id, 3) for box_id in box_ids)
-    return twice * thrice
+    count = lambda n: sum(has_exactly_n_of_any_letter(box_id, n) for box_id in box_ids)
+    return count(2) * count(3)
 
 
 def matching_letters(box_a: str, box_b: str) -> str:
@@ -20,6 +19,7 @@ def matching_letters(box_a: str, box_b: str) -> str:
 
 
 def is_correct_pair(box_a: str, box_b: str) -> bool:
+    """Two IDs are correct if they differ by exactly one character at the same position."""
     return len(matching_letters(box_a, box_b)) == len(box_a) - 1
 
 
