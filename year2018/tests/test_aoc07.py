@@ -1,5 +1,4 @@
-from aoc07 import parse, toposort, work
-from helpers import read_puzzle
+from aoc07 import parse, solve, work
 
 sample = """
 Step C must be finished before step A can begin.
@@ -27,21 +26,10 @@ def test_parse():
     }
 
 
-def test_toposort():
-    assert ''.join(toposort(parse(sample))) == 'CABDFE'
-
-
 def test_work():
     assert work(sample, 1, 0)[0] == 'CABDFE'
     assert work(sample, 2, 0) == ('CABFDE', 15)
 
 
-def test_full_puzzle_old():
-    graph = parse(read_puzzle())
-    assert ''.join(toposort(graph)) == 'BHMOTUFLCPQKWINZVRXAJDSYEG'
-
-
-def test_full_puzzle():
-    puzzle = read_puzzle()
-    assert work(puzzle, 1, 0)[0] == 'BHMOTUFLCPQKWINZVRXAJDSYEG'
-    assert work(puzzle, 5, 60) == ('BHTUMOFLQZCPWKIVNRXASJDYEG', 877)
+def test_solve():
+    assert solve() == ('BHMOTUFLCPQKWINZVRXAJDSYEG', 877)
