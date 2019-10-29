@@ -1,6 +1,6 @@
 import pytest
 
-from aoc08 import build_tree, metadata_as_indices, metadata_linear, metadata_rec, parse
+from aoc08 import Node, metadata_as_indices, metadata_rec, parse_tree
 from helpers import read_puzzle
 
 samples = [
@@ -50,24 +50,30 @@ samples = [
 
 
 @pytest.mark.parametrize("input_str, tree_str, metadata", samples)
-def test_metadata(input_str, tree_str, metadata):
-    assert metadata_linear(parse(input_str)) == metadata
+def test_metadata_rec(input_str, tree_str, metadata):
+    tree = parse_tree(input_str)
+    assert list(metadata_rec(tree)) == metadata
+
+
+def node_to_str(node: Node) -> str:
+    meta_str = ' '.join(map(str, node.meta))
+    children_str = ' '.join(map(node_to_str, node.children))
+    if children_str:
+        children_str += ' '
+    return f'[{len(node.children)} {len(node.meta)} {children_str}({meta_str})]'
 
 
 @pytest.mark.parametrize("input_str, tree_str, metadata", samples)
 def test_build_tree(input_str, tree_str, metadata):
-    assert str(build_tree(parse(input_str))) == tree_str
+    assert node_to_str(parse_tree(input_str)) == tree_str
 
 
 def test_metadata_as_indices():
-    tree = build_tree(parse('2 3 0 3 10 11 12 1 1 0 1 99 2 1 1 2'))
+    tree = parse_tree('2 3 0 3 10 11 12 1 1 0 1 99 2 1 1 2')
     assert metadata_as_indices(tree) == 66
 
 
 def test_full_puzzle():
-    puzzle = parse(read_puzzle())
-    assert sum(metadata_linear(puzzle)) == 35852
-
-    tree = build_tree(puzzle)
+    tree = parse_tree(read_puzzle())
     assert sum(metadata_rec(tree)) == 35852
     assert metadata_as_indices(tree) == 33422
