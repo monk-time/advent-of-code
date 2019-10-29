@@ -32,8 +32,10 @@ def recipes_to_the_left(scores: str) -> int:
     return len(board) - len(scores)
 
 
-if __name__ == '__main__':
+def solve():
     puzzle = read_puzzle()
-    print(improve(int(puzzle)))
-    print(recipes_to_the_left(puzzle))
-    # < 150718217
+    return improve(int(puzzle)), recipes_to_the_left(puzzle)
+
+
+if __name__ == '__main__':
+    print(solve())

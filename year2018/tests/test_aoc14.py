@@ -1,5 +1,4 @@
-from aoc14 import improve, recipes_to_the_left
-from helpers import read_puzzle
+from aoc14 import improve, recipes_to_the_left, solve
 
 
 def test_improve():
@@ -17,7 +16,5 @@ def test_recipes_to_the_left():
     assert recipes_to_the_left('1589167') == 10
 
 
-def test_full_puzzle():
-    puzzle = read_puzzle()
-    assert improve(int(puzzle)) == '9276422810'
-    assert recipes_to_the_left(puzzle) == 20319117
+def test_solve():
+    assert solve() == ('9276422810', 20319117)
