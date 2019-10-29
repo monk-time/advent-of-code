@@ -85,8 +85,12 @@ def stabilize(rules: Set[str], pots: str, i_zero: int) -> Tuple[int, int, int]:
     return gen, prev_sum, deltas[0]
 
 
+def solve():
+    rules, state = parse(read_puzzle())
+    gen, sum_, delta = stabilize(rules, *state)
+    return (sum_of_pots_at_gen(20, rules, *state),
+            sum_ + (50000000000 - gen) * delta)
+
+
 if __name__ == '__main__':
-    rules_, state = parse(read_puzzle())
-    print(sum_of_pots_at_gen(20, rules_, *state))
-    gen_, sum_, delta = stabilize(rules_, *state)
-    print(sum_ + (50000000000 - gen_) * delta)
+    print(solve())

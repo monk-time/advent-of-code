@@ -1,5 +1,4 @@
-from aoc12 import pad, parse, stabilize, str_n_gens, sum_of_pots_at_gen
-from helpers import read_puzzle
+from aoc12 import pad, parse, solve, stabilize, str_n_gens, sum_of_pots_at_gen
 
 sample = """initial state: #..#.#..##......###...###
 
@@ -85,8 +84,5 @@ def test_stabilize():
     assert stabilize(rules, *state) == (91, 1194, 20)
 
 
-def test_full_puzzle():
-    rules, state = parse(read_puzzle())
-    assert sum_of_pots_at_gen(20, rules, *state) == 3494
-    gen, sum_, delta = stabilize(rules, *state)
-    assert sum_ + (50000000000 - gen) * delta == 2850000002454
+def test_solve():
+    assert solve() == (3494, 2850000002454)
