@@ -1,7 +1,6 @@
 import pytest
 
-from aoc09 import high_score
-from helpers import read_puzzle
+from aoc09 import high_score, solve
 
 samples = [
     ('9 players; last marble is worth 25 points', 32),
@@ -18,7 +17,5 @@ def test_high_score(input_str, result):
     assert high_score(input_str) == result
 
 
-def test_full_puzzle():
-    puzzle = read_puzzle()
-    assert high_score(puzzle) == 383475
-    assert high_score(puzzle.replace(' points', '00 points')) == 3148209772
+def test_solve():
+    assert solve() == (383475, 3148209772)
