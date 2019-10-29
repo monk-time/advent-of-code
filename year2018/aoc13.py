@@ -70,7 +70,7 @@ def next_tick(carts_prev: List[Cart], tracks: List[str]):
     return sorted(carts_next, key=lambda c: (c.y, c.x)), tracks, crashes
 
 
-def solve(carts: List[Cart], tracks: List[str]) -> Iterable[str]:
+def emulate(carts: List[Cart], tracks: List[str]) -> Iterable[str]:
     had_first_crash = False
     answer = lambda a, b: f'{a},{b}'
     while len(carts) > 1:
@@ -81,6 +81,9 @@ def solve(carts: List[Cart], tracks: List[str]) -> Iterable[str]:
     yield answer(carts[0].x, carts[0].y) if carts else ''  # coords of the last cart
 
 
+def solve():
+    return tuple(emulate(*parse(read_puzzle(stripchars='\n'))))
+
+
 if __name__ == '__main__':
-    for part in solve(*parse(read_puzzle(stripchars='\n'))):
-        print(part)
+    print(solve())

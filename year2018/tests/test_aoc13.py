@@ -1,7 +1,7 @@
 from typing import List
 
-from aoc13 import Cart, look_ahead, move, next_tick, parse, solve
-from helpers import border_unwrap, read_puzzle
+from aoc13 import Cart, emulate, look_ahead, move, next_tick, parse, solve
+from helpers import border_unwrap
 
 sample = r"""
 /->-\        
@@ -132,10 +132,10 @@ def test_next_tick_sample2():
     """)
 
 
+def test_emulate():
+    assert list(emulate(*parse(sample))) == ['7,3', '']
+    assert list(emulate(*parse(sample2))) == ['2,0', '6,4']
+
+
 def test_solve():
-    assert list(solve(*parse(sample))) == ['7,3', '']
-    assert list(solve(*parse(sample2))) == ['2,0', '6,4']
-
-
-def test_full_puzzle():
-    assert list(solve(*parse(read_puzzle(stripchars='\n')))) == ['16,45', '21,91']
+    assert solve() == ('16,45', '21,91')
