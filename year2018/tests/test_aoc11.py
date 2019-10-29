@@ -1,6 +1,4 @@
-from aoc11 import max_square, max_square_any_size, max_square_any_size_parallel, power_level, \
-    summed_area_table
-from helpers import read_puzzle
+from aoc11 import max_square, power_level, solve, summed_area_table
 
 
 def test_power_level():
@@ -17,8 +15,5 @@ def test_max_square():
     assert max_square(table, 3) == (30, 21, 61, 3)
 
 
-def test_full_puzzle():
-    table = summed_area_table(int(read_puzzle()))
-    assert max_square(table, 3) == (30, 20, 46, 3)
-    assert max_square_any_size(table) == (158, 231, 65, 14)
-    assert max_square_any_size_parallel(table) == (158, 231, 65, 14)
+def test_solve():
+    assert solve() == ((30, 20, 46, 3), (158, 231, 65, 14))

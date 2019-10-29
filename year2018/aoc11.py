@@ -2,7 +2,7 @@ from itertools import product
 from multiprocessing import Pool
 from typing import List
 
-from helpers import read_puzzle, timed
+from helpers import read_puzzle
 
 GRID = 300
 
@@ -33,20 +33,20 @@ def max_square(t: Table, size: int):
     return max_
 
 
-@timed
 def max_square_any_size(t: Table):
     return max(max_square(t, size + 1) for size in range(GRID))
 
 
-@timed
 def max_square_any_size_parallel(t: Table):
     with Pool(processes=4) as p:
         res = p.starmap(max_square, ((t, size + 1) for size in range(GRID)))
     return max(res)
 
 
-if __name__ == '__main__':
+def solve():
     table = summed_area_table(int(read_puzzle()))
-    print(max_square(table, 3))
-    print(max_square_any_size(table))
-    print(max_square_any_size_parallel(table))
+    return max_square(table, 3), max_square_any_size_parallel(table)
+
+
+if __name__ == '__main__':
+    print(solve())
