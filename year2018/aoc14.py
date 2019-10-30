@@ -1,35 +1,33 @@
-from collections import deque
+from typing import Iterable, List, Tuple
 
 from helpers import read_puzzle
 
 
-def improve(steps: int) -> str:
+def scoreboard() -> Iterable[Tuple[List[int], int]]:
     board = [3, 7]
     elf_a, elf_b = 0, 1
-    while len(board) < steps + 10:
+    while True:
         cur_a, cur_b = board[elf_a], board[elf_b]
-        for c in str(cur_a + cur_b):
-            board.append(int(c))
+        total = cur_a + cur_b
+        board += divmod(total, 10) if total >= 10 else (total,)
+        yield board, total
         elf_a = (elf_a + cur_a + 1) % len(board)
         elf_b = (elf_b + cur_b + 1) % len(board)
-    return ''.join(map(str, board[steps:steps + 10]))
 
 
-def recipes_to_the_left(scores: str) -> int:
-    board = [3, 7]
-    elf_a, elf_b = 0, 1
-    scores = deque(int(c) for c in scores)
-    tail = deque(board, maxlen=len(scores))
-    while tail != scores:
-        cur_a, cur_b = board[elf_a], board[elf_b]
-        for c in str(cur_a + cur_b):
-            board.append(int(c))
-            tail.append(int(c))
-            if tail == scores:  # can happen when the sum of scores is >= 10
-                break
-        elf_a = (elf_a + cur_a + 1) % len(board)
-        elf_b = (elf_b + cur_b + 1) % len(board)
-    return len(board) - len(scores)
+def improve(num: int) -> str:
+    for board, _ in scoreboard():
+        if len(board) >= num + 10:
+            return ''.join(map(str, board[num:num + 10]))
+
+
+def recipes_to_the_left(s: str) -> int:
+    target, t = list(map(int, s)), len(s)
+    for board, total in scoreboard():
+        if total >= 10 and board[-t - 1:-1] == target:
+            return len(board) - t - 1
+        elif board[-t:] == target:
+            return len(board) - t
 
 
 def solve():
