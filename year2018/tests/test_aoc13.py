@@ -1,7 +1,7 @@
 from typing import List
 
 from aoc13 import Cart, emulate, look_ahead, move, next_tick, parse, solve
-from helpers import border_unwrap
+from helpers import block_unwrap
 
 sample = r"""
 /->-\        
@@ -26,7 +26,7 @@ sample2 = r"""
 def test_parse():
     carts, tracks = parse(sample)
     assert carts == [Cart(x=2, y=0, dir='>', turn=0), Cart(x=9, y=3, dir='v', turn=0)]
-    assert tracks == border_unwrap(r"""
+    assert tracks == block_unwrap(r"""
         ┌─────────────┐
         │/---\        │
         │|   |  /----\│
@@ -35,7 +35,7 @@ def test_parse():
         │\-+-/  \-+--/│
         │  \------/   │
         └─────────────┘
-    """)
+    """, border=True)
 
 
 def test_look_ahead():
@@ -103,7 +103,7 @@ def test_next_tick_sample():
     carts, tracks, crashes = next_tick(*parse(sample))
     state = state_to_str(carts, tracks).splitlines()
     assert crashes == []
-    assert state == border_unwrap(r"""
+    assert state == block_unwrap(r"""
         ┌─────────────┐
         │/-->\        │
         │|   |  /----\│
@@ -112,14 +112,14 @@ def test_next_tick_sample():
         │\-+-/  \->--/│
         │  \------/   │
         └─────────────┘
-    """)
+    """, border=True)
 
 
 def test_next_tick_sample2():
     carts, tracks, crashes = next_tick(*parse(sample2))
     state = state_to_str(carts, tracks).splitlines()
     assert crashes == [(2, 0), (2, 4), (6, 4)]
-    assert state == border_unwrap(r"""
+    assert state == block_unwrap(r"""
         ┌───────┐
         │/---\  │
         │|   |  │
@@ -129,7 +129,7 @@ def test_next_tick_sample2():
         │  |   |│
         │  ^---^│
         └───────┘
-    """)
+    """, border=True)
 
 
 def test_emulate():
