@@ -78,7 +78,7 @@ def test_dimensions():
 
 
 def test_points_to_str():
-    assert points_to_str(points).splitlines() == block_unwrap(r"""
+    assert points_to_str(points) == block_unwrap(r"""
         ┌──────────────────────┐
         │........#.............│
         │................#.....│
@@ -101,10 +101,8 @@ def test_points_to_str():
 
 
 def test_move_all():
-    result = lambda ps: points_to_str(ps).splitlines()
-
     points2 = move_all(points)
-    assert result(points2) == block_unwrap(r"""
+    assert points_to_str(points2) == block_unwrap(r"""
         ┌──────────────────┐
         │........#....#....│
         │......#.....#.....│
@@ -122,7 +120,7 @@ def test_move_all():
     """, border=True)
 
     points3 = move_all(points2)
-    assert result(points3) == block_unwrap(r"""
+    assert points_to_str(points3) == block_unwrap(r"""
         ┌──────────────┐
         │..........#...│
         │#..#...####..#│
@@ -138,7 +136,7 @@ def test_move_all():
     """, border=True)
 
     points4 = move_all(points3)
-    assert result(points4) == block_unwrap(r"""
+    assert points_to_str(points4) == block_unwrap(r"""
         ┌──────────┐
         │#...#..###│
         │#...#...#.│
@@ -154,7 +152,7 @@ def test_move_all():
 
 def test_solve():
     result, sec = solve()
-    assert result.splitlines() == block_unwrap(r"""
+    assert result == block_unwrap(r"""
         ┌──────────────────────────────────────────────────────────────┐
         │######.....###..#....#..#....#...####....####...#....#..#....#│
         │#...........#...#....#..##...#..#....#..#....#..##...#..#....#│

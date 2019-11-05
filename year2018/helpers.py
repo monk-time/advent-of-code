@@ -60,9 +60,7 @@ def border_wrap(lines: List[str]) -> str:
     return '\n'.join((upper, *lines, lower))
 
 
-def block_unwrap(box: str, *, border: bool) -> List[str]:
-    """Restore the original set of lines by removing whitespace and the border."""
-    if border:
-        return [s.strip()[1:-1] for s in box.strip().split('\n')[1:-1]]
-    else:
-        return [s.strip() for s in box.strip().split('\n')]
+def block_unwrap(box: str, *, border: bool) -> str:
+    """Restore the original string by removing whitespace and the border."""
+    m, n = (1, -1) if border else (0, None)
+    return '\n'.join(s.strip()[m:n] for s in box.strip().split('\n')[m:n])

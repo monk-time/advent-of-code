@@ -26,7 +26,7 @@ sample2 = r"""
 def test_parse():
     carts, tracks = parse(sample)
     assert carts == [Cart(x=2, y=0, dir='>', turn=0), Cart(x=9, y=3, dir='v', turn=0)]
-    assert tracks == block_unwrap(r"""
+    assert '\n'.join(tracks) == block_unwrap(r"""
         ┌─────────────┐
         │/---\        │
         │|   |  /----\│
@@ -101,9 +101,8 @@ def test_state_to_str():
 
 def test_next_tick_sample():
     carts, tracks, crashes = next_tick(*parse(sample))
-    state = state_to_str(carts, tracks).splitlines()
     assert crashes == []
-    assert state == block_unwrap(r"""
+    assert state_to_str(carts, tracks) == block_unwrap(r"""
         ┌─────────────┐
         │/-->\        │
         │|   |  /----\│
@@ -117,9 +116,8 @@ def test_next_tick_sample():
 
 def test_next_tick_sample2():
     carts, tracks, crashes = next_tick(*parse(sample2))
-    state = state_to_str(carts, tracks).splitlines()
     assert crashes == [(2, 0), (2, 4), (6, 4)]
-    assert state == block_unwrap(r"""
+    assert state_to_str(carts, tracks) == block_unwrap(r"""
         ┌───────┐
         │/---\  │
         │|   |  │
