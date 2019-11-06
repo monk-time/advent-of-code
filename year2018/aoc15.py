@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from itertools import chain
 from typing import Dict, List, Tuple
 
@@ -18,21 +18,26 @@ def replace_chars(s: str, chars: Squares):
     return '\n'.join(lines)
 
 
+@dataclass
 class State:
-    def __init__(self, s: str):
-        super().__init__()
+    height: int
+    width: int
+    map: Squares
+    units: List['Unit']
+    rounds_played: int = 0
+    finished: bool = False
+
+    @classmethod
+    def fromstring(cls, s: str):
         lines = s.splitlines()
-        self.height: int = len(lines)
-        self.width: int = len(lines[0])
-        self.map: Squares = {}
-        self.units: List[Unit] = []
-        self.rounds_played: int = 0
-        self.finished: bool = False
+        map_, units = {}, []
         for i, line in enumerate(lines):
             for j, ch in enumerate(line):
-                self.map[(i, j)] = ch
+                map_[(i, j)] = ch
                 if ch in 'EG':
-                    self.units.append(Unit((i, j), ch))
+                    units.append(Unit((i, j), ch))
+        return cls(height=len(lines), width=len(lines[0]),
+                   map=map_, units=units)
 
     def __str__(self, hp: bool = False):
         """Get a text representation of the map."""
@@ -44,6 +49,11 @@ class State:
                 map_[i] += ', ' if len(map_[i]) > self.width else '   '
                 map_[i] += f'{unit.type}({unit.hp})'
         return '\n'.join(map_)
+
+    def deepcopy(self):
+        """Return a deep copy of the state."""
+        return replace(self, map=self.map.copy(),
+                       units=[replace(u) for u in self.units])
 
     def squares_in_range(self, sq: Square) -> List[Square]:
         """Get all open (.) squares adjacent to the square."""
@@ -72,17 +82,19 @@ class Unit:
                 (sj == tj and abs(si - ti) == 1))
 
 
-def play_round(st: State):
+def play_round(st: State) -> State:
+    """Simulate one round of the game without mutating the state."""
+    st = st.deepcopy()
     # Units take turns in reading order of their stating positions
     st.units.sort()
-    for unit in st.units.copy():
+    for unit in st.units.copy():  # st.units is mutated when a unit dies
         if unit.hp <= 0:
             continue
 
         targets = sorted(filter(unit.is_enemy, st.units))
         if not targets:
             st.finished = True
-            return
+            break
 
         targets_in_range = list(filter(unit.is_in_range, targets))
         if not targets_in_range:
@@ -104,18 +116,20 @@ def play_round(st: State):
         if target.hp <= 0:
             st.units.remove(target)
             st.map[target.sq] = '.'
+    else:  # no break, i.e. the combat has not ended
+        st.rounds_played += 1
 
-    st.rounds_played += 1
+    return st
 
 
 def solve():
-    return State(read_puzzle())
+    return State.fromstring(read_puzzle())
 
 
 if __name__ == '__main__':
     # print(solve())
     # st_ = State(read_puzzle())
-    st_ = State(block_unwrap("""
+    st_ = State.fromstring(block_unwrap("""
         #######
         #E..G.#
         #...#.#
@@ -127,4 +141,4 @@ if __name__ == '__main__':
         print(f'After {st_.rounds_played} rounds:')
         print(st_.__str__(hp=True))
         input()
-        play_round(st_)
+        st_ = play_round(st_)

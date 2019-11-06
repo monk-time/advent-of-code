@@ -14,12 +14,12 @@ sample = """
 
 @pytest.fixture
 def st_sample():
-    return State(sample)
+    return State.fromstring(sample)
 
 
 @pytest.fixture
 def st_cross():
-    return State(block_unwrap("""
+    return State.fromstring(block_unwrap("""
         #####
         #.G.#
         #GEG#
@@ -39,7 +39,7 @@ def test_replace_chars():
     """, border=False)
 
 
-def test_state_init(st_sample):
+def test_state_fromstring(st_sample):
     assert st_sample.height == 5 and st_sample.width == 7
     assert st_sample.map[(0, 0)] == '#'
     assert st_sample.map[(1, 1)] == '.'
@@ -67,6 +67,29 @@ def test_state_str(st_sample):
     """, border=False)
 
 
+def test_state_deepcopy_basic(st_cross):
+    repr_cross = repr(st_cross)
+    st_copy = st_cross.deepcopy()
+    repr_copy = repr(st_copy)
+    assert repr_cross == repr_copy
+    assert st_cross == st_copy
+
+    # Check that playing a round doesn't mutate the original state
+    play_round(st_copy)
+    assert repr_copy == repr(st_copy)
+    assert repr_cross == repr(st_cross)
+
+
+def test_state_deepcopy_after_death(st_cross):
+    elf = next(u for u in st_cross.units if u.type == 'E')
+    elf.hp = 1
+    repr_cross = repr(st_cross)
+    st_new = play_round(st_cross)
+    assert st_new.finished
+    assert len(st_new.units) < len(st_cross.units)
+    assert repr_cross == repr(st_cross)
+
+
 def test_state_squares_in_range(st_sample, st_cross):
     assert st_sample.squares_in_range((1, 2)) == \
            [(1, 1), (1, 3), (2, 2)]
@@ -91,7 +114,7 @@ def test_unit_is_in_range():
         345
         678
     """
-    us = State('EEE\nEEE\nEEE').units
+    us = State.fromstring('EEE\nEEE\nEEE').units
     all_in_range = lambda n: [u for u in us if u.is_in_range(us[n])]
     assert all_in_range(0) == [us[1], us[3]]
     assert all_in_range(2) == [us[1], us[5]]
@@ -107,7 +130,7 @@ def test_unit_is_in_range():
 def test_play_round_no_moves(st_cross):
     # Check target selection in reading order
     st = st_cross
-    play_round(st)
+    st = play_round(st)
     assert st.__str__(hp=True) == block_unwrap("""
         #####
         #.G.#   G(197)
@@ -117,7 +140,7 @@ def test_play_round_no_moves(st_cross):
     """, border=False)
 
     # Check that reachable targets with the lowest hp have priority
-    st = State(block_unwrap("""
+    st = State.fromstring(block_unwrap("""
         ######
         #.G..#
         #GEGE#
@@ -125,7 +148,7 @@ def test_play_round_no_moves(st_cross):
         ######
     """, border=False))
 
-    play_round(st)
+    st = play_round(st)
     assert st.__str__(hp=True) == block_unwrap("""
         ######
         #.G..#   G(197)
@@ -134,7 +157,7 @@ def test_play_round_no_moves(st_cross):
         ######
     """, border=False)
 
-    play_round(st)
+    st = play_round(st)
     assert st.__str__(hp=True) == block_unwrap("""
         ######
         #.G..#   G(197)
@@ -144,7 +167,7 @@ def test_play_round_no_moves(st_cross):
     """, border=False)
 
     for _ in range(15):
-        play_round(st)
+        st = play_round(st)
     # Last round before anyone can move
     assert st.__str__(hp=True) == block_unwrap("""
         ######
@@ -157,6 +180,6 @@ def test_play_round_no_moves(st_cross):
 
 def test_play_round_played_rounds(st_cross):
     while not st_cross.finished:
-        play_round(st_cross)
+        st_cross = play_round(st_cross)
     # 200 = 16 * 4 * 3 + 8, combat ends before the last goblin can act
     assert st_cross.rounds_played == 16
