@@ -1,7 +1,8 @@
+from inspect import cleandoc
+
 import pytest
 
 from aoc15 import State, Unit, outcome, play_round, solve
-from helpers import block_unwrap
 
 
 def test_unit_is_enemy():
@@ -47,40 +48,40 @@ def st_sample():
 
 @pytest.fixture
 def st_cross():
-    return State.fromstring(block_unwrap("""
+    return State.fromstring(cleandoc("""
         #####
         #.G.#
         #GEG#
         #.G.#
         #####
-    """, border=False))
+    """))
 
 
 @pytest.fixture
 def st_move1():
-    return State.fromstring(block_unwrap("""
+    return State.fromstring(cleandoc("""
         #######
         #E..G.#
         #...#.#
         #.G.#G#
         #######
-    """, border=False))
+    """))
 
 
 @pytest.fixture
 def st_move2():
-    return State.fromstring(block_unwrap("""
+    return State.fromstring(cleandoc("""
         #######
         #.E...#
         #...?.#
         #..?G?#
         #######
-    """, border=False))
+    """))
 
 
 @pytest.fixture
 def st_move_big():
-    return State.fromstring(block_unwrap("""
+    return State.fromstring(cleandoc("""
         #########
         #G..G..G#
         #.......#
@@ -90,7 +91,7 @@ def st_move_big():
         #.......#
         #G..G..G#
         #########
-    """, border=False))
+    """))
 
 
 def test_state_fromstring(st_sample):
@@ -112,13 +113,13 @@ def test_state_fromstring(st_sample):
 
 def test_state_str(st_sample):
     assert str(st_sample) == sample
-    assert st_sample.__str__(hp=True) == block_unwrap("""
+    assert st_sample.__str__(hp=True) == cleandoc("""
         #######
         #.G.E.#   G(200), E(200)
         #E.G.E#   E(200), G(200), E(200)
         #.G.E.#   G(200), E(200)
         #######
-    """, border=False)
+    """)
 
 
 def test_state_deepcopy_basic(st_cross):
@@ -181,17 +182,17 @@ def test_state_find_path(st_move1, st_move2, st_move_big):
 def test_state_move(st_move1):
     unit, targets = st_move1.units[0], st_move1.units[1:]
     st_move1.move(unit, targets)
-    assert str(st_move1) == block_unwrap("""
+    assert str(st_move1) == cleandoc("""
         #######
         #.E.G.#
         #...#.#
         #.G.#G#
         #######
-    """, border=False)
+    """)
 
 
 def test_state_move_tricky():
-    st = State.fromstring(block_unwrap("""
+    st = State.fromstring(cleandoc("""
         #######
         ###...#
         ###.#.#
@@ -199,10 +200,10 @@ def test_state_move_tricky():
         #.###G#
         #.....#
         #######
-    """, border=False))
+    """))
     e, g = st.units
     st.move(e, [g])
-    assert str(st) == block_unwrap("""
+    assert str(st) == cleandoc("""
         #######
         ###...#
         ###.#.#
@@ -210,12 +211,12 @@ def test_state_move_tricky():
         #.###G#
         #.....#
         #######
-    """, border=False)
+    """)
 
 
 def test_state_move_all(st_move_big):
     st = play_round(st_move_big)
-    assert str(st) == block_unwrap("""
+    assert str(st) == cleandoc("""
         #########
         #.G...G.#
         #...G...#
@@ -225,10 +226,10 @@ def test_state_move_all(st_move_big):
         #G..G..G#
         #.......#
         #########
-    """, border=False)
+    """)
 
     st = play_round(st)
-    assert str(st) == block_unwrap("""
+    assert str(st) == cleandoc("""
         #########
         #..G.G..#
         #...G...#
@@ -238,10 +239,10 @@ def test_state_move_all(st_move_big):
         #.......#
         #.......#
         #########
-    """, border=False)
+    """)
 
     st = play_round(st)
-    assert str(st) == block_unwrap("""
+    assert str(st) == cleandoc("""
         #########
         #.......#
         #..GGG..#
@@ -251,7 +252,7 @@ def test_state_move_all(st_move_big):
         #.......#
         #.......#
         #########
-    """, border=False)
+    """)
 
 
 def test_state_hit(st_sample):
@@ -268,51 +269,51 @@ def test_play_round_no_moves(st_cross):
     # Check target selection in reading order
     st = st_cross
     st = play_round(st)
-    assert st.__str__(hp=True) == block_unwrap("""
+    assert st.__str__(hp=True) == cleandoc("""
         #####
         #.G.#   G(197)
         #GEG#   G(200), E(188), G(200)
         #.G.#   G(200)
         #####
-    """, border=False)
+    """)
 
     # Check that reachable targets with the lowest hp have priority
-    st = State.fromstring(block_unwrap("""
+    st = State.fromstring(cleandoc("""
         ######
         #.G..#
         #GEGE#
         #.GE.#
         ######
-    """, border=False))
+    """))
 
     st = play_round(st)
-    assert st.__str__(hp=True) == block_unwrap("""
+    assert st.__str__(hp=True) == cleandoc("""
         ######
         #.G..#   G(197)
         #GEGE#   G(200), E(188), G(194), E(200)
         #.GE.#   G(200), E(200)
         ######
-    """, border=False)
+    """)
 
     st = play_round(st)
-    assert st.__str__(hp=True) == block_unwrap("""
+    assert st.__str__(hp=True) == cleandoc("""
         ######
         #.G..#   G(197)
         #GEGE#   G(200), E(176), G(185), E(200)
         #.GE.#   G(200), E(200)
         ######
-    """, border=False)
+    """)
 
     for _ in range(15):
         st = play_round(st)
     # Last round before anyone can move
-    assert st.__str__(hp=True) == block_unwrap("""
+    assert st.__str__(hp=True) == cleandoc("""
         ######
         #.G..#   G(197)
         #G.GE#   G(200), G(50), E(200)
         #.GE.#   G(200), E(197)
         ######
-    """, border=False)
+    """)
 
 
 def test_play_round_played_rounds(st_cross):
@@ -323,7 +324,7 @@ def test_play_round_played_rounds(st_cross):
 
 
 def test_play_round_full():
-    st = State.fromstring(block_unwrap("""
+    st = State.fromstring(cleandoc("""
         #######
         #.G...#
         #...EG#
@@ -331,10 +332,10 @@ def test_play_round_full():
         #..G#E#
         #.....#
         #######
-    """, border=False))
+    """))
 
     st = play_round(st)
-    assert st.__str__(hp=True) == block_unwrap("""
+    assert st.__str__(hp=True) == cleandoc("""
         #######
         #..G..#   G(200)
         #...EG#   E(197), G(197)
@@ -342,10 +343,10 @@ def test_play_round_full():
         #...#E#   E(197)
         #.....#
         #######
-    """, border=False)
+    """)
 
     st = play_round(st)
-    assert st.__str__(hp=True) == block_unwrap("""
+    assert st.__str__(hp=True) == cleandoc("""
         #######
         #...G.#   G(200)
         #..GEG#   G(200), E(188), G(194)
@@ -353,11 +354,11 @@ def test_play_round_full():
         #...#E#   E(194)
         #.....#
         #######
-    """, border=False)
+    """)
 
     while st.rounds_played != 23:
         st = play_round(st)
-    assert st.__str__(hp=True) == block_unwrap("""
+    assert st.__str__(hp=True) == cleandoc("""
         #######
         #...G.#   G(200)
         #..G.G#   G(200), G(131)
@@ -365,11 +366,11 @@ def test_play_round_full():
         #...#E#   E(131)
         #.....#
         #######
-    """, border=False)
+    """)
 
     while st.rounds_played != 28:
         st = play_round(st)
-    assert st.__str__(hp=True) == block_unwrap("""
+    assert st.__str__(hp=True) == cleandoc("""
         #######
         #G....#   G(200)
         #.G...#   G(131)
@@ -377,11 +378,11 @@ def test_play_round_full():
         #...#E#   E(113)
         #....G#   G(200)
         #######
-    """, border=False)
+    """)
 
     while not st.finished:
         st = play_round(st)
-    assert st.__str__(hp=True) == block_unwrap("""
+    assert st.__str__(hp=True) == cleandoc("""
         #######
         #G....#   G(200)
         #.G...#   G(131)
@@ -389,13 +390,13 @@ def test_play_round_full():
         #...#.#
         #....G#   G(200)
         #######
-    """, border=False)
+    """)
     assert st.rounds_played == 47
     assert st.hash() == 27730
 
 
 def test_outcome():
-    assert outcome(block_unwrap("""
+    assert outcome(cleandoc("""
         #######
         #G..#E#
         #E#E.E#
@@ -403,9 +404,9 @@ def test_outcome():
         #...#E#
         #...E.#
         #######
-    """, border=False)) == 36334
+    """)) == 36334
 
-    assert outcome(block_unwrap("""
+    assert outcome(cleandoc("""
         #######   
         #E..EG#
         #.#G.E#
@@ -413,9 +414,9 @@ def test_outcome():
         #G..#.#
         #..E#.#   
         #######   
-    """, border=False)) == 39514
+    """)) == 39514
 
-    assert outcome(block_unwrap("""
+    assert outcome(cleandoc("""
         #######   
         #E.G#.#
         #.#G..#
@@ -423,9 +424,9 @@ def test_outcome():
         #G..#.#
         #...E.#
         #######   
-    """, border=False)) == 27755
+    """)) == 27755
 
-    assert outcome(block_unwrap("""
+    assert outcome(cleandoc("""
         #######   
         #.E...#   
         #.#..G#
@@ -433,9 +434,9 @@ def test_outcome():
         #E#G#G#   
         #...#G#
         #######   
-    """, border=False)) == 28944
+    """)) == 28944
 
-    assert outcome(block_unwrap("""
+    assert outcome(cleandoc("""
         #########   
         #G......#
         #.E.#...#
@@ -445,7 +446,7 @@ def test_outcome():
         #.G...G.#   
         #.....G.#   
         #########   
-    """, border=False)) == 18740
+    """)) == 18740
 
 
 def test_solve():

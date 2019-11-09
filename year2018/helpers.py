@@ -58,9 +58,3 @@ def border_wrap(lines: List[str]) -> str:
     lower = f'└{"─" * n}┘'
     lines = (f'│{s}│' for s in lines)
     return '\n'.join((upper, *lines, lower))
-
-
-def block_unwrap(box: str, *, border: bool) -> str:
-    """Restore the original string by removing whitespace and the border."""
-    m, n = (1, -1) if border else (0, None)
-    return '\n'.join(s.strip()[m:n] for s in box.strip().split('\n')[m:n])
