@@ -1,12 +1,11 @@
 from collections import deque
 from dataclasses import dataclass, replace
 from itertools import chain
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, Iterable, List, Optional, Tuple, Union
 
 from helpers import read_puzzle
 
 Square = Tuple[int, int]
-Squares = Dict[Square, str]
 
 
 @dataclass(order=True)
@@ -17,23 +16,17 @@ class Unit:
     power: int = 3
 
     def __str__(self):
-        return type
+        return self.type
 
     def is_enemy(self, target: 'Unit'):
         return self.type != target.type
-
-    def is_in_range(self, target: 'Unit'):
-        si, sj = self.sq
-        ti, tj = target.sq
-        return ((si == ti and abs(sj - tj) == 1) or
-                (sj == tj and abs(si - ti) == 1))
 
 
 @dataclass
 class State:
     height: int
     width: int
-    map: Squares
+    map: Dict[Square, Union[Unit, str]]
     units: List[Unit]
     rounds_played: int = 0
     finished: bool = False
@@ -44,15 +37,18 @@ class State:
         map_, units = {}, []
         for i, line in enumerate(lines):
             for j, ch in enumerate(line):
-                map_[(i, j)] = ch
                 if ch in 'EG':
-                    units.append(Unit((i, j), ch))
+                    unit = Unit((i, j), ch)
+                    units.append(unit)
+                    map_[(i, j)] = unit
+                else:
+                    map_[(i, j)] = ch
         return cls(height=len(lines), width=len(lines[0]),
                    map=map_, units=units)
 
     def __str__(self, hp: bool = False):
         """Get a text representation of the map."""
-        map_ = [''.join(self.map[(i, j)] for j in range(self.width))
+        map_ = [''.join(str(self.map[(i, j)]) for j in range(self.width))
                 for i in range(self.height)]
         if hp:
             for unit in sorted(self.units):
@@ -63,14 +59,26 @@ class State:
 
     def deepcopy(self) -> 'State':
         """Return a deep copy of the state."""
-        return replace(self, map=self.map.copy(),
-                       units=[replace(u) for u in self.units])
+        units_new = []
+        map_new = self.map.copy()
+        for unit in self.units:
+            unit = replace(unit)
+            units_new.append(unit)
+            map_new[unit.sq] = unit
+        return replace(self, map=map_new, units=units_new)
 
-    def squares_in_range(self, sq: Square) -> List[Square]:
+    def squares_in_range(self, sq: Square) -> Iterable[Square]:
         """Get all open (.) squares adjacent to the square."""
         i, j = sq
-        return [sq2 for sq2 in [(i - 1, j), (i, j - 1), (i, j + 1), (i + 1, j)]
-                if self.map.get(sq2, None) == '.']
+        return (sq2 for sq2 in ((i - 1, j), (i, j - 1), (i, j + 1), (i + 1, j))
+                if self.map.get(sq2, None) == '.')
+
+    def targets_in_range(self, u: Unit) -> List[Unit]:
+        """Get all enemies adjacent to the unit."""
+        i, j = u.sq
+        return [t for sq2 in ((i - 1, j), (i, j - 1), (i, j + 1), (i + 1, j))
+                if (t := self.map.get(sq2, None))
+                and isinstance(t, Unit) and t.type != u.type]
 
     def find_path(self, unit: Unit, sq_trg: Square) -> \
             Optional[Tuple[int, Square, Square]]:
@@ -90,14 +98,14 @@ class State:
                     dist[sq_next] = dist[sq] + 1
                     queue.append(sq_next)
         else:  # no break
-            self.map[unit.sq] = unit.type
+            self.map[unit.sq] = unit
             return None
         # If there are multiple steps from the start along the shortest path
         # available, choose in reading order.
         sqs = sorted((dist[sq], sq_trg, sq)
                      for sq in self.squares_in_range(unit.sq)
                      if sq in dist)
-        self.map[unit.sq] = unit.type
+        self.map[unit.sq] = unit
         return sqs[0]
 
     def move(self, unit, targets: List[Unit]):
@@ -108,7 +116,7 @@ class State:
             return
         self.map[unit.sq] = '.'
         unit.sq = reachable[0][2]
-        self.map[unit.sq] = unit.type
+        self.map[unit.sq] = unit
 
     def hit(self, target: Unit, dmg: int):
         target.hp -= min(dmg, target.hp)
@@ -134,12 +142,12 @@ def play_round(st: State) -> State:
             st.finished = True
             break
 
-        targets_in_range = list(filter(unit.is_in_range, targets))
+        targets_in_range = st.targets_in_range(unit)
         if not targets_in_range:
             st.move(unit, targets)
+            targets_in_range = st.targets_in_range(unit)
 
         # Check adjacent targets again after moving
-        targets_in_range = list(filter(unit.is_in_range, targets))
         if not targets_in_range:
             continue
 

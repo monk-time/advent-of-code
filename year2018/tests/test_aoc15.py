@@ -13,25 +13,6 @@ def test_unit_is_enemy():
     assert not e1.is_enemy(e2)
 
 
-def test_unit_is_in_range():
-    """
-        012
-        345
-        678
-    """
-    us = State.fromstring('EEE\nEEE\nEEE').units
-    all_in_range = lambda n: [u for u in us if u.is_in_range(us[n])]
-    assert all_in_range(0) == [us[1], us[3]]
-    assert all_in_range(2) == [us[1], us[5]]
-    assert all_in_range(6) == [us[3], us[7]]
-    assert all_in_range(8) == [us[5], us[7]]
-    assert all_in_range(1) == [us[0], us[2], us[4]]
-    assert all_in_range(3) == [us[0], us[4], us[6]]
-    assert all_in_range(5) == [us[2], us[4], us[8]]
-    assert all_in_range(7) == [us[4], us[6], us[8]]
-    assert all_in_range(4) == [us[1], us[3], us[5], us[7]]
-
-
 sample = """
 #######
 #.G.E.#
@@ -73,8 +54,8 @@ def st_move2():
     return State.fromstring(cleandoc("""
         #######
         #.E...#
-        #...?.#
-        #..?G?#
+        #.....#
+        #...G.#
         #######
     """))
 
@@ -98,8 +79,8 @@ def test_state_fromstring(st_sample):
     assert st_sample.height == 5 and st_sample.width == 7
     assert st_sample.map[(0, 0)] == '#'
     assert st_sample.map[(1, 1)] == '.'
-    assert st_sample.map[(1, 2)] == 'G'
-    assert st_sample.map[(1, 4)] == 'E'
+    assert st_sample.map[(1, 2)] == Unit((1, 2), 'G')
+    assert st_sample.map[(1, 4)] == Unit((1, 4), 'E')
     assert st_sample.units == [
         Unit((1, 2), 'G'),
         Unit((1, 4), 'E'),
@@ -146,13 +127,22 @@ def test_state_deepcopy_after_death(st_cross):
 
 
 def test_state_squares_in_range(st_sample, st_cross):
-    assert st_sample.squares_in_range((1, 2)) == \
+    assert list(st_sample.squares_in_range((1, 2))) == \
            [(1, 1), (1, 3), (2, 2)]
-    assert st_sample.squares_in_range((2, 3)) == \
+    assert list(st_sample.squares_in_range((2, 3))) == \
            [(1, 3), (2, 2), (2, 4), (3, 3)]
-    assert st_cross.squares_in_range((1, 2)) == [(1, 1), (1, 3)]
-    assert st_cross.squares_in_range((2, 1)) == [(1, 1), (3, 1)]
-    assert st_cross.squares_in_range((2, 2)) == []
+    assert list(st_cross.squares_in_range((1, 2))) == [(1, 1), (1, 3)]
+    assert list(st_cross.squares_in_range((2, 1))) == [(1, 1), (3, 1)]
+    assert list(st_cross.squares_in_range((2, 2))) == []
+
+
+def test_state_targets_in_range(st_cross, st_move1):
+    g1, g2, e, g3, g4 = st_cross.units
+    assert st_cross.targets_in_range(g1) == [e]
+    assert st_cross.targets_in_range(e) == [g1, g2, g3, g4]
+
+    u = st_move1.units[0]
+    assert st_move1.targets_in_range(u) == []
 
 
 def test_state_find_path(st_move1, st_move2, st_move_big):
@@ -163,12 +153,12 @@ def test_state_find_path(st_move1, st_move2, st_move_big):
     assert st_move1.find_path(u, (3, 3)) == (3, (3, 3), (1, 2))
     assert st_move1.find_path(u, (5, 1)) is None
     assert st_move1.find_path(u, (5, 2)) is None
-    assert st_move1.map[(1, 1)] == 'E'
+    assert st_move1.map[(1, 1)].type == 'E'
 
     u = st_move1.units[2]
     assert u.sq == (3, 2)
     assert st_move1.find_path(u, (1, 3)) == (2, (1, 3), (2, 2))
-    assert st_move1.map[(3, 2)] == 'G'
+    assert st_move1.map[(3, 2)].type == 'G'
 
     u = st_move2.units[0]
     assert st_move2.find_path(u, (2, 4)) == (2, (2, 4), (1, 3))
