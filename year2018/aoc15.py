@@ -1,7 +1,5 @@
-from collections import deque
 from dataclasses import dataclass, replace
-from itertools import chain
-from typing import Dict, Iterable, List, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 from helpers import read_puzzle
 
@@ -67,55 +65,65 @@ class State:
             map_new[unit.sq] = unit
         return replace(self, map=map_new, units=units_new)
 
-    def squares_in_range(self, sq: Square) -> Iterable[Square]:
-        """Get all open (.) squares adjacent to the square."""
-        i, j = sq
-        return (sq2 for sq2 in ((i - 1, j), (i, j - 1), (i, j + 1), (i + 1, j))
-                if self.map.get(sq2, None) == '.')
-
     def targets_in_range(self, u: Unit) -> List[Unit]:
         """Get all enemies adjacent to the unit."""
         i, j = u.sq
         return [t for sq2 in ((i - 1, j), (i, j - 1), (i, j + 1), (i + 1, j))
                 if (t := self.map.get(sq2, None))
-                and isinstance(t, Unit) and t.type != u.type]
+                and isinstance(t, Unit) and u.is_enemy(t)]
 
-    def find_path(self, unit: Unit, sq_trg: Square) -> \
-            Optional[Tuple[int, Square, Square]]:
-        """Find a square along the shortest path from the unit
-        to the target square and the path's length."""
-        # Temporarily hide the source unit so that BFS can work
-        self.map[unit.sq] = '.'
-        # Breadth-first search (starting from the end)
-        dist = {sq_trg: 0}
-        queue = deque([sq_trg])
-        while queue:
-            sq = queue.popleft()
-            if sq == unit.sq:
-                break
-            for sq_next in self.squares_in_range(sq):
-                if sq_next not in dist:
-                    dist[sq_next] = dist[sq] + 1
-                    queue.append(sq_next)
-        else:  # no break
-            self.map[unit.sq] = unit
+    def find_path(self, unit: Unit) -> Optional[Square]:
+        """Find the next step needed to reach the closest enemy.
+
+        If multiple enemy are at the same distance, the one which is first
+        in reading order is chosen. If multiple steps (ULRD) would put the
+        unit equally closer to the target, again the reading order is used.
+
+        Uses breadth-first search, modified to visit all nodes at the same
+        distance from the start, and to label each with the 'sector' it
+        belongs to based on the direction of the first step, resolving ties
+        in reading order.
+        """
+        i0, j0 = unit.sq
+        # Each visited square is labeled with the direction of the first step
+        # that would bring the unit to it.
+        visited = {(i0 - 1, j0): 0, (i0, j0 - 1): 1,  # ULRD -> 0123
+                   (i0, j0 + 1): 2, (i0 + 1, j0): 3, (i0, j0): 4}
+        # Points are always added to layer in the order of their labels
+        layer: List[Square] = [unit.sq]
+        final_layer = False
+        nearest_in_range = []
+        while layer and not final_layer:
+            next_layer = []
+            for sq in layer:
+                i, j = sq
+                for sq_next in ((i - 1, j), (i, j - 1), (i, j + 1), (i + 1, j)):
+                    x = self.map.get(sq_next, None)
+                    if x is None or x == '#':
+                        continue
+                    if isinstance(x, Unit):
+                        if unit.is_enemy(x):
+                            final_layer = True
+                            nearest_in_range.append(sq)
+                        continue
+                    # The initial step has to be special-cased
+                    if sq_next not in visited or sq is unit.sq:
+                        next_layer.append(sq_next)
+                        if sq is not unit.sq:
+                            visited[sq_next] = visited[sq]
+            layer = next_layer
+        if not final_layer:
             return None
-        # If there are multiple steps from the start along the shortest path
-        # available, choose in reading order.
-        sqs = sorted((dist[sq], sq_trg, sq)
-                     for sq in self.squares_in_range(unit.sq)
-                     if sq in dist)
-        self.map[unit.sq] = unit
-        return sqs[0]
+        chosen_in_range = sorted(nearest_in_range)[0]
+        direction = visited[chosen_in_range]
+        return [(i0 - 1, j0), (i0, j0 - 1),
+                (i0, j0 + 1), (i0 + 1, j0)][direction]
 
-    def move(self, unit, targets: List[Unit]):
-        sqs = set(chain(*(self.squares_in_range(t.sq) for t in targets)))
-        reachable = sorted(p for sq in sqs
-                           if (p := self.find_path(unit, sq)) is not None)
-        if not reachable:
+    def move(self, unit: Unit):
+        if not (sq_new := self.find_path(unit)):
             return
         self.map[unit.sq] = '.'
-        unit.sq = reachable[0][2]
+        unit.sq = sq_new
         self.map[unit.sq] = unit
 
     def hit(self, target: Unit, dmg: int):
@@ -137,19 +145,17 @@ def play_round(st: State) -> State:
         if unit.hp <= 0:
             continue
 
-        targets = sorted(filter(unit.is_enemy, st.units))
-        if not targets:
+        if not next(filter(unit.is_enemy, st.units), None):
             st.finished = True
             break
 
         targets_in_range = st.targets_in_range(unit)
         if not targets_in_range:
-            st.move(unit, targets)
+            st.move(unit)
             targets_in_range = st.targets_in_range(unit)
-
-        # Check adjacent targets again after moving
-        if not targets_in_range:
-            continue
+            # Check adjacent targets again after moving
+            if not targets_in_range:
+                continue
 
         # Target a unit with the lowest hp in reading order
         targets_in_range.sort(key=lambda t: (t.hp, t.sq))

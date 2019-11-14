@@ -126,16 +126,6 @@ def test_state_deepcopy_after_death(st_cross):
     assert repr_cross == repr(st_cross)
 
 
-def test_state_squares_in_range(st_sample, st_cross):
-    assert list(st_sample.squares_in_range((1, 2))) == \
-           [(1, 1), (1, 3), (2, 2)]
-    assert list(st_sample.squares_in_range((2, 3))) == \
-           [(1, 3), (2, 2), (2, 4), (3, 3)]
-    assert list(st_cross.squares_in_range((1, 2))) == [(1, 1), (1, 3)]
-    assert list(st_cross.squares_in_range((2, 1))) == [(1, 1), (3, 1)]
-    assert list(st_cross.squares_in_range((2, 2))) == []
-
-
 def test_state_targets_in_range(st_cross, st_move1):
     g1, g2, e, g3, g4 = st_cross.units
     assert st_cross.targets_in_range(g1) == [e]
@@ -146,32 +136,24 @@ def test_state_targets_in_range(st_cross, st_move1):
 
 
 def test_state_find_path(st_move1, st_move2, st_move_big):
-    u = st_move1.units[0]
-    assert st_move1.find_path(u, (1, 3)) == (1, (1, 3), (1, 2))
-    assert st_move1.find_path(u, (2, 2)) == (1, (2, 2), (1, 2))
-    assert st_move1.find_path(u, (3, 1)) == (1, (3, 1), (2, 1))
-    assert st_move1.find_path(u, (3, 3)) == (3, (3, 3), (1, 2))
-    assert st_move1.find_path(u, (5, 1)) is None
-    assert st_move1.find_path(u, (5, 2)) is None
-    assert st_move1.map[(1, 1)].type == 'E'
+    e = st_move1.units[0]
+    assert st_move1.find_path(e) == (1, 2)
+    g = st_move1.units[2]
+    assert st_move1.find_path(g) == (2, 2)
+    g = st_move1.units[3]
+    assert st_move1.find_path(g) is None
 
-    u = st_move1.units[2]
-    assert u.sq == (3, 2)
-    assert st_move1.find_path(u, (1, 3)) == (2, (1, 3), (2, 2))
-    assert st_move1.map[(3, 2)].type == 'G'
+    e, g = st_move2.units
+    assert st_move2.find_path(e) == (1, 3)
+    assert st_move2.find_path(g) == (2, 4)
 
-    u = st_move2.units[0]
-    assert st_move2.find_path(u, (2, 4)) == (2, (2, 4), (1, 3))
-    assert st_move2.find_path(u, (3, 3)) == (2, (3, 3), (1, 3))
-    assert st_move2.find_path(u, (3, 5)) == (4, (3, 5), (1, 3))
-
-    u = st_move_big.units[3]
-    assert st_move_big.find_path(u, (4, 3)) == (1, (4, 3), (4, 2))
+    g = st_move_big.units[3]
+    assert st_move_big.find_path(g) == (4, 2)
 
 
 def test_state_move(st_move1):
     unit, targets = st_move1.units[0], st_move1.units[1:]
-    st_move1.move(unit, targets)
+    st_move1.move(unit)
     assert str(st_move1) == cleandoc("""
         #######
         #.E.G.#
@@ -192,7 +174,7 @@ def test_state_move_tricky():
         #######
     """))
     e, g = st.units
-    st.move(e, [g])
+    st.move(e)
     assert str(st) == cleandoc("""
         #######
         ###...#
