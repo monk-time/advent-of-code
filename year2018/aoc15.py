@@ -30,13 +30,14 @@ class State:
     finished: bool = False
 
     @classmethod
-    def fromstring(cls, s: str):
+    def fromstring(cls, s: str, elf_power: int = 3):
         lines = s.splitlines()
         map_, units = {}, []
         for i, line in enumerate(lines):
             for j, ch in enumerate(line):
                 if ch in 'EG':
-                    unit = Unit((i, j), ch)
+                    power = elf_power if ch == 'E' else 3
+                    unit = Unit((i, j), ch, power=power)
                     units.append(unit)
                     map_[(i, j)] = unit
                 else:
@@ -135,6 +136,9 @@ class State:
     def hash(self) -> int:
         return self.rounds_played * sum(u.hp for u in self.units)
 
+    def elfs_alive(self) -> int:
+        return len([u for u in self.units if u.type == 'E'])
+
 
 def play_round(st: State) -> State:
     """Simulate one round of the game without mutating the state."""
@@ -166,15 +170,25 @@ def play_round(st: State) -> State:
     return st
 
 
-def outcome(s: str) -> int:
-    st = State.fromstring(s)
+def outcome(s: str, force_elf_victory: bool = False) -> int:
+    elf_power = 3
+    st = State.fromstring(s, elf_power=elf_power)
+    elfs_at_start = st.elfs_alive()
     while not st.finished:
         st = play_round(st)
+    if force_elf_victory:
+        while not st.elfs_alive() == elfs_at_start:
+            elf_power += 1
+            st = State.fromstring(s, elf_power=elf_power)
+            while not st.finished:
+                st = play_round(st)
+
     return st.hash()
 
 
 def solve():
-    return outcome(read_puzzle())
+    puzzle = read_puzzle()
+    return outcome(puzzle), outcome(puzzle, force_elf_victory=True)
 
 
 if __name__ == '__main__':

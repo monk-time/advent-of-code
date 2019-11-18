@@ -237,6 +237,16 @@ def test_state_hit(st_sample):
     assert target.hp == 0
 
 
+def test_state_hash(st_move2):
+    assert st_move2.hash() == 0
+    st = play_round(st_move2)
+    assert st.hash() == 200 * 2
+
+
+def test_state_elfs_alive(st_sample):
+    assert st_sample.elfs_alive() == 4
+
+
 def test_play_round_no_moves(st_cross):
     # Check target selection in reading order
     st = st_cross
@@ -295,8 +305,8 @@ def test_play_round_played_rounds(st_cross):
     assert st_cross.rounds_played == 16
 
 
-def test_play_round_full():
-    st = State.fromstring(cleandoc("""
+samples = [
+    """
         #######
         #.G...#
         #...EG#
@@ -304,7 +314,62 @@ def test_play_round_full():
         #..G#E#
         #.....#
         #######
-    """))
+    """,
+    """
+        #######
+        #G..#E#
+        #E#E.E#
+        #G.##.#
+        #...#E#
+        #...E.#
+        #######
+    """,
+    """
+        #######
+        #E..EG#
+        #.#G.E#
+        #E.##E#
+        #G..#.#
+        #..E#.#
+        #######
+    """,
+    """
+        #######
+        #E.G#.#
+        #.#G..#
+        #G.#.G#
+        #G..#.#
+        #...E.#
+        #######
+    """,
+    """
+        #######
+        #.E...#
+        #.#..G#
+        #.###.#
+        #E#G#G#
+        #...#G#
+        #######
+    """,
+    """
+        #########
+        #G......#
+        #.E.#...#
+        #..##..G#
+        #...##..#
+        #...#...#
+        #.G...G.#
+        #.....G.#
+        #########
+    """
+]
+
+outcomes1 = [27730, 36334, 39514, 27755, 28944, 18740]
+outcomes2 = [4988, 29064, 31284, 3478, 6474, 1140]
+
+
+def test_play_round_full():
+    st = State.fromstring(cleandoc(samples[0]))
 
     st = play_round(st)
     assert st.__str__(hp=True) == cleandoc("""
@@ -364,62 +429,18 @@ def test_play_round_full():
         #######
     """)
     assert st.rounds_played == 47
-    assert st.hash() == 27730
+    assert st.hash() == outcomes1[0]
 
 
-def test_outcome():
-    assert outcome(cleandoc("""
-        #######
-        #G..#E#
-        #E#E.E#
-        #G.##.#
-        #...#E#
-        #...E.#
-        #######
-    """)) == 36334
+@pytest.mark.parametrize("puzzle, num_outcome", zip(samples, outcomes1))
+def test_outcome(puzzle, num_outcome):
+    assert outcome(cleandoc(puzzle)) == num_outcome
 
-    assert outcome(cleandoc("""
-        #######   
-        #E..EG#
-        #.#G.E#
-        #E.##E#
-        #G..#.#
-        #..E#.#   
-        #######   
-    """)) == 39514
 
-    assert outcome(cleandoc("""
-        #######   
-        #E.G#.#
-        #.#G..#
-        #G.#.G#   
-        #G..#.#
-        #...E.#
-        #######   
-    """)) == 27755
-
-    assert outcome(cleandoc("""
-        #######   
-        #.E...#   
-        #.#..G#
-        #.###.#   
-        #E#G#G#   
-        #...#G#
-        #######   
-    """)) == 28944
-
-    assert outcome(cleandoc("""
-        #########   
-        #G......#
-        #.E.#...#
-        #..##..G#
-        #...##..#   
-        #...#...#
-        #.G...G.#   
-        #.....G.#   
-        #########   
-    """)) == 18740
+@pytest.mark.parametrize("puzzle, num_outcome", zip(samples, outcomes2))
+def test_outcome_part2(puzzle, num_outcome):
+    assert outcome(cleandoc(puzzle), force_elf_victory=True) == num_outcome
 
 
 def test_solve():
-    assert solve() == 191575
+    assert solve() == (191575, 75915)
