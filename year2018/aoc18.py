@@ -4,22 +4,7 @@ from typing import Dict, Tuple
 
 from helpers import read_puzzle
 
-
-def create_trans_table() -> Dict[str, str]:
-    table = {}
-    keys = (''.join(t) for t in product('.|#', repeat=9))
-    for key in keys:
-        adj, val = key[:4] + key[5:], key[4]
-        c = Counter(adj)
-        table[key] = (
-            '|' if val == '.' and c['|'] >= 3 else
-            '#' if val == '|' and c['#'] >= 3 else
-            '.' if val == '#' and (c['#'] * c['|'] == 0) else
-            val)
-    return table
-
-
-table = create_trans_table()
+Table = Dict[Tuple[int, int], int]
 
 
 class Map:
@@ -37,25 +22,30 @@ class Map:
         return '\n'.join([''.join(self.m[(i, j)] for j in range(self.width))
                           for i in range(self.height)])
 
-    def count_adj(self, y, x):
-        trees, lumber = 0, 0
-        adj = ((y - 1, x - 1), (y - 1, x), (y - 1, x + 1),
-               (y, x - 1), (y, x + 1),
-               (y + 1, x - 1), (y + 1, x), (y + 1, x + 1))
-        for y_, x_ in adj:
-            val = self.m[y_, x_]
-            if val == '|':
-                trees += 1
-            elif val == '#':
-                lumber += 1
-        return trees, lumber
+    def summed_area_tables(self) -> Tuple[Table, Table]:
+        tr: Table = defaultdict(int)  # n of trees from (0, 0) to (y, x)
+        ly: Table = defaultdict(int)  # n of lumberyards from (0, 0) to (y, x)
+        for y, x in product(range(self.height + 1), range(self.width + 1)):
+            for t, ch in ((tr, '|'), (ly, '#')):
+                n = 1 if self.m[(y, x)] == ch else 0
+                t[(y, x)] = n + t[(y - 1, x)] + t[(y, x - 1)] - t[(y - 1, x - 1)]
+        return tr, ly
 
     def tick(self):
         m = defaultdict(lambda: '.')
-        for y, x in product(range(self.width), range(self.height)):
-            sq = product(range(y - 1, y + 2), range(x - 1, x + 2))
-            key = ''.join(self.m[t] for t in sq)
-            m[(y, x)] = table[key]
+        tr, ly = self.summed_area_tables()
+        for y, x in product(range(self.height), range(self.width)):
+            c = {}
+            for table, ch in ((tr, '|'), (ly, '#')):
+                c[ch] = table[(y + 1, x + 1)] + table[(y - 2, x - 2)] - \
+                        table[(y - 2, x + 1)] - table[(y + 1, x - 2)] - \
+                        (1 if self.m[(y, x)] == ch else 0)
+            t = (y, x)
+            m[t] = (
+                '|' if self.m[t] == '.' and c['|'] >= 3 else
+                '#' if self.m[t] == '|' and c['#'] >= 3 else
+                '.' if self.m[t] == '#' and c['#'] * c['|'] == 0 else
+                self.m[t])
         self.m = m
 
 
