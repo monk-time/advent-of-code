@@ -180,4 +180,4 @@ def test_count_after_n_ticks(sample):
 
 
 def test_solve():
-    assert solve() == (549936,)
+    assert solve() == (549936, 206304)
