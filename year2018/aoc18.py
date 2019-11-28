@@ -1,10 +1,8 @@
 from collections import Counter, defaultdict
 from itertools import product
-from typing import Dict, Tuple
+from typing import Tuple
 
 from helpers import read_puzzle
-
-Table = Dict[Tuple[int, int], int]
 
 
 class Map:
@@ -22,29 +20,20 @@ class Map:
         return '\n'.join([''.join(self.m[(i, j)] for j in range(self.width))
                           for i in range(self.height)])
 
-    def summed_area_tables(self) -> Tuple[Table, Table]:
-        tr: Table = defaultdict(int)  # n of trees from (0, 0) to (y, x)
-        ly: Table = defaultdict(int)  # n of lumberyards from (0, 0) to (y, x)
-        for y, x in product(range(self.height + 1), range(self.width + 1)):
-            for t, ch in ((tr, '|'), (ly, '#')):
-                n = 1 if self.m[(y, x)] == ch else 0
-                t[(y, x)] = n + t[(y - 1, x)] + t[(y, x - 1)] - t[(y - 1, x - 1)]
-        return tr, ly
+    def count_adj(self, y, x):
+        return Counter(
+            (self.m[y - 1, x - 1], self.m[y - 1, x], self.m[y - 1, x + 1],
+             self.m[y, x - 1], self.m[y, x + 1],
+             self.m[y + 1, x - 1], self.m[y + 1, x], self.m[y + 1, x + 1]))
 
     def tick(self):
         m = defaultdict(lambda: '.')
-        tr, ly = self.summed_area_tables()
-        for y, x in product(range(self.height), range(self.width)):
-            c = {}
-            for table, ch in ((tr, '|'), (ly, '#')):
-                c[ch] = table[(y + 1, x + 1)] + table[(y - 2, x - 2)] - \
-                        table[(y - 2, x + 1)] - table[(y + 1, x - 2)] - \
-                        (1 if self.m[(y, x)] == ch else 0)
-            t = (y, x)
+        for t in product(range(self.width), range(self.height)):
+            n = self.count_adj(*t)
             m[t] = (
-                '|' if self.m[t] == '.' and c['|'] >= 3 else
-                '#' if self.m[t] == '|' and c['#'] >= 3 else
-                '.' if self.m[t] == '#' and c['#'] * c['|'] == 0 else
+                '|' if self.m[t] == '.' and n['|'] >= 3 else
+                '#' if self.m[t] == '|' and n['#'] >= 3 else
+                '.' if self.m[t] == '#' and n['#'] * n['|'] == 0 else
                 self.m[t])
         self.m = m
 
