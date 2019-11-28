@@ -33,7 +33,14 @@ class Map:
         adj = ((y - 1, x - 1), (y - 1, x), (y - 1, x + 1),
                (y, x - 1), (y, x + 1),
                (y + 1, x - 1), (y + 1, x), (y + 1, x + 1))
-        return Counter(self.m.get(t, '.') for t in adj)
+        trees, lumber = 0, 0
+        for t in adj:
+            val = self.m.get(t, '.')
+            if val == '|':
+                trees += 1
+            elif val == '#':
+                lumber += 1
+        return trees, lumber
 
     def resource_value(self) -> Tuple[int, int]:
         c = Counter(self.m.values())
@@ -43,12 +50,12 @@ class Map:
 def update(map_: Map) -> Map:
     m = defaultdict(lambda: '.')
     for t in product(range(map_.width), range(map_.height)):
-        n = map_.count_adj(*t)
+        trees, lumber = map_.count_adj(*t)
         val = map_.m.get(t, '.')
         m[t] = (
-            '|' if val == '.' and n['|'] >= 3 else
-            '#' if val == '|' and n['#'] >= 3 else
-            '.' if val == '#' and n['#'] * n['|'] == 0 else
+            '|' if val == '.' and trees >= 3 else
+            '#' if val == '|' and lumber >= 3 else
+            '.' if val == '#' and lumber * trees == 0 else
             val)
     return Map(m, map_.height, map_.width)
 
