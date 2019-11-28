@@ -2,7 +2,7 @@ from inspect import cleandoc
 
 import pytest
 
-from aoc18 import Map, count_after_n_ticks, solve
+from aoc18 import Map, count_after_n_ticks, solve, update
 
 sample_str = cleandoc("""
     .#.#...|#.
@@ -20,10 +20,10 @@ sample_str = cleandoc("""
 
 @pytest.fixture
 def sample():
-    return Map(sample_str)
+    return Map.fromstring(sample_str)
 
 
-def test_map_init(sample):
+def test_map_fromstring(sample):
     assert sample.height == sample.width == 10
     assert sample.m[(0, 0)] == '.'
     assert sample.m[(0, 1)] == '#'
@@ -33,8 +33,8 @@ def test_map_str(sample):
     assert str(sample) == sample_str
 
 
-def test_map_tick(sample):
-    sample.tick()
+def test_update(sample):
+    sample = update(sample)
     assert str(sample) == cleandoc("""
         .......##.
         ......|###
@@ -48,7 +48,7 @@ def test_map_tick(sample):
         ....||..|.
     """)
 
-    sample.tick()
+    sample = update(sample)
     assert str(sample) == cleandoc("""
         .......#..
         ......|#..
@@ -62,7 +62,7 @@ def test_map_tick(sample):
         .|||||||||
     """)
 
-    sample.tick()
+    sample = update(sample)
     assert str(sample) == cleandoc("""
         .......#..
         ....|||#..
@@ -76,7 +76,7 @@ def test_map_tick(sample):
         ||||||||||
     """)
 
-    sample.tick()
+    sample = update(sample)
     assert str(sample) == cleandoc("""
         .....|.#..
         ...||||#..
@@ -90,7 +90,7 @@ def test_map_tick(sample):
         ||||||||||
     """)
 
-    sample.tick()
+    sample = update(sample)
     assert str(sample) == cleandoc("""
         ....|||#..
         ...||||#..
@@ -104,7 +104,7 @@ def test_map_tick(sample):
         ||||||||||
     """)
 
-    sample.tick()
+    sample = update(sample)
     assert str(sample) == cleandoc("""
         ...||||#..
         ...||||#..
@@ -118,7 +118,7 @@ def test_map_tick(sample):
         ||||||||||
     """)
 
-    sample.tick()
+    sample = update(sample)
     assert str(sample) == cleandoc("""
         ...||||#..
         ..||#|##..
@@ -132,7 +132,7 @@ def test_map_tick(sample):
         ||||||||||
     """)
 
-    sample.tick()
+    sample = update(sample)
     assert str(sample) == cleandoc("""
         ..||||##..
         ..|#####..
@@ -146,7 +146,7 @@ def test_map_tick(sample):
         ||||||||||
     """)
 
-    sample.tick()
+    sample = update(sample)
     assert str(sample) == cleandoc("""
         ..||###...
         .||#####..
@@ -160,7 +160,7 @@ def test_map_tick(sample):
         ||||||||||
     """)
 
-    sample.tick()
+    sample = update(sample)
     assert str(sample) == cleandoc("""
         .||##.....
         ||###.....
