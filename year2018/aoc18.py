@@ -1,30 +1,25 @@
-from collections import Counter, defaultdict
+from collections import Counter
 from dataclasses import dataclass
 from itertools import product
-from typing import Dict, Tuple
+from typing import List, Tuple
 
 from helpers import read_puzzle
 
 
 @dataclass(frozen=True)
 class Map:
-    m: Dict[Tuple[int, int], str]
+    m: List[List[str]]
     height: int
     width: int
 
     @classmethod
     def fromstring(cls, s: str):
-        m = {}
-        lines = s.splitlines()
-        for i, line in enumerate(lines):
-            for j, ch in enumerate(line):
-                m[(i, j)] = ch
-        return Map(m, height=len(lines), width=len(lines[0]))
+        lines = [list(l) for l in s.splitlines()]
+        return Map(m=lines, height=len(lines), width=len(lines[0]))
 
     def __str__(self):
         """Get a text representation of the map."""
-        return '\n'.join([''.join(self.m[(i, j)] for j in range(self.width))
-                          for i in range(self.height)])
+        return '\n'.join(''.join(l) for l in self.m)
 
     def __hash__(self):
         return hash(str(self))
@@ -34,8 +29,10 @@ class Map:
                (y, x - 1), (y, x + 1),
                (y + 1, x - 1), (y + 1, x), (y + 1, x + 1))
         trees, lumber = 0, 0
-        for t in adj:
-            val = self.m.get(t, '.')
+        for y0, x0 in adj:
+            if not (0 <= x0 < self.width and 0 <= y0 < self.height):
+                continue
+            val = self.m[y0][x0]
             if val == '|':
                 trees += 1
             elif val == '#':
@@ -43,16 +40,16 @@ class Map:
         return trees, lumber
 
     def resource_value(self) -> Tuple[int, int]:
-        c = Counter(self.m.values())
+        c = Counter(str(self))
         return c['|'] * c['#']
 
 
 def update(map_: Map) -> Map:
-    m = defaultdict(lambda: '.')
-    for t in product(range(map_.width), range(map_.height)):
-        trees, lumber = map_.count_adj(*t)
-        val = map_.m.get(t, '.')
-        m[t] = (
+    m = [['.'] * map_.width for _ in range(map_.height)]
+    for y, x in product(range(map_.width), range(map_.height)):
+        trees, lumber = map_.count_adj(y, x)
+        val = map_.m[y][x]
+        m[y][x] = (
             '|' if val == '.' and trees >= 3 else
             '#' if val == '|' and lumber >= 3 else
             '.' if val == '#' and lumber * trees == 0 else

@@ -25,8 +25,8 @@ def sample():
 
 def test_map_fromstring(sample):
     assert sample.height == sample.width == 10
-    assert sample.m[(0, 0)] == '.'
-    assert sample.m[(0, 1)] == '#'
+    assert sample.m[0][0] == '.'
+    assert sample.m[0][1] == '#'
 
 
 def test_map_str(sample):
