@@ -2,13 +2,14 @@ def decoded():
     # Manually reconstructed from the input
     d = 0
     while True:
-        c = d | 65536
+        c = d | 0x10000
         d = 1397714
-        while True:
-            d = (((d + (c & 255)) & 16777215) * 65899) & 16777215
-            if c < 256:
-                break
-            c //= 256
+        while c:
+            d += c & 0xFF
+            d &= 0xFFFFFF
+            d *= 65899
+            d &= 0xFFFFFF
+            c >>= 8
         yield d
 
 
