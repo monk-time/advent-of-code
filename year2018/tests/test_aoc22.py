@@ -2,7 +2,7 @@ from inspect import cleandoc
 
 import pytest
 
-from aoc22 import calc_risk, gen_map, map_to_str, parse, solve
+from aoc22 import Map, calc_risk, solve
 
 sample_str = cleandoc("""
     depth: 510
@@ -12,24 +12,27 @@ sample_str = cleandoc("""
 
 @pytest.fixture
 def sample():
-    return gen_map(*parse(sample_str))
+    return Map(sample_str)
 
 
-def test_parse():
-    assert parse(sample_str) == (510, (10, 10))
+def test_map_init(sample):
+    assert sample.depth == 510
+    assert sample.target == (10, 10)
+    assert len(sample.erosion.keys()) == 121
+    assert sample.erosion[(0, 0)] == 510
+    assert sample.erosion[(0, 1)] == 17317
+    assert sample.erosion[(1, 0)] == 8415
+    assert sample.erosion[(1, 1)] == 1805
+    assert sample.erosion[(10, 10)] == 510
+    assert sample.cave[(0, 0)] == 'M'
+    assert sample.cave[(0, 1)] == '='
+    assert sample.cave[(1, 0)] == '.'
+    assert sample.cave[(1, 1)] == '|'
+    assert sample.cave[(10, 10)] == 'T'
 
 
-def test_gen_map(sample):
-    assert len(sample) == 121
-    assert sample[(0, 0)] == 510
-    assert sample[(0, 1)] == 17317
-    assert sample[(1, 0)] == 8415
-    assert sample[(1, 1)] == 1805
-    assert sample[(10, 10)] == 510
-
-
-def test_map_to_str(sample):
-    assert map_to_str(sample) == cleandoc("""
+def test_map_str(sample):
+    assert str(sample) == cleandoc("""
         M=.|=.|.|=.
         .|=|=|||..|
         .==|....||=
@@ -46,6 +49,41 @@ def test_map_to_str(sample):
 
 def test_calc_risk(sample):
     assert calc_risk(sample) == 114
+
+
+def test_map_gen_deeper(sample):
+    sample.gen_deeper()
+    assert str(sample) == cleandoc("""
+        M=.|=.|.|=.|
+        .|=|=|||..|.
+        .==|....||=.
+        =.|....|.==.
+        =|..==...=.|
+        =||.=.=||=|=
+        |.=.===|||..
+        |..==||=.|==
+        .=..===..=|.
+        .======|||=|
+        .===|=|===T=
+        =|||...|==..
+    """)
+
+    sample.gen_deeper()
+    assert str(sample) == cleandoc("""
+        M=.|=.|.|=.|=
+        .|=|=|||..|.=
+        .==|....||=..
+        =.|....|.==.|
+        =|..==...=.|=
+        =||.=.=||=|=.
+        |.=.===|||..=
+        |..==||=.|==|
+        .=..===..=|.|
+        .======|||=|=
+        .===|=|===T==
+        =|||...|==..|
+        =.=|=.=..=.||
+    """)
 
 
 def test_solve():
