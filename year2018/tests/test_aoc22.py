@@ -24,11 +24,11 @@ def test_map_init(sample):
     assert sample.erosion[(1, 0)] == 8415
     assert sample.erosion[(1, 1)] == 1805
     assert sample.erosion[(10, 10)] == 510
-    assert sample.cave[(0, 0)] == 'M'
+    assert sample.cave[(0, 0)] == '.'
     assert sample.cave[(0, 1)] == '='
     assert sample.cave[(1, 0)] == '.'
     assert sample.cave[(1, 1)] == '|'
-    assert sample.cave[(10, 10)] == 'T'
+    assert sample.cave[(10, 10)] == '.'
 
 
 def test_map_str(sample):
