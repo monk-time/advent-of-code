@@ -1,9 +1,8 @@
 from inspect import cleandoc
-from typing import List
 
 import pytest
 
-from aoc23 import Nanobot, count_in_range, parse, solve
+from aoc23 import count_in_range, is_in_range, parse, shortest_manhattan, solve
 
 sample_str = cleandoc("""
     pos=<0,0,0>, r=4
@@ -19,27 +18,27 @@ sample_str = cleandoc("""
 
 
 @pytest.fixture
-def sample() -> List[Nanobot]:
+def sample():
     return parse(sample_str)
 
 
 def test_parse(sample):
     assert sample == [
-        Nanobot((0, 0, 0), r=4),
-        Nanobot((1, 0, 0), r=1),
-        Nanobot((4, 0, 0), r=3),
-        Nanobot((0, 2, 0), r=1),
-        Nanobot((0, 5, 0), r=3),
-        Nanobot((0, 0, 3), r=1),
-        Nanobot((1, 1, 1), r=1),
-        Nanobot((1, 1, 2), r=1),
-        Nanobot((1, 3, 1), r=1),
+        (0, 0, 0, 4),
+        (1, 0, 0, 1),
+        (4, 0, 0, 3),
+        (0, 2, 0, 1),
+        (0, 5, 0, 3),
+        (0, 0, 3, 1),
+        (1, 1, 1, 1),
+        (1, 1, 2, 1),
+        (1, 3, 1, 1),
     ]
 
 
 def test_is_in_range(sample):
     bot = sample[0]
-    assert list(map(bot.is_in_range, sample)) == \
+    assert [is_in_range(bot, b) for b in sample] == \
            [True, True, True, True, False, True, True, True, False]
 
 
@@ -47,5 +46,17 @@ def test_count_in_range(sample):
     assert count_in_range(sample) == 7
 
 
+def test_shortest_manhattan():
+    bots = parse(cleandoc("""
+        pos=<10,12,12>, r=2
+        pos=<12,14,12>, r=2
+        pos=<16,12,12>, r=4
+        pos=<14,14,14>, r=6
+        pos=<50,50,50>, r=200
+        pos=<10,10,10>, r=5
+    """))
+    assert shortest_manhattan(bots) == 36
+
+
 def test_solve():
-    assert solve() == 172
+    assert solve() == (172, 125532607)
