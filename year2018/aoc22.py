@@ -1,6 +1,8 @@
 import re
 from itertools import product
-from typing import Dict, Tuple
+from typing import Dict, Iterable, Tuple
+
+import networkx as nx
 
 from helpers import read_puzzle
 
@@ -46,6 +48,12 @@ class Map:
         return '\n'.join(''.join(self.cave[(y, x)] for x in range(x_t + 1))
                          for y in range(y_t + 1))
 
+    def adj(self, y: int, x: int) -> Iterable[Point]:
+        y_max, x_max = self.last_gen
+        return ((y2, x2) for y2, x2 in ((y - 1, x), (y, x - 1),
+                                        (y, x + 1), (y + 1, x))
+                if 0 <= x2 <= x_max and 0 <= y2 <= y_max)
+
 
 risk = {'M': 0, 'T': 0, '.': 0, '=': 1, '|': 2}
 
@@ -56,13 +64,29 @@ def calc_risk(m: Map) -> int:
                for y in range(y_t + 1) for x in range(x_t + 1))
 
 
-def fastest_route(m: Map) -> int:
-    pass
+# t = torch, c = climbing gear, n = none
+tools = {'M': 't', 'T': 'ct', '.': 'ct', '=': 'cn', '|': 'tn'}
+
+
+def shortest_path(m: Map):
+    for _ in range(20):
+        m.gen_deeper()
+
+    edges = [((p1, t1), (p2, t2), {'weight': 1 if t1 == t2 else 8})
+             for p1 in m.cave.keys()
+             for p2 in m.adj(*p1)
+             for t1 in tools[m.cave[p1]]
+             for t2 in tools[m.cave[p2]] if t2 in tools[m.cave[p1]]]
+    # Ensure that the torch is equipped after reaching the target
+    edges.append(((m.target, 'c'), (m.target, 't'), {'weight': 7}))
+
+    g = nx.Graph(edges)
+    return nx.dijkstra_path_length(g, ((0, 0), 't'), (m.target, 't'))
 
 
 def solve():
     m = Map(read_puzzle())
-    return calc_risk(m)
+    return calc_risk(m), shortest_path(m)
 
 
 if __name__ == '__main__':

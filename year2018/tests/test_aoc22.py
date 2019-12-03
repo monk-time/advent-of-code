@@ -2,7 +2,7 @@ from inspect import cleandoc
 
 import pytest
 
-from aoc22 import Map, calc_risk, solve
+from aoc22 import Map, calc_risk, shortest_path, solve
 
 sample_str = cleandoc("""
     depth: 510
@@ -86,5 +86,9 @@ def test_map_gen_deeper(sample):
     """)
 
 
+def test_shortest_path(sample):
+    assert shortest_path(sample) == 45
+
+
 def test_solve():
-    assert solve() == 10115
+    assert solve() == (10115, 990)
