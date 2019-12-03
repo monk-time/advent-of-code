@@ -10,43 +10,31 @@ Point = Tuple[int, int]
 
 
 class Map:
-    def __init__(self, s: str):
+    def __init__(self, s: str, extra: int = 0):
         depth, x, y = map(int, re.findall(r'\d+', s))
         self.depth: int = depth
         self.target: Point = (y, x)
         self.erosion: Dict[Point, int] = {}
         self.cave: Dict[Point, str] = {}
-        self.gen_to_target()
-        self.last_gen: Point = self.target
+        self.generate(extra)
+        self.last_gen: Point = (y + extra, x + extra)
 
-    def gen_region(self, y: int, x: int):
-        geoindex = (0 if (y, x) == self.target else
-                    x * 16807 if y == 0 else
-                    y * 48271 if x == 0 else
-                    self.erosion[(y - 1, x)] * self.erosion[(y, x - 1)])
-        self.erosion[(y, x)] = (geoindex + self.depth) % 20183
-        self.cave[(y, x)] = '.=|'[self.erosion[(y, x)] % 3]
-
-    def gen_to_target(self):
+    def generate(self, extra: int = 0):
         y_t, x_t = self.target
-        for y, x in product(range(y_t + 1), range(x_t + 1)):
-            self.gen_region(y, x)
+        for y, x in product(range(y_t + 1 + extra), range(x_t + 1 + extra)):
+            geoindex = (0 if (y, x) == self.target else
+                        x * 16807 if y == 0 else
+                        y * 48271 if x == 0 else
+                        self.erosion[(y - 1, x)] * self.erosion[(y, x - 1)])
+            self.erosion[(y, x)] = (geoindex + self.depth) % 20183
+            self.cave[(y, x)] = '.=|'[self.erosion[(y, x)] % 3]
         self.cave[(0, 0)] = 'M'
         self.cave[self.target] = 'T'
 
-    def gen_deeper(self):
-        y_last, x_last = self.last_gen
-        for y in range(y_last + 1):
-            self.gen_region(y, x_last + 1)
-        for x in range(x_last + 1):
-            self.gen_region(y_last + 1, x)
-        self.gen_region(y_last + 1, x_last + 1)
-        self.last_gen = y_last + 1, x_last + 1
-
     def __str__(self):
-        y_t, x_t = self.last_gen
-        return '\n'.join(''.join(self.cave[(y, x)] for x in range(x_t + 1))
-                         for y in range(y_t + 1))
+        y_max, x_max = self.last_gen
+        return '\n'.join(''.join(self.cave[(y, x)] for x in range(x_max + 1))
+                         for y in range(y_max + 1))
 
     def adj(self, y: int, x: int) -> Iterable[Point]:
         y_max, x_max = self.last_gen
@@ -69,9 +57,6 @@ tools = {'M': 't', 'T': 'ct', '.': 'ct', '=': 'cn', '|': 'tn'}
 
 
 def shortest_path(m: Map):
-    for _ in range(20):
-        m.gen_deeper()
-
     edges = [((p1, t1), (p2, t2), {'weight': 1 if t1 == t2 else 8})
              for p1 in m.cave.keys()
              for p2 in m.adj(*p1)
@@ -85,7 +70,7 @@ def shortest_path(m: Map):
 
 
 def solve():
-    m = Map(read_puzzle())
+    m = Map(read_puzzle(), extra=20)
     return calc_risk(m), shortest_path(m)
 
 

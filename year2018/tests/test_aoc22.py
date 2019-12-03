@@ -51,9 +51,9 @@ def test_calc_risk(sample):
     assert calc_risk(sample) == 114
 
 
-def test_map_gen_deeper(sample):
-    sample.gen_deeper()
-    assert str(sample) == cleandoc("""
+def test_map_generate():
+    m = Map(sample_str, extra=1)
+    assert str(m) == cleandoc("""
         M=.|=.|.|=.|
         .|=|=|||..|.
         .==|....||=.
@@ -68,8 +68,8 @@ def test_map_gen_deeper(sample):
         =|||...|==..
     """)
 
-    sample.gen_deeper()
-    assert str(sample) == cleandoc("""
+    m = Map(sample_str, extra=2)
+    assert str(m) == cleandoc("""
         M=.|=.|.|=.|=
         .|=|=|||..|.=
         .==|....||=..
@@ -86,8 +86,9 @@ def test_map_gen_deeper(sample):
     """)
 
 
-def test_shortest_path(sample):
-    assert shortest_path(sample) == 45
+def test_shortest_path():
+    m = Map(sample_str, extra=20)
+    assert shortest_path(m) == 45
 
 
 def test_solve():
