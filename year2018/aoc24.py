@@ -1,6 +1,7 @@
 import re
+from copy import deepcopy
 from dataclasses import dataclass
-from typing import Dict, List, Match, Tuple
+from typing import Dict, List, Match, Optional, Tuple
 
 from helpers import read_puzzle
 
@@ -16,6 +17,7 @@ class Group:
     dmg: int
     dmg_type: str
     init: int
+    boost: int = 0
 
     @classmethod
     def frommatch(cls, m: Match, **kwargs) -> 'Group':
@@ -34,7 +36,7 @@ class Group:
 
     @property
     def power(self) -> int:
-        return self.units * self.dmg
+        return self.units * (self.dmg + self.boost)
 
     def dmg_to(self, target: 'Group') -> int:
         if self.dmg_type in target.immune:
@@ -82,26 +84,43 @@ def fight(immune: List[Group], infect: List[Group]):
                 targets[g] = ts[0]
 
     # Attacking phase
+    is_stalemate = True
     for g in sorted((*immune, *infect), key=lambda x: -x.init):
         if g not in targets or g.units == 0:
             continue
         t = targets[g]
         units_killed = g.dmg_to(t) // t.unit_hp
+        is_stalemate &= units_killed == 0
         t.units = max(0, t.units - units_killed)
         if t.units == 0:
             teams[t.team].remove(t)
-    return immune, infect
+    return immune, infect, is_stalemate
 
 
-def combat(immune: List[Group], infect: List[Group]) -> int:
+def combat(immune: List[Group], infect: List[Group]) -> Optional[int]:
     while immune and infect:
-        immune, infect = fight(immune, infect)
+        immune, infect, is_stalemate = fight(immune, infect)
+        if is_stalemate:
+            return None
     return sum(g.units for g in (*immune, *infect))
 
 
+def min_boost(immune: List[Group], infect: List[Group]) -> int:
+    boost = 0
+    while True:
+        immune2, infect2 = deepcopy(immune), deepcopy(infect)
+        for g in immune2:
+            g.boost = boost
+        result = combat(immune2, infect2)
+        if result and immune2:
+            break
+        boost += 1
+    return result
+
+
 def solve():
-    immune, infect = parse(read_puzzle())
-    return combat(immune, infect)
+    puzzle = read_puzzle()
+    return combat(*parse(puzzle)), min_boost(*parse(puzzle))
 
 
 if __name__ == '__main__':

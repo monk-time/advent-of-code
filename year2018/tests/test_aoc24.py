@@ -62,4 +62,4 @@ def test_combat(sample):
 
 
 def test_solve():
-    assert solve() == 14000
+    assert solve() == (14000, 6149)
