@@ -12,8 +12,8 @@ class Group:
     team: str
     units: int
     unit_hp: int
-    weak: List[str]
-    immune: List[str]
+    weak: Tuple[str, ...]
+    immune: Tuple[str, ...]
     dmg: int
     dmg_type: str
     init: int
@@ -41,7 +41,9 @@ class Group:
     def dmg_to(self, target: 'Group') -> int:
         if self.dmg_type in target.immune:
             return 0
-        return self.power * (2 if self.dmg_type in target.weak else 1)
+        if self.dmg_type in target.weak:
+            return self.power * 2
+        return self.power
 
 
 def parse(s: str) -> Tuple[List[Group], List[Group]]:
@@ -60,12 +62,12 @@ def parse(s: str) -> Tuple[List[Group], List[Group]]:
     return immune, infect
 
 
-def parse_traits(s: str) -> Dict[str, List[str]]:
-    d = {'weak': [], 'immune': []}
+def parse_traits(s: str) -> Dict[str, Tuple[str]]:
+    d = {'weak': (), 'immune': ()}
     if s:
         for s2 in s.split('; '):
             trait, dmg_types = s2.split(' to ')
-            d[trait] = dmg_types.split(', ')
+            d[trait] = tuple(dmg_types.split(', '))
     return d
 
 
@@ -76,17 +78,19 @@ def fight(immune: List[Group], infect: List[Group]):
 
     # Target selection phase
     for team_name, team in teams.items():
-        enemy_team = enemy_teams[team_name]
+        ts = enemy_teams[team_name].copy()
         for g in sorted(team, key=lambda x: (-x.power, -x.init)):
-            ts = sorted((x for x in enemy_team if x not in targets.values()),
-                        key=lambda x: (-g.dmg_to(x), -x.power, -x.init))
-            if ts and g.dmg_to(ts[0]) > 0:
-                targets[g] = ts[0]
+            if not ts:
+                break
+            t = min(ts, key=lambda x: (-g.dmg_to(x), -x.power, -x.init))
+            if g.dmg_to(t) > 0:
+                ts.remove(t)
+                targets[g] = t
 
     # Attacking phase
     is_stalemate = True
-    for g in sorted((*immune, *infect), key=lambda x: -x.init):
-        if g not in targets or g.units == 0:
+    for g in sorted(targets.keys(), key=lambda x: -x.init):
+        if g.units == 0:
             continue
         t = targets[g]
         units_killed = g.dmg_to(t) // t.unit_hp
