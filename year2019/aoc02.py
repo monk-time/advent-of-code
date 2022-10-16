@@ -30,10 +30,10 @@ def prerun(program: Intcode) -> Intcode:
     return [program[0], 12, 2, *program[3:]]
 
 
-def solve():
+def solve() -> tuple[int, int]:
     puzzle = parse(read_puzzle())
     part1 = run_intcode(prerun(puzzle))[0]
-    return part1, None
+    return part1, 0
 
 
 if __name__ == '__main__':

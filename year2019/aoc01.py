@@ -19,7 +19,7 @@ def fuel_req(mass: int) -> int:
     return total
 
 
-def solve():
+def solve() -> tuple[int, int]:
     puzzle = parse(read_puzzle())
     part1 = sum(fuel(mass) for mass in puzzle)
     part2 = sum(fuel_req(mass) for mass in puzzle)

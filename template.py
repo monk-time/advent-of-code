@@ -5,9 +5,9 @@ def parse(s: str) -> list[int]:
     return [int(line) for line in s.split()]
 
 
-def solve():
+def solve() -> tuple[int, int]:
     puzzle = parse(read_puzzle())
-    return puzzle
+    return 0, 0
 
 
 if __name__ == '__main__':

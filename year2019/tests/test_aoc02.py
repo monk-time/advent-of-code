@@ -11,4 +11,4 @@ def test_run_intcode():
 
 
 def test_solve():
-    assert solve() == (5534943, None)
+    assert solve() == (5534943, 0)
