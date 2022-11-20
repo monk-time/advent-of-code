@@ -62,5 +62,5 @@ def border_wrap(lines: List[str]) -> str:
     n = len(lines[0])
     upper = f'┌{"─" * n}┐'
     lower = f'└{"─" * n}┘'
-    lines = (f'│{s}│' for s in lines)
+    lines = (f'│{"".join(s)}│' for s in lines)
     return '\n'.join((upper, *lines, lower))

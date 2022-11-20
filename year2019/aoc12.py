@@ -1,7 +1,6 @@
 import re
 from copy import deepcopy
 from dataclasses import dataclass
-from inspect import cleandoc
 from itertools import combinations
 from math import lcm
 from typing import Iterable
