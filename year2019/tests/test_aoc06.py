@@ -10,7 +10,9 @@ def test_count_orbits():
 
 
 def test_count_min_transfers():
-    sample = 'COM)B\nB)C\nC)D\nD)E\nE)F\nB)G\nG)H\nD)I\nE)J\nJ)K\nK)L\nK)YOU\nI)SAN'
+    sample = (
+        'COM)B\nB)C\nC)D\nD)E\nE)F\nB)G\nG)H\nD)I\nE)J\nJ)K\nK)L\nK)YOU\nI)SAN'
+    )
     g = nx.Graph(parse(sample))
     assert count_min_transfers(g) == 4
 
