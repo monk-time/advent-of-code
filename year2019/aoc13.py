@@ -1,5 +1,6 @@
+from aoc09 import Intcode, parse, run_intcode
+
 from helpers import read_puzzle
-from year2019.aoc09 import Intcode, run_intcode, parse
 
 tiles_to_symbol = {
     0: ' ',

@@ -1,5 +1,3 @@
-from math import inf
-
 from helpers import read_puzzle
 
 Wire = list[tuple[str, int]]
@@ -8,7 +6,9 @@ Coord = tuple[int, int]
 
 def parse(s: str) -> tuple[Wire, Wire]:
     wire1, wire2 = s.split()
-    parse_wire = lambda s_: [(move[0], int(move[1:])) for move in s_.split(',')]
+    parse_wire = lambda s_: [
+        (move[0], int(move[1:])) for move in s_.split(',')
+    ]
     return parse_wire(wire1), parse_wire(wire2)
 
 

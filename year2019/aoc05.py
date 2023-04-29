@@ -15,7 +15,7 @@ def nth_digit(n: int, pos: int) -> int:
 
 
 def get_parameters(program, i):
-    a, b = program[i + 1:i + 3]
+    a, b = program[i + 1 : i + 3]
     if nth_digit(program[i], 3) == 0:
         a = program[a]
     if nth_digit(program[i], 4) == 0:

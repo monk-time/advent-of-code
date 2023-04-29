@@ -14,8 +14,15 @@ def parse(s: str) -> Map:
 
 def get_shifts(x: int, y: int, m: Map) -> Iterable[int]:
     height, width = len(m), len(m[0])
-    for dx, dy in product(range(-width + 1, width), range(-height + 1, height)):
-        if (dx, dy) != 0 and gcd(dx, dy) == 1 and 0 <= x + dx < width and 0 <= y + dy < height:
+    for dx, dy in product(
+        range(-width + 1, width), range(-height + 1, height)
+    ):
+        if (
+            (dx, dy) != 0
+            and gcd(dx, dy) == 1
+            and 0 <= x + dx < width
+            and 0 <= y + dy < height
+        ):
             yield dx, dy
 
 

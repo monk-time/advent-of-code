@@ -55,7 +55,9 @@ def find_loop(planets: Planets):
     periods = []
     for dim in range(3):
         pls = deepcopy(planets)
-        get_hash = lambda pls_: tuple((pl.pos[dim], pl.vel[dim]) for pl in pls_)
+        get_hash = lambda pls_: tuple(
+            (pl.pos[dim], pl.vel[dim]) for pl in pls_
+        )
         cache = set(get_hash(pls))
         count = -1  # no idea why but it works
         while True:
@@ -66,8 +68,7 @@ def find_loop(planets: Planets):
             if hash_ in cache:
                 periods.append(count)
                 break
-            else:
-                cache.add(hash_)
+            cache.add(hash_)
     return lcm(*periods)
 
 

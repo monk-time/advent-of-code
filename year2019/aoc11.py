@@ -1,4 +1,5 @@
-from year2019.aoc09 import Intcode, run_intcode
+from aoc09 import Intcode, run_intcode
+
 from helpers import read_puzzle
 
 CLOCKWISE_DIRS = [(1, 0), (0, 1), (-1, 0), (0, -1)]
@@ -29,7 +30,9 @@ def paint_panels(program: Intcode, starting_color: int = 0):
                 count_painted += 1
             painted_panels[robot_pos] = color
             delta = next(gen) * 2 - 1  # 1 -> 1, 0 -> -1
-            robot_dir = CLOCKWISE_DIRS[(CLOCKWISE_DIRS.index(robot_dir) + delta) % 4]
+            robot_dir = CLOCKWISE_DIRS[
+                (CLOCKWISE_DIRS.index(robot_dir) + delta) % 4
+            ]
             robot_pos = add(robot_pos, robot_dir)
         except StopIteration:
             return painted_panels
@@ -41,8 +44,10 @@ def print_panels(panels: dict[Coord, int]):
     ys = [t[1] for t in coords]
     min_x, max_x = min(xs), max(xs)
     min_y, max_y = min(ys), max(ys)
-    field = [[COLORS[panels.get((x, y), 0)] for x in range(min_x, max_x + 1)]
-             for y in range(min_y, max_y + 1)]
+    field = [
+        [COLORS[panels.get((x, y), 0)] for x in range(min_x, max_x + 1)]
+        for y in range(min_y, max_y + 1)
+    ]
     print('\n'.join(''.join(line) for line in field))
 
 

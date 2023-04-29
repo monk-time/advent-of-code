@@ -16,10 +16,10 @@ def run_intcode(program: Intcode) -> Intcode:
     while True:
         match program[i]:
             case 1:
-                a, b, c = program[i + 1:i + 4]
+                a, b, c = program[i + 1 : i + 4]
                 program[c] = program[a] + program[b]
             case 2:
-                a, b, c = program[i + 1:i + 4]
+                a, b, c = program[i + 1 : i + 4]
                 program[c] = program[a] * program[b]
             case 99:
                 return program

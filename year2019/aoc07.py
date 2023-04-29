@@ -20,7 +20,7 @@ def nth_digit(n: int, pos: int) -> int:
 
 
 def get_parameters(program, i):
-    a, b = program[i + 1:i + 3]
+    a, b = program[i + 1 : i + 3]
     if nth_digit(program[i], 3) == 0:
         a = program[a]
     if nth_digit(program[i], 4) == 0:
@@ -72,7 +72,9 @@ def run_intcode(program: Intcode):
                 raise Exception(f'An unknown opcode {op} at {i=}')
 
 
-def run_amplifiers(program: Intcode, phases: tuple[int, ...], initial_input=0) -> int:
+def run_amplifiers(
+    program: Intcode, phases: tuple[int, ...], initial_input=0
+) -> int:
     output = initial_input
     for i in range(5):
         gen = run_intcode(program)
@@ -93,7 +95,9 @@ def find_max_output(program: Intcode, use_loop=False):
     return max_output
 
 
-def run_amplifiers_loop(program: Intcode, phases: tuple[int, ...], initial_input=0) -> int:
+def run_amplifiers_loop(
+    program: Intcode, phases: tuple[int, ...], initial_input=0
+) -> int:
     output = initial_input
     gens = [run_intcode(program) for _ in range(5)]
     for i in range(5):

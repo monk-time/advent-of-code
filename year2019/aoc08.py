@@ -11,7 +11,7 @@ HEIGHT = 6
 
 
 def split_into_layers(arr, size: int) -> Layers:
-    return [arr[i:i + size] for i in range(0, len(arr), size)]
+    return [arr[i : i + size] for i in range(0, len(arr), size)]
 
 
 def find_layer_with_fewest_0(s: str, width: int, height: int) -> int:
@@ -28,8 +28,10 @@ def decode_pixel(pixels: Iterable[str]) -> str:
 
 def decode_image(s: str, width: int, height: int) -> Layer:
     layers = split_into_layers(s, width * height)
-    return [decode_pixel(layer[i] for layer in layers)
-            for i in range(width * height)]
+    return [
+        decode_pixel(layer[i] for layer in layers)
+        for i in range(width * height)
+    ]
 
 
 def paint(layer: Layer, width: int, height: int):

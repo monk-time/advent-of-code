@@ -1,5 +1,6 @@
-from helpers import read_puzzle
 from collections import defaultdict
+
+from helpers import read_puzzle
 
 Intcode = list[int]
 
@@ -92,8 +93,7 @@ def run_intcode(program: Intcode):
 def boost(program: Intcode, input_val):
     gen = run_intcode(program)
     next(gen)
-    output = gen.send(input_val)
-    return output
+    return gen.send(input_val)
 
 
 def solve() -> tuple[int, int]:
