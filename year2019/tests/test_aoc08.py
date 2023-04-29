@@ -1,4 +1,4 @@
-from year2019.aoc08 import split_into_layers, solve, decode_pixel, decode_image
+from ..aoc08 import split_into_layers, solve, decode_pixel, decode_image
 
 
 def test_split_into_layers():

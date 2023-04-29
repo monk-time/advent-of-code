@@ -1,4 +1,4 @@
-from year2019.aoc03 import find_min_intersection_by_steps, parse, solve, trace_wire, \
+from ..aoc03 import find_min_intersection_by_steps, parse, solve, trace_wire, \
     find_closest_intersection
 
 example1 = 'R8,U5,L5,D3\nU7,R6,D4,L4'

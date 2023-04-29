@@ -1,6 +1,6 @@
 from inspect import cleandoc
 
-from year2019.aoc10 import count_visible_from, find_best_location, parse, solve, vaporize_from
+from ..aoc10 import count_visible_from, find_best_location, parse, solve, vaporize_from
 
 m1 = parse(cleandoc("""
     .#..#

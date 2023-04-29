@@ -1,4 +1,4 @@
-from aoc14 import improve, recipes_to_the_left, solve
+from ..aoc14 import improve, recipes_to_the_left, solve
 
 
 def test_improve():

@@ -2,7 +2,7 @@ from inspect import cleandoc
 
 import pytest
 
-from aoc17 import Map, P, add_water, count_wet, solve
+from ..aoc17 import Map, P, add_water, count_wet, solve
 
 
 @pytest.fixture

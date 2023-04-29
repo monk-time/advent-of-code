@@ -2,7 +2,7 @@ from inspect import cleandoc
 
 import pytest
 
-from aoc23 import count_in_range, is_in_range, parse, shortest_manhattan, solve
+from ..aoc23 import count_in_range, is_in_range, parse, shortest_manhattan, solve
 
 sample_str = cleandoc("""
     pos=<0,0,0>, r=4

@@ -1,20 +1,20 @@
 from inspect import cleandoc
 from typing import List
 
-from aoc13 import Cart, emulate, look_ahead, move, next_tick, parse, solve
+from ..aoc13 import Cart, emulate, look_ahead, move, next_tick, parse, solve
 
 sample = cleandoc(r"""
-    /->-\        
+    /->-\
     |   |  /----\
     | /-+--+-\  |
     | | |  | v  |
     \-+-/  \-+--/
-      \------/   
+      \------/
 """)
 
 sample2 = cleandoc(r"""
-    />-<\  
-    |   |  
+    />-<\
+    |   |
     | /<+-\
     | | | v
     \>+</ |
@@ -27,12 +27,12 @@ def test_parse():
     carts, tracks = parse(sample)
     assert carts == [Cart(x=2, y=0, dir='>', turn=0), Cart(x=9, y=3, dir='v', turn=0)]
     assert '\n'.join(tracks) == cleandoc(r"""
-        /---\        
+        /---\
         |   |  /----\
         | /-+--+-\  |
         | | |  | |  |
         \-+-/  \-+--/
-          \------/   
+          \------/
     """)
 
 
@@ -101,12 +101,12 @@ def test_next_tick_sample():
     carts, tracks, crashes = next_tick(*parse(sample))
     assert crashes == []
     assert state_to_str(carts, tracks) == cleandoc(r"""
-        /-->\        
+        /-->\
         |   |  /----\
         | /-+--+-\  |
         | | |  | |  |
         \-+-/  \->--/
-          \------/   
+          \------/
     """)
 
 
@@ -114,8 +114,8 @@ def test_next_tick_sample2():
     carts, tracks, crashes = next_tick(*parse(sample2))
     assert crashes == [(2, 0), (2, 4), (6, 4)]
     assert state_to_str(carts, tracks) == cleandoc(r"""
-        /---\  
-        |   |  
+        /---\
+        |   |
         | v-+-\
         | | | |
         \-+-/ |

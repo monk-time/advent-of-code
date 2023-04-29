@@ -1,4 +1,4 @@
-from aoc04 import parse_journal, snooziest_minute, solve, strategy1, strategy2, total_time_asleep
+from ..aoc04 import parse_journal, snooziest_minute, solve, strategy1, strategy2, total_time_asleep
 
 sample = """
 [1518-11-01 00:00] Guard #10 begins shift

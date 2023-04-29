@@ -2,7 +2,7 @@ from inspect import cleandoc
 
 import pytest
 
-from aoc18 import Map, count_after_n_ticks, solve, update
+from ..aoc18 import Map, count_after_n_ticks, solve, update
 
 sample_str = cleandoc("""
     .#.#...|#.

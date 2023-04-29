@@ -1,6 +1,6 @@
 from inspect import cleandoc
 
-from aoc10 import Point, dimensions, move_all, parse, points_to_str, solve
+from ..aoc10 import Point, dimensions, move_all, parse, points_to_str, solve
 
 points = parse(cleandoc("""
     position=< 9,  1> velocity=< 0,  2>

@@ -2,7 +2,7 @@ from inspect import cleandoc
 
 import pytest
 
-from aoc16 import execute, matches, opcodes, parse, solve
+from ..aoc16 import execute, matches, opcodes, parse, solve
 
 
 def test_parse():
@@ -10,13 +10,13 @@ def test_parse():
         Before: [1, 0, 2, 0]
         4 1 0 1
         After:  [1, 1, 2, 0]
-        
+
         Before: [2, 3, 1, 2]
         2 1 0 1
         After:  [2, 1, 1, 2]
-        
-        
-        
+
+
+
         9 3 3 0
         9 1 0 1
         """)

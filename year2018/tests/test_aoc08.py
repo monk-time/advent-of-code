@@ -1,6 +1,6 @@
 import pytest
 
-from aoc08 import Node, metadata_as_indices, metadata_rec, parse_tree, solve
+from ..aoc08 import Node, metadata_as_indices, metadata_rec, parse_tree, solve
 
 samples = [
     ('0 0', '[0 0 ()]', []),

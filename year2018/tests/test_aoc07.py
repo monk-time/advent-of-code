@@ -1,4 +1,4 @@
-from aoc07 import parse, solve, work
+from ..aoc07 import parse, solve, work
 
 sample = """
 Step C must be finished before step A can begin.

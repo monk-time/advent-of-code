@@ -1,4 +1,4 @@
-from year2019.aoc01 import fuel, fuel_req, solve
+from ..aoc01 import fuel, fuel_req, solve
 
 
 def test_fuel():

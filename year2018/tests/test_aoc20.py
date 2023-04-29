@@ -2,7 +2,7 @@ from inspect import cleandoc
 
 import pytest
 
-from aoc20 import map_to_str, max_doors_in_shortest_path, parse_map, solve
+from ..aoc20 import map_to_str, max_doors_in_shortest_path, parse_map, solve
 
 
 def test_parse_map():

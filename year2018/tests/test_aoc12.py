@@ -1,4 +1,4 @@
-from aoc12 import pad, parse, solve, stabilize, str_n_gens, sum_of_pots_at_gen
+from ..aoc12 import pad, parse, solve, stabilize, str_n_gens, sum_of_pots_at_gen
 
 sample = """initial state: #..#.#..##......###...###
 

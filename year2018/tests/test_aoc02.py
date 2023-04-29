@@ -1,6 +1,6 @@
 import pytest
 
-from aoc02 import checksum, has_exactly_n_of_any_letter, is_correct_pair, \
+from ..aoc02 import checksum, has_exactly_n_of_any_letter, is_correct_pair, \
     matching_letters, part2, solve
 
 box_ids = ['abcdef', 'bababc', 'abbcde', 'abcccd', 'aabcdd', 'abcdee', 'ababab']

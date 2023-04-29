@@ -1,4 +1,4 @@
-from aoc03 import Claim, overlap_and_count, parse, solve, squares
+from ..aoc03 import Claim, overlap_and_count, parse, solve, squares
 
 a = parse('#1 @ 1,3: 4x4')
 b = parse('#2 @ 3,1: 4x4')

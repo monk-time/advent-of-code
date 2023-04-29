@@ -2,7 +2,7 @@ from inspect import cleandoc
 
 import pytest
 
-from aoc15 import State, Unit, outcome, play_round, solve
+from ..aoc15 import State, Unit, outcome, play_round, solve
 
 
 def test_unit_is_enemy():

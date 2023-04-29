@@ -2,7 +2,7 @@ from inspect import cleandoc
 
 import pytest
 
-from aoc25 import count_constellations, dist, parse, solve
+from ..aoc25 import count_constellations, dist, parse, solve
 
 
 def test_parse():

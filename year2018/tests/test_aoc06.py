@@ -1,7 +1,7 @@
 from string import ascii_letters
 from typing import Iterable
 
-from aoc06 import Grid, Point, fill_grid, grid_size, \
+from ..aoc06 import Grid, Point, fill_grid, grid_size, \
     largest_finite, parse_coords, safe_region, solve
 
 sample = '1, 1\n1, 6\n8, 3\n3, 4\n5, 5\n8, 9'

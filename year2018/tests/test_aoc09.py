@@ -1,6 +1,6 @@
 import pytest
 
-from aoc09 import high_score, solve
+from ..aoc09 import high_score, solve
 
 samples = [
     ('9 players; last marble is worth 25 points', 32),

@@ -1,4 +1,4 @@
-from year2019.aoc05 import parse, run_intcode, solve
+from ..aoc05 import parse, run_intcode, solve
 
 
 def test_run_intcode():

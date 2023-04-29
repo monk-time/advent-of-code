@@ -1,6 +1,6 @@
 from inspect import cleandoc
 
-from year2019.aoc12 import find_loop, solve, total_energy, execute_time_step, parse
+from ..aoc12 import find_loop, solve, total_energy, execute_time_step, parse
 
 sample1 = cleandoc("""
     <x=-1, y=0, z=2>

@@ -1,4 +1,4 @@
-from aoc21 import solve
+from ..aoc21 import solve
 
 
 def test_solve():

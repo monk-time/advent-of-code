@@ -1,4 +1,4 @@
-from year2019.aoc07 import parse, find_max_output, solve
+from ..aoc07 import parse, find_max_output, solve
 
 
 def test_find_max_output():

@@ -1,4 +1,4 @@
-from aoc05 import are_matching, improve, react, solve
+from ..aoc05 import are_matching, improve, react, solve
 
 sample = 'dabAcCaCBAcCcaDA'
 
