@@ -15,4 +15,4 @@ def test_decode_image():
 
 
 def test_solve():
-    assert solve() == (2480, 0)
+    assert solve(show_image=False) == (2480, 0)

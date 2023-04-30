@@ -34,17 +34,18 @@ def decode_image(s: str, width: int, height: int) -> Layer:
     ]
 
 
-def paint(layer: Layer, width: int, height: int):
+def paint(layer: Layer, width: int, height: int, show_image: bool = True):
     colors = [(0, 0, 0), (255, 255, 255), (128, 128, 128)]
     pixels = [colors[int(px)] for px in layer]
-    im = Image.new('RGB', (width, height))
-    im.putdata(pixels)
-    im.show()
+    if show_image:
+        im = Image.new('RGB', (width, height))
+        im.putdata(pixels)
+        im.show()
 
 
-def solve() -> tuple[int, int]:
+def solve(show_image: bool = True) -> tuple[int, int]:
     puzzle = read_puzzle()
-    paint(decode_image(puzzle, WIDTH, HEIGHT), WIDTH, HEIGHT)
+    paint(decode_image(puzzle, WIDTH, HEIGHT), WIDTH, HEIGHT, show_image)
     return find_layer_with_fewest_0(puzzle, WIDTH, HEIGHT), 0
 
 
