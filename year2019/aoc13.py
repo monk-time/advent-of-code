@@ -1,6 +1,5 @@
-from intcode import Intcode, parse, run_intcode
-
 from helpers import read_puzzle
+from intcode import Intcode, parse, run_intcode
 
 tiles_to_symbol = {
     0: ' ',
@@ -41,7 +40,7 @@ def solve() -> tuple[int, int]:
     program = parse(read_puzzle())
     tiles = draw_tiles(program)
     part1 = list(tiles.values()).count(2)
-    # print_tiles(tiles)
+    print_tiles(tiles)
     return part1, 0
 
 

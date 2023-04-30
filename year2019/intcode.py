@@ -40,9 +40,8 @@ def get_parameters(program, i, count, rel_base):
 def run_intcode(program: Intcode):
     """Execute the Intcode program."""
     i = 0  # position in the program to execute
-    program = defaultdict(lambda: 0, zip(range(len(program)), program))
+    program = defaultdict(lambda: 0, enumerate(program))
     rel_base = 0
-    print()
     while True:
         op = program[i] % 100
         match op:

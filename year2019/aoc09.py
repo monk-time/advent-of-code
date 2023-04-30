@@ -1,6 +1,5 @@
-from intcode import Intcode, parse, run_intcode
-
 from helpers import read_puzzle
+from intcode import Intcode, parse, run_intcode
 
 
 def boost(program: Intcode, input_val):

@@ -1,6 +1,5 @@
-from intcode import Intcode, parse, run_intcode
-
 from helpers import read_puzzle
+from intcode import Intcode, parse, run_intcode
 
 CLOCKWISE_DIRS = [(1, 0), (0, 1), (-1, 0), (0, -1)]
 COLORS = ['.', '#']

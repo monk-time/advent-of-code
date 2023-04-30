@@ -1,6 +1,6 @@
 import pytest
 
-from ..aoc05 import parse, run_intcode, solve
+from ..aoc05 import parse, run_with_input, solve
 
 
 @pytest.mark.parametrize(
@@ -42,7 +42,8 @@ from ..aoc05 import parse, run_intcode, solve
     ],
 )
 def test_run_intcode(test_input, input_value, expected):
-    assert list(run_intcode(parse(test_input), input_value))[-1] == expected
+    program = parse(test_input)
+    assert list(run_with_input(program, input_value))[-1] == expected
 
 
 def test_solve():
