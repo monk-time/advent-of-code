@@ -1,14 +1,10 @@
-from aoc09 import Intcode, run_intcode
+from intcode import Intcode, parse, run_intcode
 
 from helpers import read_puzzle
 
 CLOCKWISE_DIRS = [(1, 0), (0, 1), (-1, 0), (0, -1)]
 COLORS = ['.', '#']
 Coord = tuple[int, int]
-
-
-def parse(s: str) -> Intcode:
-    return [int(line) for line in s.split(',')]
 
 
 def add(t1: Coord, t2: Coord) -> Coord:

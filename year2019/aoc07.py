@@ -50,8 +50,8 @@ def run_intcode(program: Intcode):
                 a = program[i + 1]
                 if nth_digit(program[i], 3) == 0:
                     a = program[a]
-                i += 2
                 yield a
+                i += 2
             case 5:  # jump-if-true
                 a, b = get_parameters(program, i)
                 i = b if a else i + 3

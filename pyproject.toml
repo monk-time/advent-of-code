@@ -1,0 +1,5 @@
+[tool.pytest.ini_options]
+pythonpath = [
+    "year2018",
+    "year2019",
+]
