@@ -1,18 +1,25 @@
+from enum import StrEnum
+
 from helpers import read_puzzle
 from intcode import Intcode, parse, run_intcode
 
-tiles_to_symbol = {
-    0: ' ',
-    1: '■',
-    2: '◌',
-    3: '-',
-    4: '●',
-}
 
-Tiles = dict[tuple[int, int], int]
+class Tile(StrEnum):
+    EMPTY = ' '
+    WALL = '■'
+    BLOCK = '◌'
+    PADDLE = '-'
+    BALL = '●'
+
+    @classmethod
+    def from_index(cls, index: int):
+        return cls[cls._member_names_[index]]
 
 
-def draw_tiles(program: Intcode) -> Tiles:
+TileMap = dict[tuple[int, int], Tile]
+
+
+def read_tiles(program: Intcode) -> TileMap:
     gen = run_intcode(program)
     tiles = {}
     while True:
@@ -20,26 +27,23 @@ def draw_tiles(program: Intcode) -> Tiles:
             x = next(gen)
             y = next(gen)
             tile_id = next(gen)
-            tiles[(x, y)] = tile_id
+            tiles[(x, y)] = Tile.from_index(tile_id)
         except StopIteration:
             return tiles
 
 
-def print_tiles(tiles: Tiles):
+def print_tiles(tiles: TileMap):
     height = max(y for _, y in tiles.keys()) + 1  # coords are 0-based
     width = max(x for x, _ in tiles.keys()) + 1
     for y in range(height):
-        line = ''
-        for x in range(width):
-            tile = tiles[(x, y)]
-            line += tiles_to_symbol[tile]
+        line = ''.join(tiles[(x, y)] for x in range(width))
         print(line)
 
 
 def solve() -> tuple[int, int]:
     program = parse(read_puzzle())
-    tiles = draw_tiles(program)
-    part1 = list(tiles.values()).count(2)
+    tiles = read_tiles(program)
+    part1 = list(tiles.values()).count(Tile.BLOCK)
     print_tiles(tiles)
     return part1, 0
 
