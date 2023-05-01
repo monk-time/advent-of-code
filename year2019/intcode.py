@@ -1,4 +1,5 @@
 from collections import defaultdict
+from typing import Generator
 
 Intcode = list[int]
 
@@ -37,7 +38,7 @@ def get_parameters(program, i, count, rel_base):
     return a, b, c
 
 
-def run_intcode(program: Intcode):
+def run_intcode(program: Intcode = None) -> Generator[int, int, None]:
     """Execute the Intcode program."""
     i = 0  # position in the program to execute
     program = defaultdict(lambda: 0, enumerate(program))
