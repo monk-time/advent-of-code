@@ -2,7 +2,12 @@ from inspect import cleandoc
 
 import pytest
 
-from ..aoc14 import calc_ore_for_fuel, parse, solve
+from ..aoc14 import (
+    calc_ore_for_fuel,
+    calc_fuel_from_trillion_ore,
+    parse,
+    solve,
+)
 
 sample1 = cleandoc(
     """
@@ -12,7 +17,7 @@ sample1 = cleandoc(
     7 A, 1 C => 1 D
     7 A, 1 D => 1 E
     7 A, 1 E => 1 FUEL
-"""
+    """
 )
 
 sample2 = cleandoc(
@@ -24,7 +29,7 @@ sample2 = cleandoc(
     5 B, 7 C => 1 BC
     4 C, 1 A => 1 CA
     2 AB, 3 BC, 4 CA => 1 FUEL
-"""
+    """
 )
 
 sample3 = cleandoc(
@@ -38,7 +43,7 @@ sample3 = cleandoc(
     7 DCFZ, 7 PSHF => 2 XJWVT
     165 ORE => 2 GPVTF
     3 DCFZ, 7 NZVS, 5 HKGWZ, 10 PSHF => 8 KHKGT
-"""
+    """
 )
 
 sample4 = cleandoc(
@@ -55,7 +60,7 @@ sample4 = cleandoc(
     1 NVRVD => 8 CXFTF
     1 VJHF, 6 MNCFX => 4 RFSQX
     176 ORE => 6 VJHF
-"""
+    """
 )
 
 sample5 = cleandoc(
@@ -77,7 +82,7 @@ sample5 = cleandoc(
     121 ORE => 7 VRPVC
     7 XCVML => 6 RJRHP
     5 BHXH, 4 VRPVC => 5 LTCX
-"""
+    """
 )
 
 
@@ -92,8 +97,20 @@ sample5 = cleandoc(
     ),
 )
 def test_calc_ore_for_fuel(test_input, expected):
-    assert calc_ore_for_fuel(parse(test_input)) == expected
+    assert calc_ore_for_fuel(parse(test_input))[0] == expected
+
+
+@pytest.mark.parametrize(
+    'test_input, expected',
+    (
+        (sample3, 82892753),
+        (sample4, 5586022),
+        (sample5, 460664),
+    ),
+)
+def test_calc_fuel_from_trillion_ore(test_input, expected):
+    assert calc_fuel_from_trillion_ore(parse(test_input)) == expected
 
 
 def test_solve():
-    assert solve() == (378929, 0)
+    assert solve() == (378929, 3445249)

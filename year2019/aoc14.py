@@ -1,7 +1,6 @@
 import math
 import re
 from dataclasses import dataclass
-from pprint import pprint
 
 import networkx as nx
 
@@ -30,26 +29,48 @@ def parse(s: str) -> Reactions:
     return {(r := parse_reaction(line)).name: r for line in s.split('\n')}
 
 
-def calc_ore_for_fuel(reactions: Reactions) -> int:
+def calc_ore_for_fuel(reactions: Reactions, fuel: int = 1) -> int:
     edges = {r.name: list(r.inputs) for r in reactions.values()}
     vertices_sorted = nx.topological_sort(nx.DiGraph(edges))
     queue = {v: 0 for v in reversed(list(vertices_sorted))}
-    queue['FUEL'] = 1
+    queue['FUEL'] = fuel
+    coef = 1
     while len(queue) > 1:
         name, target_amount = queue.popitem()
         reaction = reactions[name]
+        if target_amount % reaction.amount:
+            local_coef = reaction.amount * (
+                target_amount // math.gcd(target_amount, reaction.amount)
+            )
+            coef *= local_coef // math.gcd(local_coef, coef)
         repeat_times = math.ceil(target_amount / reaction.amount)
         for input_name, input_amount in reaction.inputs.items():
-            total = repeat_times * input_amount
-            queue[input_name] += total
-    return queue['ORE']
+            queue[input_name] += repeat_times * input_amount
+    return queue['ORE'], coef
+
+
+def calc_fuel_from_trillion_ore(reactions: Reactions) -> int:
+    ore_per_fuel, coef = calc_ore_for_fuel(reactions)
+    flawless_fuel = coef
+    ore_per_flawless_fuel, _ = calc_ore_for_fuel(reactions, fuel=flawless_fuel)
+    flawless_times = 1_000_000_000_000 // ore_per_flawless_fuel
+    fuel = flawless_fuel * flawless_times
+    ore_left = 1_000_000_000_000 % ore_per_flawless_fuel
+
+    extra_fuel, extra_ore = 0, 0
+    while True:
+        next_fuel = (ore_left - extra_ore) // ore_per_fuel
+        if not next_fuel:
+            break
+        extra_fuel += next_fuel
+        extra_ore = calc_ore_for_fuel(reactions, extra_fuel)[0]
+    return fuel + extra_fuel
 
 
 def solve() -> tuple[int, int]:
     reactions = parse(read_puzzle())
-    pprint(reactions)
-    part1 = calc_ore_for_fuel(reactions)
-    return part1, 0
+    part1, _ = calc_ore_for_fuel(reactions)
+    return part1, calc_fuel_from_trillion_ore(reactions)
 
 
 if __name__ == '__main__':

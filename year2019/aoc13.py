@@ -62,8 +62,8 @@ def run_game(program: Intcode):
             if x is None:
                 # print_tiles(tiles)
                 paddle, ball = find_paddle_and_ball(tiles)
-                y_diff = ball[0] - paddle[0]
-                joystick_pos = -1 if y_diff < 0 else (1 if y_diff > 0 else 0)
+                x_diff = ball[0] - paddle[0]
+                joystick_pos = -1 if x_diff < 0 else (1 if x_diff > 0 else 0)
                 x = gen.send(joystick_pos)
             y = next(gen)
             tile_id = next(gen)
