@@ -58,13 +58,11 @@ def calc_fuel_from_trillion_ore(reactions: Reactions) -> int:
     ore_left = 1_000_000_000_000 % ore_per_flawless_fuel
 
     extra_fuel, extra_ore = 0, 0
-    while True:
-        next_fuel = (ore_left - extra_ore) // ore_per_fuel
-        if not next_fuel:
-            break
+    while extra_ore <= ore_left:
+        next_fuel = (ore_left - extra_ore) // ore_per_fuel or 1
         extra_fuel += next_fuel
         extra_ore = calc_ore_for_fuel(reactions, extra_fuel)[0]
-    return fuel + extra_fuel
+    return fuel + extra_fuel - next_fuel
 
 
 def solve() -> tuple[int, int]:
