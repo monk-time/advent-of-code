@@ -1,4 +1,5 @@
 from collections import defaultdict
+from dataclasses import dataclass
 from typing import Generator
 
 Intcode = list[int]
@@ -12,76 +13,81 @@ def nth_digit(n: int, pos: int) -> int:
     return n // (10 ** (pos - 1)) % 10
 
 
-def get_parameters(program, i, count, rel_base):
-    a = program[i + 1]
-    match nth_digit(program[i], 3):
-        case 0:
-            a = program[a]
-        case 2:
-            a = program[a + rel_base]
-    if count == 1:
-        return a
+@dataclass
+class Computer:
+    program: Intcode
+    pointer: int = 0
+    rel_base: int = 0
 
-    b = program[i + 2]
-    match nth_digit(program[i], 4):
-        case 0:
-            b = program[b]
-        case 2:
-            b = program[b + rel_base]
-    if count == 2:
-        return a, b
+    def __post_init__(self):
+        self.program = defaultdict(lambda: 0, enumerate(self.program))
 
-    c = program[i + 3]
-    match nth_digit(program[i], 5):
-        case 2:
-            c = c + rel_base
-    return a, b, c
+    def __iter__(self) -> Generator[int, int, None]:
+        """Execute the Intcode program."""
+        while True:
+            op = self.program[self.pointer] % 100
+            match op:
+                case 1 | 2:  # add, multiply
+                    a, b, c = self.get_parameters(3)
+                    if op == 1:
+                        self.program[c] = a + b
+                    else:
+                        self.program[c] = a * b
+                    self.pointer += 4
+                case 3:  # input
+                    a = self.program[self.pointer + 1]
+                    if nth_digit(self.program[self.pointer], 3) == 2:
+                        a += self.rel_base
+                    self.program[a] = yield
+                    self.pointer += 2
+                case 4:  # output
+                    a = self.get_parameters(1)
+                    yield a
+                    self.pointer += 2
+                case 5:  # jump-if-true
+                    a, b = self.get_parameters(2)
+                    self.pointer = b if a else self.pointer + 3
+                case 6:  # jump-if-false
+                    a, b = self.get_parameters(2)
+                    self.pointer = b if not a else self.pointer + 3
+                case 7:  # less than
+                    a, b, c = self.get_parameters(3)
+                    self.program[c] = 1 if a < b else 0
+                    self.pointer += 4
+                case 8:  # equals
+                    a, b, c = self.get_parameters(3)
+                    self.program[c] = 1 if a == b else 0
+                    self.pointer += 4
+                case 9:  # relative base offset
+                    a = self.get_parameters(1)
+                    self.rel_base += a
+                    self.pointer += 2
+                case 99:
+                    return
+                case _:
+                    raise Exception(f'Unknown opcode {op} at {self.pointer=}')
 
+    def get_parameters(self, count):
+        a = self.program[self.pointer + 1]
+        match nth_digit(self.program[self.pointer], 3):
+            case 0:
+                a = self.program[a]
+            case 2:
+                a = self.program[a + self.rel_base]
+        if count == 1:
+            return a
 
-def run_intcode(program: Intcode = None) -> Generator[int, int, None]:
-    """Execute the Intcode program."""
-    i = 0  # position in the program to execute
-    program = defaultdict(lambda: 0, enumerate(program))
-    rel_base = 0
-    while True:
-        op = program[i] % 100
-        match op:
-            case 1 | 2:  # add, multiply
-                a, b, c = get_parameters(program, i, 3, rel_base)
-                if op == 1:
-                    program[c] = a + b
-                else:
-                    program[c] = a * b
-                i += 4
-            case 3:  # input
-                a = program[i + 1]
-                if nth_digit(program[i], 3) == 2:
-                    a += rel_base
-                program[a] = yield
-                i += 2
-            case 4:  # output
-                a = get_parameters(program, i, 1, rel_base)
-                yield a
-                i += 2
-            case 5:  # jump-if-true
-                a, b = get_parameters(program, i, 2, rel_base)
-                i = b if a else i + 3
-            case 6:  # jump-if-false
-                a, b = get_parameters(program, i, 2, rel_base)
-                i = b if not a else i + 3
-            case 7:  # less than
-                a, b, c = get_parameters(program, i, 3, rel_base)
-                program[c] = 1 if a < b else 0
-                i += 4
-            case 8:  # equals
-                a, b, c = get_parameters(program, i, 3, rel_base)
-                program[c] = 1 if a == b else 0
-                i += 4
-            case 9:  # relative base offset
-                a = get_parameters(program, i, 1, rel_base)
-                rel_base += a
-                i += 2
-            case 99:
-                return
-            case _:
-                raise Exception(f'An unknown opcode {op} at {i=}')
+        b = self.program[self.pointer + 2]
+        match nth_digit(self.program[self.pointer], 4):
+            case 0:
+                b = self.program[b]
+            case 2:
+                b = self.program[b + self.rel_base]
+        if count == 2:
+            return a, b
+
+        c = self.program[self.pointer + 3]
+        match nth_digit(self.program[self.pointer], 5):
+            case 2:
+                c = c + self.rel_base
+        return a, b, c

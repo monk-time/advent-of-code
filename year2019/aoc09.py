@@ -1,9 +1,9 @@
 from helpers import read_puzzle
-from intcode import Intcode, parse, run_intcode
+from intcode import Computer, Intcode, parse
 
 
 def boost(program: Intcode, input_val):
-    gen = run_intcode(program)
+    gen = iter(Computer(program))
     next(gen)
     return gen.send(input_val)
 

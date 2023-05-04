@@ -2,7 +2,7 @@ from itertools import permutations
 from math import inf
 
 from helpers import read_puzzle
-from intcode import Intcode, parse, run_intcode
+from intcode import Computer, Intcode, parse
 
 
 def run_amplifiers(
@@ -10,7 +10,7 @@ def run_amplifiers(
 ) -> int:
     output = initial_input
     for i in range(5):
-        gen = run_intcode(program)
+        gen = iter(Computer(program))
         next(gen)
         gen.send(phases[i])
         output = gen.send(output)
@@ -32,7 +32,7 @@ def run_amplifiers_loop(
     program: Intcode, phases: tuple[int, ...], initial_input=0
 ) -> int:
     output = initial_input
-    gens = [run_intcode(program) for _ in range(5)]
+    gens = [iter(Computer(program)) for _ in range(5)]
     for i in range(5):
         next(gens[i])
         gens[i].send(phases[i])

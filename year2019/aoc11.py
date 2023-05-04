@@ -1,5 +1,5 @@
 from helpers import read_puzzle
-from intcode import Intcode, parse, run_intcode
+from intcode import Computer, Intcode, parse
 
 CLOCKWISE_DIRS = [(1, 0), (0, 1), (-1, 0), (0, -1)]
 COLORS = ['.', '#']
@@ -15,7 +15,7 @@ def paint_panels(program: Intcode, starting_color: int = 0):
     robot_dir = (0, -1)
     count_painted = 0
     painted_panels = {(0, 0): starting_color}
-    gen = run_intcode(program)
+    gen = iter(Computer(program))
     while True:
         try:
             next(gen)

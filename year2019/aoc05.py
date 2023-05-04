@@ -1,9 +1,9 @@
 from helpers import read_puzzle
-from intcode import Intcode, parse, run_intcode
+from intcode import Computer, Intcode, parse
 
 
 def run_with_input(program: Intcode, value: int):
-    gen = run_intcode(program)
+    gen = iter(Computer(program))
     next(gen)
     yield gen.send(value)
     yield from gen

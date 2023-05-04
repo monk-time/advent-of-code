@@ -2,7 +2,7 @@ import os
 from enum import StrEnum
 
 from helpers import read_puzzle
-from intcode import Intcode, parse, run_intcode
+from intcode import Computer, Intcode, parse
 
 
 class Tile(StrEnum):
@@ -22,7 +22,7 @@ TileMap = dict[Coord, Tile]
 
 
 def read_tiles(program: Intcode) -> TileMap:
-    gen = run_intcode(program)
+    gen = iter(Computer(program))
     tiles = {}
     while True:
         try:
@@ -53,7 +53,7 @@ def find_paddle_and_ball(tiles: TileMap) -> Coord:
 
 
 def run_game(program: Intcode):
-    gen = run_intcode(program)
+    gen = iter(Computer(program))
     tiles: TileMap = {}
     score = 0
     while True:
