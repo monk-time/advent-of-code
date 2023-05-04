@@ -1,6 +1,6 @@
 import pytest
 
-from ..aoc02 import run_intcode, solve
+from ..aoc02 import Computer, solve
 
 
 @pytest.mark.parametrize(
@@ -17,7 +17,10 @@ from ..aoc02 import run_intcode, solve
     ],
 )
 def test_run_intcode(test_input, expected):
-    assert run_intcode(test_input) == expected
+    comp = Computer(test_input)
+    for _ in comp:
+        pass
+    assert list(comp.program.values()) == expected
 
 
 def test_solve():
