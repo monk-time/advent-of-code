@@ -38,12 +38,12 @@ class Computer:
                     a = self.program[self.pointer + 1]
                     if nth_digit(self.program[self.pointer], 3) == 2:
                         a += self.rel_base
-                    self.program[a] = yield
                     self.pointer += 2
+                    self.program[a] = yield
                 case 4:  # output
                     a = self.get_parameters(1)
-                    yield a
                     self.pointer += 2
+                    yield a
                 case 5:  # jump-if-true
                     a, b = self.get_parameters(2)
                     self.pointer = b if a else self.pointer + 3
