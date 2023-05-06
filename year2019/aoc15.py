@@ -37,7 +37,7 @@ def map_to_str(m: Map) -> str:
     )
 
 
-def find_shortest_path_to_oxygen(program: Intcode) -> int:
+def find_shortest_path_to_oxygen(program: Intcode) -> tuple[int, Map]:
     pos = (0, 0)
     visited: Map = {pos: Tile.EMPTY}
     queue = deque([(0, pos, Computer(program))])
@@ -58,11 +58,26 @@ def find_shortest_path_to_oxygen(program: Intcode) -> int:
                 steps_to_oxygen = depth + 1
     return steps_to_oxygen, visited
 
+
+def time_to_fill(m: Map) -> int:
+    m = m.copy()
+    pos_oxygen = next(pos for pos in m if m[pos] is Tile.OXYGEN)
+    queue = deque([(0, pos_oxygen)])
+    while queue:
+        time, pos = queue.popleft()
+        for next_pos in around(pos):
+            if m[next_pos] is not Tile.EMPTY:
+                continue
+            m[next_pos] = Tile.OXYGEN
+            queue.append((time + 1, next_pos))
+    return time
+
+
 def solve() -> tuple[int, int]:
     program = parse(read_puzzle())
-    part1, tiles = find_shortest_path_to_oxygen(program)
-    print(map_to_str(tiles))
-    return part1, 0
+    part1, m = find_shortest_path_to_oxygen(program)
+    print(map_to_str(m))
+    return part1, time_to_fill(m)
 
 
 if __name__ == '__main__':
