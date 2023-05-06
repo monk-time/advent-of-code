@@ -20,7 +20,10 @@ class Computer:
     rel_base: int = 0
 
     def __post_init__(self):
-        self.program = defaultdict(lambda: 0, enumerate(self.program))
+        if isinstance(self.program, defaultdict):
+            self.program = self.program.copy()
+        else:
+            self.program = defaultdict(lambda: 0, enumerate(self.program))
 
     def __iter__(self) -> Generator[int, int, None]:
         """Execute the Intcode program."""
