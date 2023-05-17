@@ -57,16 +57,16 @@ def test_apply_n_phases(test_input, expected):
     assert apply_n_phases(parse(test_input), 100) == parse(expected)
 
 
-# @pytest.mark.parametrize(
-#     'test_input, expected',
-#     (
-#         ('03036732577212944063491565474664', '84462026'),
-#         ('02935109699940807407585447034323', '78725270'),
-#         ('03081770884921959731165446850517', '53553731'),
-#     ),
-# )
-# def test_real_signal(test_input, expected):
-#     assert real_signal(parse(test_input)) == parse(expected)
+@pytest.mark.parametrize(
+    'test_input, expected',
+    (
+        ('03036732577212944063491565474664', '84462026'),
+        ('02935109699940807407585447034323', '78725270'),
+        ('03081770884921959731165446850517', '53553731'),
+    ),
+)
+def test_real_signal(test_input, expected):
+    assert real_signal(parse(test_input)) == parse(expected)
 
 
 def test_solve():
