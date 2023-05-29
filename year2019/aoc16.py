@@ -50,7 +50,7 @@ def real_signal(signal: Signal) -> Signal:
 
 
 @timed
-def solve() -> tuple[int, int]:
+def solve() -> tuple[str, str]:
     signal = parse(read_puzzle())
     part1 = to_str(apply_n_phases(signal, 100))
     part2 = to_str(real_signal(signal))
