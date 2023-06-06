@@ -1,5 +1,5 @@
 from enum import StrEnum
-from typing import Iterable
+from typing import Iterable, Literal, get_args
 from helpers import read_puzzle
 from intcode import Computer, Intcode, parse
 
@@ -11,7 +11,13 @@ class Tile(StrEnum):
     RIGHT = '>'
     UP = '^'
     DOWN = 'v'
+    OFF = 'X'
 
+    def is_direction(self):
+        return self in get_args(Direction)
+
+
+Direction = Literal[Tile.LEFT, Tile.RIGHT, Tile.UP, Tile.DOWN]
 
 Coord = tuple[int, int]
 TileMap = dict[Coord, Tile]
@@ -21,6 +27,7 @@ TileMap = dict[Coord, Tile]
 # xxyyxzwyyxxxzw
 # A B  C B  A C
 # A = xx, B == yyx, C = zw
+
 
 def read_tiles(program: Intcode) -> TileMap:
     gen = iter(Computer(program))
@@ -48,23 +55,68 @@ def print_tiles(tiles: TileMap):
     print(line)
 
 
-def around(coord: Coord) -> Iterable[Coord]:
-    x, y = coord
+def around(pos: Coord) -> Iterable[Coord]:
+    x, y = pos
     yield from ((x, y - 1), (x, y + 1), (x - 1, y), (x + 1, y))
 
 
-def is_intersection(coord: Coord, tiles: TileMap) -> bool:
-    return tiles[coord] is Tile.FLOOR and all(
-        near in tiles and tiles[near] is Tile.FLOOR for near in around(coord)
+def is_intersection(tiles: TileMap, pos: Coord) -> bool:
+    return tiles[pos] is Tile.FLOOR and all(
+        near in tiles and tiles[near] is Tile.FLOOR for near in around(pos)
     )
 
 
 def find_intersections(tiles: TileMap) -> Iterable[Coord]:
-    yield from (coord for coord in tiles if is_intersection(coord, tiles))
+    yield from (pos for pos in tiles if is_intersection(tiles, pos))
 
 
 def calibrate(tiles: TileMap) -> int:
     return sum(x * y for x, y in find_intersections(tiles))
+
+
+def step(pos: Coord, direction: Direction):
+    x, y = pos
+    match direction:
+        case Tile.LEFT:
+            return x - 1, y
+        case Tile.RIGHT:
+            return x + 1, y
+        case Tile.UP:
+            return x, y - 1
+        case Tile.DOWN:
+            return x, y + 1
+
+
+DIRS_ORDERED = (Tile.UP, Tile.RIGHT, Tile.DOWN, Tile.LEFT)
+
+
+def turn(direction: Direction):
+    index = DIRS_ORDERED.index(direction)
+    return DIRS_ORDERED[(index - 1) % 4], DIRS_ORDERED[(index + 1) % 4]
+
+
+def walk_through_all(tiles: TileMap):
+    pos = next(pos for pos, tile in tiles.items() if tile.is_direction())
+    direction = Direction(tiles[pos])
+    steps = 0
+    while True:
+        next_pos = step(pos, direction)
+        if next_pos in tiles and tiles[next_pos] is Tile.FLOOR:
+            pos = next_pos
+            steps += 1
+            continue
+        if steps:
+            yield steps
+        steps = 1
+        left_pos, right_pos = [step(pos, side) for side in turn(direction)]
+        if right_pos in tiles and tiles[right_pos] is Tile.FLOOR:
+            pos = right_pos
+            yield 'R'
+        elif left_pos in tiles and tiles[left_pos] is Tile.FLOOR:
+            pos = left_pos
+            yield 'L'
+        else:
+            break
 
 
 def solve() -> tuple[int, int]:
