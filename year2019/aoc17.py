@@ -100,9 +100,9 @@ def turn(direction: Direction):
     return DIRS_ORDERED[(index - 1) % 4], DIRS_ORDERED[(index + 1) % 4]
 
 
-def walk_through_all(tiles: TileMap):
+def walk_through_all(tiles: TileMap) -> Iterable[int | str]:
     pos = next(pos for pos, tile in tiles.items() if tile.is_direction())
-    direction = Direction(tiles[pos])
+    direction = tiles[pos]
     steps = 0
     while True:
         next_pos = step(pos, direction)
@@ -113,12 +113,16 @@ def walk_through_all(tiles: TileMap):
         if steps:
             yield steps
         steps = 1
-        left_pos, right_pos = [step(pos, side) for side in turn(direction)]
+        left_dir, right_dir = turn(direction)
+        left_pos = step(pos, left_dir)
+        right_pos = step(pos, right_dir)
         if right_pos in tiles and tiles[right_pos] is Tile.FLOOR:
             pos = right_pos
+            direction = right_dir
             yield 'R'
         elif left_pos in tiles and tiles[left_pos] is Tile.FLOOR:
             pos = left_pos
+            direction = left_dir
             yield 'L'
         else:
             break
