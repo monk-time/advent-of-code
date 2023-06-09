@@ -29,30 +29,35 @@ TileMap = dict[Coord, Tile]
 # A = xx, B == yyx, C = zw
 
 
-def read_tiles(program: Intcode) -> TileMap:
+def read_output(program: Intcode) -> list[str]:
     gen = iter(Computer(program))
-    tiles = {}
-    x = y = 0
+    output, s = [], ''
     while True:
         try:
-            tile_str = chr(next(gen))
-            if tile_str == '\n':
-                y += 1
-                x = 0
+            tile_char = chr(next(gen))
+            if tile_char == '\n' and s:
+                output.append(s)
+                s = ''
             else:
-                tiles[(x, y)] = Tile(tile_str)
-                x += 1
+                s += tile_char
         except StopIteration:
-            return tiles
+            return output
 
 
-def print_tiles(tiles: TileMap):
+def parse_tiles(lines: list[str]) -> TileMap:
+    return {
+        (x, y): Tile(char)
+        for y, line in enumerate(lines)
+        for x, char in enumerate(line)
+    }
+
+
+def render_tiles(tiles: TileMap) -> list[str]:
     height = max(y for _, y in tiles.keys()) + 1  # coords are 0-based
     width = max(x for x, _ in tiles.keys()) + 1
-    line = '\n'.join(
+    return [
         ''.join(tiles[(x, y)] for x in range(width)) for y in range(height)
-    )
-    print(line)
+    ]
 
 
 def around(pos: Coord) -> Iterable[Coord]:
@@ -121,8 +126,9 @@ def walk_through_all(tiles: TileMap):
 
 def solve() -> tuple[int, int]:
     program = parse(read_puzzle())
-    tiles = read_tiles(program)
-    print_tiles(tiles)
+    output = read_output(program)
+    print('\n'.join(output))
+    tiles = parse_tiles(output)
     return calibrate(tiles), 0
 
 
