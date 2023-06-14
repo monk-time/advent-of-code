@@ -55,4 +55,4 @@ def test_walk_through_all(sample, path):
 
 
 def test_solve():
-    assert solve() == (3292, 0)
+    assert solve() == (3292, 651043)

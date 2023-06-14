@@ -1,7 +1,9 @@
 from enum import StrEnum
+from itertools import chain
 from typing import Iterable, Literal, get_args
+
 from helpers import read_puzzle
-from intcode import Computer, Intcode, parse
+from intcode import Computer, parse
 
 
 class Tile(StrEnum):
@@ -22,26 +24,20 @@ Direction = Literal[Tile.LEFT, Tile.RIGHT, Tile.UP, Tile.DOWN]
 Coord = tuple[int, int]
 TileMap = dict[Coord, Tile]
 
-# R,8,R,8,R,4,R,4,R,8,L,6,L,2,R,4,R,4,R,8,R,8,R,8,L,6,L,2
-# A       B           C       B           A       C
-# xxyyxzwyyxxxzw
-# A B  C B  A C
-# A = xx, B == yyx, C = zw
 
-
-def read_output(program: Intcode) -> list[str]:
-    gen = iter(Computer(program))
+def read_output(computer: Computer) -> list[str]:
+    gen = iter(computer)
     output, s = [], ''
     while True:
-        try:
-            tile_char = chr(next(gen))
-            if tile_char == '\n' and s:
+        tile_char = chr(next(gen))
+        if tile_char == '\n':
+            if s:
                 output.append(s)
                 s = ''
             else:
-                s += tile_char
-        except StopIteration:
-            return output
+                return output
+        else:
+            s += tile_char
 
 
 def parse_tiles(lines: list[str]) -> TileMap:
@@ -128,12 +124,43 @@ def walk_through_all(tiles: TileMap) -> Iterable[int | str]:
             break
 
 
+def execute_full_walk(computer: Computer) -> int:
+    # Hardcoded solution, solved by hand
+    # by looking at the output of walk_through_all
+    f_main = 'A,B,A,C,A,B,C,B,C,A'
+    f_a = 'L,12,R,4,R,4,L,6'
+    f_b = 'L,12,R,4,R,4,R,12'
+    f_c = 'L,10,L,6,R,4'
+
+    gen = iter(computer)
+    for f in (f_main, f_a, f_b, f_c):
+        while chr(next(gen)) != '\n':
+            pass
+        next(gen)
+        for x in f:
+            gen.send(ord(x))
+        gen.send(ord('\n'))
+    while chr(next(gen)) != '\n':
+        pass
+    next(gen)
+    gen.send(ord('n'))
+    gen.send(ord('\n'))
+    read_output(computer)
+    return next(gen)
+
+
 def solve() -> tuple[int, int]:
     program = parse(read_puzzle())
-    output = read_output(program)
-    print('\n'.join(output))
+    program[0] = 2
+    computer = Computer(program)
+
+    output = read_output(computer)
     tiles = parse_tiles(output)
-    return calibrate(tiles), 0
+    part1 = calibrate(tiles)
+
+    # print(*walk_through_all(tiles), sep=',')
+    part2 = execute_full_walk(computer)
+    return part1, part2
 
 
 if __name__ == '__main__':
