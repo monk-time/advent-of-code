@@ -1,9 +1,9 @@
 from enum import StrEnum
-from itertools import chain
+import re
 from typing import Iterable, Literal, get_args
 
 from helpers import read_puzzle
-from intcode import Computer, parse
+from intcode import Computer, parse, Intcode
 
 
 class Tile(StrEnum):
@@ -71,7 +71,8 @@ def find_intersections(tiles: TileMap) -> Iterable[Coord]:
     yield from (pos for pos in tiles if is_intersection(tiles, pos))
 
 
-def calibrate(tiles: TileMap) -> int:
+def calibrate(program: Intcode) -> int:
+    tiles = parse_tiles(read_output(Computer(program)))
     return sum(x * y for x, y in find_intersections(tiles))
 
 
@@ -124,13 +125,22 @@ def walk_through_all(tiles: TileMap) -> Iterable[int | str]:
             break
 
 
-def execute_full_walk(computer: Computer) -> int:
-    # Hardcoded solution, solved by hand
-    # by looking at the output of walk_through_all
-    f_main = 'A,B,A,C,A,B,C,B,C,A'
-    f_a = 'L,12,R,4,R,4,L,6'
-    f_b = 'L,12,R,4,R,4,R,12'
-    f_c = 'L,10,L,6,R,4'
+def execute_full_walk(program: Intcode) -> int:
+    computer = Computer(program)
+    computer.program[0] = 2
+    tiles = parse_tiles(read_output(computer))
+    path = ','.join(map(str, walk_through_all(tiles)))
+    print(path)
+
+    path += ','
+    regex = r'^(.{1,21})\1*(.{1,21})(?:\1|\2)*(.{1,21})(?:\1|\2|\3)*$'
+    match = re.match(regex, path)
+    f_a, f_b, f_c = (g[:-1] for g in match.groups())
+    f_main = path.replace(f_a, 'A').replace(f_b, 'B').replace(f_c, 'C')[:-1]
+    print(f'Main function: {f_main}')
+    print(f'Function A: {f_a}')
+    print(f'Function B: {f_b}')
+    print(f'Function C: {f_c}')
 
     gen = iter(computer)
     for f in (f_main, f_a, f_b, f_c):
@@ -151,16 +161,7 @@ def execute_full_walk(computer: Computer) -> int:
 
 def solve() -> tuple[int, int]:
     program = parse(read_puzzle())
-    program[0] = 2
-    computer = Computer(program)
-
-    output = read_output(computer)
-    tiles = parse_tiles(output)
-    part1 = calibrate(tiles)
-
-    # print(*walk_through_all(tiles), sep=',')
-    part2 = execute_full_walk(computer)
-    return part1, part2
+    return calibrate(program), execute_full_walk(program)
 
 
 if __name__ == '__main__':
