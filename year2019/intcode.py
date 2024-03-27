@@ -1,6 +1,6 @@
 from collections import defaultdict
+from collections.abc import Generator
 from dataclasses import dataclass
-from typing import Generator
 
 Intcode = list[int]
 
@@ -15,7 +15,7 @@ def nth_digit(n: int, pos: int) -> int:
 
 @dataclass
 class Computer:
-    program: Intcode
+    program: Intcode | defaultdict[int, int]
     pointer: int = 0
     rel_base: int = 0
 
@@ -31,7 +31,7 @@ class Computer:
             op = self.program[self.pointer] % 100
             match op:
                 case 1 | 2:  # add, multiply
-                    a, b, c = self.get_parameters(3)
+                    a, b, c = self.get_parameters(3)  # type: ignore
                     if op == 1:
                         self.program[c] = a + b
                     else:
@@ -42,35 +42,38 @@ class Computer:
                     if nth_digit(self.program[self.pointer], 3) == 2:
                         a += self.rel_base
                     self.pointer += 2
-                    self.program[a] = yield
+                    self.program[a] = yield  # type: ignore
                 case 4:  # output
-                    a = self.get_parameters(1)
+                    a: int = self.get_parameters(1)  # type: ignore
                     self.pointer += 2
                     yield a
                 case 5:  # jump-if-true
-                    a, b = self.get_parameters(2)
+                    a, b = self.get_parameters(2)  # type: ignore
                     self.pointer = b if a else self.pointer + 3
                 case 6:  # jump-if-false
-                    a, b = self.get_parameters(2)
+                    a, b = self.get_parameters(2)  # type: ignore
                     self.pointer = b if not a else self.pointer + 3
                 case 7:  # less than
-                    a, b, c = self.get_parameters(3)
+                    a, b, c = self.get_parameters(3)  # type: ignore
                     self.program[c] = 1 if a < b else 0
                     self.pointer += 4
                 case 8:  # equals
-                    a, b, c = self.get_parameters(3)
+                    a, b, c = self.get_parameters(3)  # type: ignore
                     self.program[c] = 1 if a == b else 0
                     self.pointer += 4
                 case 9:  # relative base offset
-                    a = self.get_parameters(1)
+                    a: int = self.get_parameters(1)  # type: ignore
                     self.rel_base += a
                     self.pointer += 2
                 case 99:
                     return
                 case _:
-                    raise Exception(f'Unknown opcode {op} at {self.pointer=}')
+                    msg = f'Unknown opcode {op} at {self.pointer=}'
+                    raise Exception(msg)
 
-    def get_parameters(self, count):
+    def get_parameters(
+        self, count: int
+    ) -> int | tuple[int, int] | tuple[int, int, int]:
         a = self.program[self.pointer + 1]
         match nth_digit(self.program[self.pointer], 3):
             case 0:

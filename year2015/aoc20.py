@@ -1,12 +1,14 @@
 import itertools as it
 from functools import reduce
-from math import sqrt, floor
+from math import floor, sqrt
 from operator import mul
 
 
 def prime_powers_decomp(n):
-    """ Generates arrays of powers of prime divisors that divide n
-        220 -> [1, 2, 4], [1, 5], [1, 11] """
+    """Generate arrays of powers of prime divisors that divide n.
+
+    220 -> [1, 2, 4], [1, 5], [1, 11]
+    """
     if n <= 1:
         yield [1]
         raise StopIteration
@@ -41,8 +43,10 @@ def mul_iter(iterable) -> int:
 
 
 def divisors(n) -> list:
-    """ Returns a list of all divisors of n
-        220 -> [1, 2, 4, 5, 10, 11, 20, 22, 44, 55, 110, 220] """
+    """Return a list of all divisors of n.
+
+    220 -> [1, 2, 4, 5, 10, 11, 20, 22, 44, 55, 110, 220]
+    """
     return sorted(map(mul_iter, it.product(*prime_powers_decomp(n))))
 
 
@@ -52,6 +56,8 @@ def presents_1(n):
 
 cache = {}
 
+HOUSE_LIMIT = 50
+
 
 def sum_of_underused_divisors(n):
     divs = divisors(n)
@@ -60,7 +66,7 @@ def sum_of_underused_divisors(n):
             cache[d] = 1
         else:
             cache[d] += 1
-    return sum(d for d in divs if cache[d] <= 50)
+    return sum(d for d in divs if cache[d] <= HOUSE_LIMIT)
 
 
 def presents_2(n):
@@ -77,4 +83,4 @@ if __name__ == '__main__':
     start_time = time.time()
     print(first_house_with(29000000, presents_1))
     print(first_house_with(29000000, presents_2))
-    print("--- {:.2f} seconds ---".format(time.time() - start_time))
+    print(f'--- {time.time() - start_time:.2f} seconds ---')

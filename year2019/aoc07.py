@@ -17,7 +17,7 @@ def run_amplifiers(
     return output
 
 
-def find_max_output(program: Intcode, use_loop=False):
+def find_max_output(program: Intcode, *, use_loop=False):
     max_output = -inf
     run = run_amplifiers_loop if use_loop else run_amplifiers
     phase_range = range(5, 10) if use_loop else range(5)

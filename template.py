@@ -6,7 +6,7 @@ def parse(s: str) -> list[int]:
 
 
 def solve() -> tuple[int, int]:
-    puzzle = parse(read_puzzle())
+    _puzzle = parse(read_puzzle())
     return 0, 0
 
 

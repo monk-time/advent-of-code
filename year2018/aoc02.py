@@ -1,6 +1,6 @@
 from collections import Counter
+from collections.abc import Iterable
 from itertools import combinations
-from typing import Iterable
 
 from helpers import read_puzzle
 
@@ -10,7 +10,11 @@ def has_exactly_n_of_any_letter(box_id: str, n: int) -> bool:
 
 
 def checksum(box_ids: Iterable[str]) -> int:
-    count = lambda n: sum(has_exactly_n_of_any_letter(box_id, n) for box_id in box_ids)
+    def count(n: int):
+        return sum(
+            has_exactly_n_of_any_letter(box_id, n) for box_id in box_ids
+        )
+
     return count(2) * count(3)
 
 
@@ -24,7 +28,9 @@ def is_correct_pair(box_a: str, box_b: str) -> bool:
 
 
 def part2(box_ids: Iterable[str]) -> str:
-    matching_pair = next(t for t in combinations(box_ids, 2) if is_correct_pair(*t))
+    matching_pair = next(
+        t for t in combinations(box_ids, 2) if is_correct_pair(*t)
+    )
     return matching_letters(*matching_pair)
 
 

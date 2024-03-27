@@ -1,4 +1,4 @@
-from ..aoc05 import are_matching, improve, react, solve
+from year2018.aoc05 import are_matching, improve, react, solve
 
 sample = 'dabAcCaCBAcCcaDA'
 
@@ -13,8 +13,8 @@ def test_are_matching():
 
 
 def test_react():
-    assert react('aA') == ''
-    assert react('abBA') == ''
+    assert react('aA') == ''  # noqa: PLC1901
+    assert react('abBA') == ''  # noqa: PLC1901
     assert react('abAB') == 'abAB'
     assert react('aabAAB') == 'aabAAB'
     assert react(sample) == 'dabCBAcaDA'

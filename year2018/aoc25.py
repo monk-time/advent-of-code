@@ -1,9 +1,8 @@
 from itertools import combinations
-from typing import List, Tuple
 
 from helpers import read_puzzle
 
-Point = Tuple[int, ...]
+Point = tuple[int, ...]
 
 
 def parse(s: str):
@@ -14,7 +13,7 @@ def dist(p1: Point, p2: Point) -> int:
     return sum(abs(x - y) for x, y in zip(p1, p2))
 
 
-def count_constellations(points: List[Point]) -> int:
+def count_constellations(points: list[Point]) -> int:
     cstls = {p: frozenset([p]) for p in points}
     for p1, p2 in combinations(points, 2):
         if dist(p1, p2) <= 3:

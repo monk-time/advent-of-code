@@ -2,7 +2,12 @@ from inspect import cleandoc
 
 import pytest
 
-from ..aoc17 import find_intersections, parse_tiles, solve, walk_through_all
+from year2019.aoc17 import (
+    find_intersections,
+    parse_tiles,
+    solve,
+    walk_through_all,
+)
 
 sample1 = cleandoc(
     """

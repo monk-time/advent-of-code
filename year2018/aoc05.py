@@ -5,7 +5,7 @@ def are_matching(a: str, b: str) -> bool:
     return a != b and (a.lower() == b or b.lower() == a)
 
 
-def react(poly: str, skip: str = None) -> str:
+def react(poly: str, skip: str | None = None) -> str:
     new_poly = ''
     for unit in poly:
         if unit.lower() == skip:

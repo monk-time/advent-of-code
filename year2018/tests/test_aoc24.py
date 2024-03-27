@@ -2,7 +2,7 @@ from inspect import cleandoc
 
 import pytest
 
-from ..aoc24 import Group, combat, parse, parse_traits, solve
+from year2018.aoc24 import Group, combat, parse, parse_traits, solve
 
 sample_str = cleandoc("""
     Immune System:
@@ -22,37 +22,93 @@ def sample():
 
 def test_parse(sample):
     assert sample == (
-        [Group(id_=1, team='Immune System', units=17, unit_hp=5390,
-               weak=('radiation', 'bludgeoning'), immune=(),
-               dmg=4507, dmg_type='fire', init=2),
-         Group(id_=2, team='Immune System', units=989, unit_hp=1274,
-               weak=('bludgeoning', 'slashing'), immune=('fire',),
-               dmg=25, dmg_type='slashing', init=3)],
-        [Group(id_=1, team='Infection', units=801, unit_hp=4706,
-               weak=('radiation',), immune=(),
-               dmg=116, dmg_type='bludgeoning', init=1),
-         Group(id_=2, team='Infection', units=4485, unit_hp=2961,
-               weak=('fire', 'cold'), immune=('radiation',),
-               dmg=12, dmg_type='slashing', init=4)]
+        [
+            Group(
+                id_=1,
+                team='Immune System',
+                units=17,
+                unit_hp=5390,
+                weak=('radiation', 'bludgeoning'),
+                immune=(),
+                dmg=4507,
+                dmg_type='fire',
+                init=2,
+            ),
+            Group(
+                id_=2,
+                team='Immune System',
+                units=989,
+                unit_hp=1274,
+                weak=('bludgeoning', 'slashing'),
+                immune=('fire',),
+                dmg=25,
+                dmg_type='slashing',
+                init=3,
+            ),
+        ],
+        [
+            Group(
+                id_=1,
+                team='Infection',
+                units=801,
+                unit_hp=4706,
+                weak=('radiation',),
+                immune=(),
+                dmg=116,
+                dmg_type='bludgeoning',
+                init=1,
+            ),
+            Group(
+                id_=2,
+                team='Infection',
+                units=4485,
+                unit_hp=2961,
+                weak=('fire', 'cold'),
+                immune=('radiation',),
+                dmg=12,
+                dmg_type='slashing',
+                init=4,
+            ),
+        ],
     )
 
 
-@pytest.mark.parametrize("s, traits", (
-        ('', {'weak': (), 'immune': ()}),
-        ('weak to radiation',
-         {'weak': ('radiation',), 'immune': ()}),
-        ('weak to radiation, bludgeoning',
-         {'weak': ('radiation', 'bludgeoning'), 'immune': ()}),
-        ('immune to cold',
-         {'weak': (), 'immune': ('cold',)}),
-        ('immune to cold, radiation',
-         {'weak': (), 'immune': ('cold', 'radiation')}),
-        ('weak to radiation; immune to cold',
-         {'weak': ('radiation',), 'immune': ('cold',)}),
-        ('weak to radiation, bludgeoning; immune to cold, slashing',
-         {'weak': ('radiation', 'bludgeoning'),
-          'immune': ('cold', 'slashing')})
-))
+@pytest.mark.parametrize(
+    's, traits',
+    (
+        (
+            '',
+            {'weak': (), 'immune': ()},
+        ),
+        (
+            'weak to radiation',
+            {'weak': ('radiation',), 'immune': ()},
+        ),
+        (
+            'weak to radiation, bludgeoning',
+            {'weak': ('radiation', 'bludgeoning'), 'immune': ()},
+        ),
+        (
+            'immune to cold',
+            {'weak': (), 'immune': ('cold',)},
+        ),
+        (
+            'immune to cold, radiation',
+            {'weak': (), 'immune': ('cold', 'radiation')},
+        ),
+        (
+            'weak to radiation; immune to cold',
+            {'weak': ('radiation',), 'immune': ('cold',)},
+        ),
+        (
+            'weak to radiation, bludgeoning; immune to cold, slashing',
+            {
+                'weak': ('radiation', 'bludgeoning'),
+                'immune': ('cold', 'slashing'),
+            },
+        ),
+    ),
+)
 def test_parse_traits(s, traits):
     assert parse_traits(s) == traits
 

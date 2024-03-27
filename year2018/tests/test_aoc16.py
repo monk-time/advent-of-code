@@ -2,7 +2,7 @@ from inspect import cleandoc
 
 import pytest
 
-from ..aoc16 import execute, matches, opcodes, parse, solve
+from year2018.aoc16 import execute, matches, opcodes, parse, solve
 
 
 def test_parse():
@@ -23,9 +23,9 @@ def test_parse():
     assert parse(s) == (
         [
             ((1, 0, 2, 0), (4, 1, 0, 1), (1, 1, 2, 0)),
-            ((2, 3, 1, 2), (2, 1, 0, 1), (2, 1, 1, 2))
+            ((2, 3, 1, 2), (2, 1, 0, 1), (2, 1, 1, 2)),
         ],
-        [(9, 3, 3, 0), (9, 1, 0, 1)]
+        [(9, 3, 3, 0), (9, 1, 0, 1)],
     )
 
 
@@ -49,7 +49,7 @@ samples = (
 )
 
 
-@pytest.mark.parametrize("args, reg_after", samples)
+@pytest.mark.parametrize('args, reg_after', samples)
 def test_execute(args, reg_after):
     instr, reg = args
     instr = (opcodes.index(instr[0]), *instr[1:])

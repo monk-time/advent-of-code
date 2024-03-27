@@ -1,6 +1,6 @@
 import networkx as nx
 
-from ..aoc06 import count_min_transfers, count_orbits, parse, solve
+from year2019.aoc06 import count_min_transfers, count_orbits, parse, solve
 
 
 def test_count_orbits():

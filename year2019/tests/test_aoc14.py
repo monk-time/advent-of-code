@@ -2,9 +2,9 @@ from inspect import cleandoc
 
 import pytest
 
-from ..aoc14 import (
-    calc_ore_for_fuel,
+from year2019.aoc14 import (
     calc_fuel_from_trillion_ore,
+    calc_ore_for_fuel,
     parse,
     solve,
 )

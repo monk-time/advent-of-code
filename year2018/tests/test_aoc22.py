@@ -2,7 +2,7 @@ from inspect import cleandoc
 
 import pytest
 
-from ..aoc22 import Map, calc_risk, shortest_path, solve
+from year2018.aoc22 import Map, calc_risk, shortest_path, solve
 
 sample_str = cleandoc("""
     depth: 510

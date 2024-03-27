@@ -21,7 +21,9 @@ def high_score(s: str) -> int:
 
 def solve():
     puzzle = read_puzzle()
-    return high_score(puzzle), high_score(puzzle.replace(' points', '00 points'))
+    return high_score(puzzle), high_score(
+        puzzle.replace(' points', '00 points')
+    )
 
 
 if __name__ == '__main__':

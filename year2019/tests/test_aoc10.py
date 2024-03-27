@@ -1,9 +1,8 @@
-import pytest
-
 from inspect import cleandoc
 
+import pytest
 
-from ..aoc10 import (
+from year2019.aoc10 import (
     count_visible_from,
     find_best_location,
     parse,
@@ -104,7 +103,7 @@ m5 = parse(
 
 @pytest.mark.parametrize(
     'x, y, expected',
-    [
+    (
         (1, 0, 7),
         (4, 0, 7),
         (0, 2, 6),
@@ -115,7 +114,7 @@ m5 = parse(
         (4, 3, 7),
         (3, 4, 8),
         (4, 4, 7),
-    ],
+    ),
 )
 def test_count_visible_from(x, y, expected):
     assert count_visible_from(x, y, m1) == expected
@@ -123,13 +122,13 @@ def test_count_visible_from(x, y, expected):
 
 @pytest.mark.parametrize(
     'test_map, expected',
-    [
+    (
         (m1, (8, 3, 4)),
         (m2, (33, 5, 8)),
         (m3, (35, 1, 2)),
         (m4, (41, 6, 3)),
         (m5, (210, 11, 13)),
-    ],
+    ),
 )
 def test_find_best_location(test_map, expected):
     assert find_best_location(test_map) == expected

@@ -1,4 +1,4 @@
-from ..aoc01 import calibrate, calibrate_until_repeat, parse, solve
+from year2018.aoc01 import calibrate, calibrate_until_repeat, parse, solve
 
 
 def test_parse():

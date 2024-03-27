@@ -1,9 +1,10 @@
-from enum import StrEnum
 import re
-from typing import Iterable, Literal, get_args
+from collections.abc import Iterable
+from enum import StrEnum
+from typing import Literal, cast, get_args
 
 from helpers import read_puzzle
-from intcode import Computer, parse, Intcode
+from intcode import Computer, Intcode, parse
 
 
 class Tile(StrEnum):
@@ -49,8 +50,8 @@ def parse_tiles(lines: list[str]) -> TileMap:
 
 
 def render_tiles(tiles: TileMap) -> list[str]:
-    height = max(y for _, y in tiles.keys()) + 1  # coords are 0-based
-    width = max(x for x, _ in tiles.keys()) + 1
+    height = max(y for _, y in tiles) + 1  # coords are 0-based
+    width = max(x for x, _ in tiles) + 1
     return [
         ''.join(tiles[(x, y)] for x in range(width)) for y in range(height)
     ]
@@ -100,6 +101,7 @@ def turn(direction: Direction):
 def walk_through_all(tiles: TileMap) -> Iterable[int | str]:
     pos = next(pos for pos, tile in tiles.items() if tile.is_direction())
     direction = tiles[pos]
+    direction = cast(Direction, direction)
     steps = 0
     while True:
         next_pos = step(pos, direction)
@@ -135,6 +137,7 @@ def execute_full_walk(program: Intcode) -> int:
     path += ','
     regex = r'^(.{1,21})\1*(.{1,21})(?:\1|\2)*(.{1,21})(?:\1|\2|\3)*$'
     match = re.match(regex, path)
+    assert match is not None
     f_a, f_b, f_c = (g[:-1] for g in match.groups())
     f_main = path.replace(f_a, 'A').replace(f_b, 'B').replace(f_c, 'C')[:-1]
     print(f'Main function: {f_main}')

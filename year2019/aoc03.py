@@ -22,7 +22,7 @@ step_by_dir = {
 
 def trace_wire(wire: Wire) -> dict[Coord, int]:
     cursor = (0, 0)
-    mem = {cursor: 0}
+    mem: dict[Coord, int] = {cursor: 0}
     counter = 0
     for dir_, steps in wire:
         dx, dy = step_by_dir[dir_]

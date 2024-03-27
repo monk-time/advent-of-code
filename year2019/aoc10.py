@@ -1,6 +1,6 @@
+from collections.abc import Iterable
 from itertools import product
 from math import gcd
-from typing import Iterable
 
 from helpers import read_puzzle
 
@@ -12,7 +12,7 @@ def parse(s: str) -> Map:
     return [list(line) for line in s.split()]
 
 
-def get_shifts(x: int, y: int, m: Map) -> Iterable[int]:
+def get_shifts(x: int, y: int, m: Map) -> Iterable[tuple[int, int]]:
     height, width = len(m), len(m[0])
     for dx, dy in product(
         range(-width + 1, width), range(-height + 1, height)
@@ -43,7 +43,7 @@ def count_visible_from(x: int, y: int, m: Map) -> int:
 def find_best_location(m: Map) -> tuple[int, int, int]:
     height, width = len(m), len(m[0])
     max_count, max_x, max_y = 0, 0, 0
-    for x, y in product(range(0, width), range(0, height)):
+    for x, y in product(range(width), range(height)):
         if m[y][x] != '#':
             continue
         count = count_visible_from(x, y, m)
@@ -52,24 +52,29 @@ def find_best_location(m: Map) -> tuple[int, int, int]:
     return max_count, max_x, max_y
 
 
+def sign(x: int) -> int:
+    return (x > 0) - (x < 0)
+
+
+# fmt: off
+angles: list[tuple[int, int]] = [
+    ( 0, -1),
+    ( 1, -1),
+    ( 1,  0),
+    ( 1,  1),
+    ( 0,  1),
+    (-1,  1),
+    (-1,  0),
+    (-1, -1),
+]
+# fmt: on
+
+
 def radial_sort(t: tuple[int, int]) -> tuple[int, float]:
     dx, dy = t
-    if dx == 0 and dy < 0:
-        return 0, 0
-    if dx > 0 > dy:
-        return 1, dy / dx
-    if dx > 0 and dy == 0:
-        return 2, 0
-    if dx > 0 and dy > 0:
-        return 3, dy / dx
-    if dx == 0 and dy > 0:
-        return 4, 0
-    if dx < 0 < dy:
-        return 5, dy / dx
-    if dx < 0 and dy == 0:
-        return 6, 0
-    if dx < 0 and dy < 0:
-        return 7, dy / dx
+    key_angle = angles.index((sign(dx), sign(dy)))
+    key_value = 0 if key_angle % 2 == 0 else dy / dx
+    return key_angle, key_value
 
 
 def get_radial_shifts(x: int, y: int, m: Map) -> Iterable[Coord]:

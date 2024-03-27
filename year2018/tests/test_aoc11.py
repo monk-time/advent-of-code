@@ -1,4 +1,4 @@
-from ..aoc11 import max_square, power_level, solve, summed_area_table
+from year2018.aoc11 import max_square, power_level, solve, summed_area_table
 
 
 def test_power_level():

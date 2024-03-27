@@ -1,27 +1,27 @@
+from collections.abc import Iterable
 from dataclasses import dataclass, field
-from typing import Iterable, List, Optional
 
 from helpers import read_puzzle
 
 
 @dataclass
 class Node:
-    end: Optional[int] = None
-    children: List['Node'] = field(default_factory=list)
-    meta: List[int] = field(default_factory=list)
+    end: int | None = None
+    children: list['Node'] = field(default_factory=list)
+    meta: list[int] = field(default_factory=list)
 
 
 def parse_tree(s: str):
-    def parse_node(start):
-        n_children, n_meta = nums[start:start + 2]
+    def parse_node(start: int):
+        n_children, n_meta = nums[start : start + 2]
         root = Node()
         start += 2
         for _ in range(n_children):
             child = parse_node(start)
             root.children.append(child)
-            start = child.end + 1
+            start = child.end + 1  # type: ignore
         root.end = start + n_meta - 1
-        root.meta = nums[start:root.end + 1]
+        root.meta = nums[start : root.end + 1]
         return root
 
     nums = [int(n) for n in s.split()]
@@ -35,10 +35,12 @@ def metadata_rec(node: Node) -> Iterable[int]:
 
 
 def metadata_as_indices(node: Node) -> int:
-    children = (node.children[i - 1] for i in node.meta
-                if 0 < i <= len(node.children))
-    return sum(node.meta if not node.children else
-               map(metadata_as_indices, children))
+    children = (
+        node.children[i - 1] for i in node.meta if 0 < i <= len(node.children)
+    )
+    return sum(
+        node.meta if not node.children else map(metadata_as_indices, children)
+    )
 
 
 def solve():

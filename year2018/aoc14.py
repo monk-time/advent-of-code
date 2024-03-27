@@ -1,9 +1,9 @@
-from typing import Iterable, List, Tuple
+from collections.abc import Iterable
 
 from helpers import read_puzzle
 
 
-def scoreboard() -> Iterable[Tuple[List[int], int]]:
+def scoreboard() -> Iterable[tuple[list[int], int]]:
     board = [3, 7]
     elf_a, elf_b = 0, 1
     while True:
@@ -15,19 +15,21 @@ def scoreboard() -> Iterable[Tuple[List[int], int]]:
         elf_b = (elf_b + cur_b + 1) % len(board)
 
 
-def improve(num: int) -> str:
+def improve(num: int) -> str | None:
     for board, _ in scoreboard():
         if len(board) >= num + 10:
-            return ''.join(map(str, board[num:num + 10]))
+            return ''.join(map(str, board[num : num + 10]))
+    return None
 
 
-def recipes_to_the_left(s: str) -> int:
+def recipes_to_the_left(s: str) -> int | None:
     target, t = list(map(int, s)), len(s)
     for board, total in scoreboard():
-        if total >= 10 and board[-t - 1:-1] == target:
+        if total >= 10 and board[-t - 1 : -1] == target:
             return len(board) - t - 1
-        elif board[-t:] == target:
+        if board[-t:] == target:
             return len(board) - t
+    return None
 
 
 def solve():

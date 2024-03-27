@@ -12,8 +12,11 @@ draw = ImageDraw.Draw(im, 'RGBA')
 
 claims = parse_puzzle()
 for c in claims:
-    color = '#{:06x}AA'.format(random.randint(0, 0xFFFFFF))
-    draw.rectangle((c.left, c.top, c.left + c.width - 1, c.top + c.height - 1),
-                   fill=color, outline='black')
+    color = f'#{random.randint(0, 0xFFFFFF):06x}AA'
+    draw.rectangle(
+        (c.left, c.top, c.left + c.width - 1, c.top + c.height - 1),
+        fill=color,
+        outline='black',
+    )
 
-im.save('aoc03.png', 'PNG')
+im.save('aoc033.png', 'PNG')

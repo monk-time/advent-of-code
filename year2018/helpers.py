@@ -2,11 +2,11 @@ import inspect
 import re
 import timeit
 from pathlib import Path
-from typing import List, Optional
 
 
-def read_puzzle(number: Optional[int] = None, year: Optional[int] = 2018,
-                stripchars=None) -> str:
+def read_puzzle(
+    number: int | None = None, year: int | None = 2018, stripchars=None
+) -> str:
     """Read the contents of the input file for the current puzzle.
 
     The number of the puzzle is determined by the filename of the caller,
@@ -19,18 +19,22 @@ def read_puzzle(number: Optional[int] = None, year: Optional[int] = 2018,
         caller: str = caller_path.stem.replace('test_', '')
         match = re.search(r'\d+', caller)
         if not match:
-            raise FileNotFoundError('Cannot find the relevant puzzle input file. '
-                                    'Make sure this function is called from a file '
-                                    'with a puzzle number in the filename.')
+            msg = (
+                'Cannot find the relevant puzzle input file. '
+                'Make sure this function is called from a file '
+                'with a puzzle number in the filename.'
+            )
+            raise FileNotFoundError(msg)
         number = int(match.group())
-        year_dir = next(parent for parent in caller_path.parents
-                        if 'year' in parent.stem)
+        year_dir = next(
+            parent for parent in caller_path.parents if 'year' in parent.stem
+        )
     puzzle_input = year_dir / 'inputs' / f'aoc{number:02d}.txt'
     return puzzle_input.read_text(encoding='utf-8').strip(stripchars)
 
 
 def timed(f):
-    """Decorator for measuring function execution time.
+    """Decorate a function to measure its execution time.
 
     Use as a wrapper for recursive functions.
     """
@@ -41,7 +45,7 @@ def timed(f):
         total = timeit.default_timer() - start
         # Recreate function call string
         args_str = ', '.join(map(repr, args))
-        kwargs_str = ', '.join(f'{k}={repr(v)}' for k, v in kwargs.items())
+        kwargs_str = ', '.join(f'{k}={v!r}' for k, v in kwargs.items())
         # 'a, b' if both not '' else 'a' or 'b'
         args_str = ', '.join(filter(None, [args_str, kwargs_str]))
         dots = '...' if len(args_str) > 50 else ''
@@ -53,14 +57,15 @@ def timed(f):
 
 def print_peak_memory_used():
     import psutil
+
     max_memory = round(psutil.Process().memory_info().peak_wset / 1024 / 1024)
     print(f'Peak memory used: {max_memory} MB')
 
 
-def border_wrap(lines: List[str]) -> str:
+def border_wrap(lines: list[str]) -> str:
     """Draw a border around an equally sized set of lines."""
     n = len(lines[0])
-    upper = f'┌{"─" * n}┐'
-    lower = f'└{"─" * n}┘'
-    lines = (f'│{"".join(s)}│' for s in lines)
-    return '\n'.join((upper, *lines, lower))
+    upper = f'┌{'─' * n}┐'
+    lower = f'└{'─' * n}┘'
+    middle = (f'│{''.join(s)}│' for s in lines)
+    return '\n'.join((upper, *middle, lower))

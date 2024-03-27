@@ -2,7 +2,7 @@ from inspect import cleandoc
 
 import pytest
 
-from ..aoc15 import State, Unit, outcome, play_round, solve
+from year2018.aoc15 import State, Unit, outcome, play_round, solve
 
 
 def test_unit_is_enemy():
@@ -29,54 +29,63 @@ def st_sample():
 
 @pytest.fixture
 def st_cross():
-    return State.fromstring(cleandoc("""
-        #####
-        #.G.#
-        #GEG#
-        #.G.#
-        #####
-    """))
+    return State.fromstring(
+        cleandoc("""
+            #####
+            #.G.#
+            #GEG#
+            #.G.#
+            #####
+        """)
+    )
 
 
 @pytest.fixture
 def st_move1():
-    return State.fromstring(cleandoc("""
-        #######
-        #E..G.#
-        #...#.#
-        #.G.#G#
-        #######
-    """))
+    return State.fromstring(
+        cleandoc("""
+            #######
+            #E..G.#
+            #...#.#
+            #.G.#G#
+            #######
+        """)
+    )
 
 
 @pytest.fixture
 def st_move2():
-    return State.fromstring(cleandoc("""
-        #######
-        #.E...#
-        #.....#
-        #...G.#
-        #######
-    """))
+    return State.fromstring(
+        cleandoc("""
+            #######
+            #.E...#
+            #.....#
+            #...G.#
+            #######
+        """)
+    )
 
 
 @pytest.fixture
 def st_move_big():
-    return State.fromstring(cleandoc("""
-        #########
-        #G..G..G#
-        #.......#
-        #.......#
-        #G..E..G#
-        #.......#
-        #.......#
-        #G..G..G#
-        #########
-    """))
+    return State.fromstring(
+        cleandoc("""
+            #########
+            #G..G..G#
+            #.......#
+            #.......#
+            #G..E..G#
+            #.......#
+            #.......#
+            #G..G..G#
+            #########
+        """)
+    )
 
 
 def test_state_fromstring(st_sample):
-    assert st_sample.height == 5 and st_sample.width == 7
+    assert st_sample.height == 5
+    assert st_sample.width == 7
     assert st_sample.map[(0, 0)] == '#'
     assert st_sample.map[(1, 1)] == '.'
     assert st_sample.map[(1, 2)] == Unit((1, 2), 'G')
@@ -88,7 +97,7 @@ def test_state_fromstring(st_sample):
         Unit((2, 3), 'G'),
         Unit((2, 5), 'E'),
         Unit((3, 2), 'G'),
-        Unit((3, 4), 'E')
+        Unit((3, 4), 'E'),
     ]
 
 
@@ -152,7 +161,7 @@ def test_state_find_path(st_move1, st_move2, st_move_big):
 
 
 def test_state_move(st_move1):
-    unit, targets = st_move1.units[0], st_move1.units[1:]
+    unit, _targets = st_move1.units[0], st_move1.units[1:]
     st_move1.move(unit)
     assert str(st_move1) == cleandoc("""
         #######
@@ -164,16 +173,18 @@ def test_state_move(st_move1):
 
 
 def test_state_move_tricky():
-    st = State.fromstring(cleandoc("""
-        #######
-        ###...#
-        ###.#.#
-        #.E.#.#
-        #.###G#
-        #.....#
-        #######
-    """))
-    e, g = st.units
+    st = State.fromstring(
+        cleandoc("""
+            #######
+            ###...#
+            ###.#.#
+            #.E.#.#
+            #.###G#
+            #.....#
+            #######
+        """)
+    )
+    e, _g = st.units
     st.move(e)
     assert str(st) == cleandoc("""
         #######
@@ -260,13 +271,15 @@ def test_play_round_no_moves(st_cross):
     """)
 
     # Check that reachable targets with the lowest hp have priority
-    st = State.fromstring(cleandoc("""
-        ######
-        #.G..#
-        #GEGE#
-        #.GE.#
-        ######
-    """))
+    st = State.fromstring(
+        cleandoc("""
+            ######
+            #.G..#
+            #GEGE#
+            #.GE.#
+            ######
+        """)
+    )
 
     st = play_round(st)
     assert st.__str__(hp=True) == cleandoc("""
@@ -361,7 +374,7 @@ samples = [
         #.G...G.#
         #.....G.#
         #########
-    """
+    """,
 ]
 
 outcomes1 = [27730, 36334, 39514, 27755, 28944, 18740]
@@ -432,12 +445,12 @@ def test_play_round_full():
     assert st.hash() == outcomes1[0]
 
 
-@pytest.mark.parametrize("puzzle, num_outcome", zip(samples, outcomes1))
+@pytest.mark.parametrize('puzzle, num_outcome', zip(samples, outcomes1))
 def test_outcome(puzzle, num_outcome):
     assert outcome(cleandoc(puzzle)) == num_outcome
 
 
-@pytest.mark.parametrize("puzzle, num_outcome", zip(samples, outcomes2))
+@pytest.mark.parametrize('puzzle, num_outcome', zip(samples, outcomes2))
 def test_outcome_part2(puzzle, num_outcome):
     assert outcome(cleandoc(puzzle), force_elf_victory=True) == num_outcome
 

@@ -1,7 +1,14 @@
 from inspect import cleandoc
-from typing import List
 
-from ..aoc13 import Cart, emulate, look_ahead, move, next_tick, parse, solve
+from year2018.aoc13 import (
+    Cart,
+    emulate,
+    look_ahead,
+    move,
+    next_tick,
+    parse,
+    solve,
+)
 
 sample = cleandoc(r"""
     /->-\        
@@ -25,7 +32,10 @@ sample2 = cleandoc(r"""
 
 def test_parse():
     carts, tracks = parse(sample)
-    assert carts == [Cart(x=2, y=0, dir='>', turn=0), Cart(x=9, y=3, dir='v', turn=0)]
+    assert carts == [
+        Cart(x=2, y=0, dir='>', turn=0),
+        Cart(x=9, y=3, dir='v', turn=0),
+    ]
     assert '\n'.join(tracks) == cleandoc(r"""
         /---\        
         |   |  /----\
@@ -85,10 +95,10 @@ def test_move_intersection_counterclockwise_turn():
     assert move(Cart(x=1, y=2, dir='v', turn=0), '+') == Cart(1, 3, '>', 1)
 
 
-def state_to_str(carts: List[Cart], tracks: List[str]) -> str:
+def state_to_str(carts: list[Cart], tracks: list[str]) -> str:
     tracks = tracks.copy()
     for c in carts:
-        tracks[c.y] = tracks[c.y][:c.x] + c.dir + tracks[c.y][c.x + 1:]
+        tracks[c.y] = tracks[c.y][: c.x] + c.dir + tracks[c.y][c.x + 1 :]
     return '\n'.join(tracks)
 
 

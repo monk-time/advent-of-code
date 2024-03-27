@@ -1,7 +1,7 @@
 import re
 from copy import deepcopy
 from dataclasses import dataclass
-from typing import Dict, List, Match, Optional, Tuple
+from re import Match
 
 from helpers import read_puzzle
 
@@ -12,8 +12,8 @@ class Group:
     team: str
     units: int
     unit_hp: int
-    weak: Tuple[str, ...]
-    immune: Tuple[str, ...]
+    weak: tuple[str, ...]
+    immune: tuple[str, ...]
     dmg: int
     dmg_type: str
     init: int
@@ -21,11 +21,13 @@ class Group:
 
     @classmethod
     def frommatch(cls, m: Match, **kwargs) -> 'Group':
-        d = {k: int(v) if v and v.isdigit() else v
-             for k, v in m.groupdict().items()}
-        traits = parse_traits(d['traits'])
+        d = {
+            k: int(v) if v and v.isdigit() else v
+            for k, v in m.groupdict().items()
+        }
+        traits = parse_traits(d['traits'])  # type: ignore
         del d['traits']
-        return Group(**d, **kwargs, **traits)
+        return Group(**d, **kwargs, **traits)  # type: ignore
 
     def __hash__(self):
         return hash(self.name)
@@ -46,24 +48,27 @@ class Group:
         return self.power
 
 
-def parse(s: str) -> Tuple[List[Group], List[Group]]:
+def parse(s: str) -> tuple[list[Group], list[Group]]:
     regex = r"""^
         (?P<units>\d+)\ units.+?
-        (?P<unit_hp>\d+)\ hit\ points\ 
+        (?P<unit_hp>\d+)\ hit\ points\ {1}
         (?:\((?P<traits>.+?)\))?.+?
         (?P<dmg>\d+)\ (?P<dmg_type>\w+?)\ damage.+?
         (?P<init>\d+)
         $"""
     flags = re.MULTILINE | re.VERBOSE
     immune, infect = (
-        [Group.frommatch(m, id_=i, team=['Immune System', 'Infection'][j])
-         for i, m in enumerate(re.finditer(regex, s2, flags), start=1)]
-        for j, s2 in enumerate(s.split('\n\n')))
+        [
+            Group.frommatch(m, id_=i, team=['Immune System', 'Infection'][j])
+            for i, m in enumerate(re.finditer(regex, s2, flags), start=1)
+        ]
+        for j, s2 in enumerate(s.split('\n\n'))
+    )
     return immune, infect
 
 
-def parse_traits(s: str) -> Dict[str, Tuple[str]]:
-    d = {'weak': (), 'immune': ()}
+def parse_traits(s: str) -> dict[str, tuple[str, ...]]:
+    d: dict[str, tuple[str, ...]] = {'weak': (), 'immune': ()}
     if s:
         for s2 in s.split('; '):
             trait, dmg_types = s2.split(' to ')
@@ -71,7 +76,7 @@ def parse_traits(s: str) -> Dict[str, Tuple[str]]:
     return d
 
 
-def fight(immune: List[Group], infect: List[Group]):
+def fight(immune: list[Group], infect: list[Group]):
     teams = {'Immune System': immune, 'Infection': infect}
     enemy_teams = {'Immune System': infect, 'Infection': immune}
     targets = {}
@@ -101,7 +106,7 @@ def fight(immune: List[Group], infect: List[Group]):
     return immune, infect, is_stalemate
 
 
-def combat(immune: List[Group], infect: List[Group]) -> Optional[int]:
+def combat(immune: list[Group], infect: list[Group]) -> int | None:
     while immune and infect:
         immune, infect, is_stalemate = fight(immune, infect)
         if is_stalemate:
@@ -109,7 +114,7 @@ def combat(immune: List[Group], infect: List[Group]) -> Optional[int]:
     return sum(g.units for g in (*immune, *infect))
 
 
-def min_boost(immune: List[Group], infect: List[Group]) -> int:
+def min_boost(immune: list[Group], infect: list[Group]) -> int:
     boost = 0
     while True:
         immune2, infect2 = deepcopy(immune), deepcopy(infect)

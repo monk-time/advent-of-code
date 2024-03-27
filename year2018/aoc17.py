@@ -1,31 +1,30 @@
 import re
 from collections import defaultdict, deque
 from dataclasses import dataclass
-from typing import Tuple
 
 from helpers import read_puzzle
 
 
 @dataclass(frozen=True)
-class P:
+class Point:
     y: int
     x: int
 
     @property
     def up(self):
-        return P(self.y - 1, self.x)
+        return Point(self.y - 1, self.x)
 
     @property
     def down(self):
-        return P(self.y + 1, self.x)
+        return Point(self.y + 1, self.x)
 
     @property
     def left(self):
-        return P(self.y, self.x - 1)
+        return Point(self.y, self.x - 1)
 
     @property
     def right(self):
-        return P(self.y, self.x + 1)
+        return Point(self.y, self.x + 1)
 
 
 class Map(defaultdict):
@@ -33,61 +32,62 @@ class Map(defaultdict):
         super().__init__(lambda: '.')
         for line in s.splitlines():
             regex = r'([xy])=(\d+), ([xy])=(\d+)\.\.(\d+)'
-            dim1, n1, dim2, n2, n3 = re.match(regex, line).groups()
+            dim1, n1, _dim2, n2, n3 = re.match(regex, line).groups()  # type: ignore
             x = int(n1)
             for y in range(int(n2), int(n3) + 1):
-                self[P(y, x) if dim1 == 'x' else P(x, y)] = '#'
+                self[Point(y, x) if dim1 == 'x' else Point(x, y)] = '#'
 
-        self.min_y = min(self.keys(), key=lambda p: p.y).y
-        self.max_y = max(self.keys(), key=lambda p: p.y).y
+        self.min_y = min(self.keys(), key=lambda point: point.y).y
+        self.max_y = max(self.keys(), key=lambda point: point.y).y
 
     def __str__(self):
         """Get a text representation of the map."""
-        min_x = min(self.keys(), key=lambda p: p.x).x
-        max_x = max(self.keys(), key=lambda p: p.x).x
-        lines = [''.join(self[P(i, j)]
-                         for j in range(min_x, max_x + 1))
-                 for i in range(self.min_y, self.max_y + 1)]
+        min_x = min(self.keys(), key=lambda point: point.x).x
+        max_x = max(self.keys(), key=lambda point: point.x).x
+        lines = [
+            ''.join(self[Point(i, j)] for j in range(min_x, max_x + 1))
+            for i in range(self.min_y, self.max_y + 1)
+        ]
         return '\n'.join(lines)
 
 
-def add_water(m: Map):
-    queue = deque((P(1, 500),))
+def add_water(m: Map):  # noqa: C901
+    queue = deque((Point(1, 500),))
     while queue:
-        p = queue.popleft()
+        point = queue.popleft()
         # Fall down as far as possible
-        while m[p] == '.' and p.y <= m.max_y:
-            m[p] = '|'
-            p = p.down
-        if p.y > m.max_y:
+        while m[point] == '.' and point.y <= m.max_y:
+            m[point] = '|'
+            point = point.down
+        if point.y > m.max_y:
             continue
-        if m[p] in '~#':
-            p = p.up
-        if m[p.down] not in '~#':
+        if m[point] in '~#':
+            point = point.up
+        if m[point.down] not in '~#':
             continue
-        l, r = p, p
+        left, right = point, point
         # Find the left wall or edge
-        while m[l.down.left] in '~#' and m[l.left] in '|.':
-            l = l.left
-            m[l] = '|'
+        while m[left.down.left] in '~#' and m[left.left] in '|.':
+            left = left.left
+            m[left] = '|'
         # Find the right wall or edge
-        while m[r.down.right] in '~#' and m[r.right] in '|.':
-            r = r.right
-            m[r] = '|'
+        while m[right.down.right] in '~#' and m[right.right] in '|.':
+            right = right.right
+            m[right] = '|'
         # If surrounded by wall, fill the layer with water
-        if m[l.left] not in '|.' and m[r.right] not in '|.':
-            for x in range(l.x, r.x + 1):
-                m[P(p.y, x)] = '~'
-            queue.append(p.up)
+        if m[left.left] not in '|.' and m[right.right] not in '|.':
+            for x in range(left.x, right.x + 1):
+                m[Point(point.y, x)] = '~'
+            queue.append(point.up)
         # Add edges to the queue
-        if m[l.left] in '|.':
-            queue.append(l.left)
-        if m[r.right] in '|.':
-            queue.append(r.right)
+        if m[left.left] in '|.':
+            queue.append(left.left)
+        if m[right.right] in '|.':
+            queue.append(right.right)
 
 
-def count_wet(m: Map) -> Tuple[int, int]:
-    wet = [x for p, x in m.items() if p.y >= m.min_y]
+def count_wet(m: Map) -> tuple[int, int]:
+    wet = [x for point, x in m.items() if point.y >= m.min_y]
     sand = sum(x == '|' for x in wet)
     water = sum(x == '~' for x in wet)
     return sand + water, water

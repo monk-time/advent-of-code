@@ -1,6 +1,6 @@
 import pytest
 
-from ..aoc09 import high_score, solve
+from year2018.aoc09 import high_score, solve
 
 samples = [
     ('9 players; last marble is worth 25 points', 32),
@@ -12,7 +12,7 @@ samples = [
 ]
 
 
-@pytest.mark.parametrize("input_str, result", samples)
+@pytest.mark.parametrize('input_str, result', samples)
 def test_high_score(input_str, result):
     assert high_score(input_str) == result
 

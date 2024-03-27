@@ -5,7 +5,7 @@ from helpers import read_puzzle, timed
 
 PATTERN = (0, 1, 0, -1)
 
-Signal = tuple[int]
+Signal = tuple[int, ...]
 
 
 def parse(s: str) -> Signal:
@@ -22,11 +22,11 @@ def pattern(length: int, times: int) -> Signal:
     return tuple(islice(looped, 1, length + 1))
 
 
-def get_patterns(length: int) -> tuple[Signal]:
+def get_patterns(length: int) -> tuple[Signal, ...]:
     return tuple(pattern(length, i) for i in range(1, length + 1))
 
 
-def apply_phase_of_fft(signal: Signal, patterns: tuple[Signal]) -> Signal:
+def apply_phase_of_fft(signal: Signal, patterns: tuple[Signal, ...]) -> Signal:
     n = len(signal)
     apply_pattern = lambda i: starmap(mul, zip(signal[i:], patterns[i][i:]))
     get_digit = lambda i: abs(sum(apply_pattern(i))) % 10
@@ -35,7 +35,7 @@ def apply_phase_of_fft(signal: Signal, patterns: tuple[Signal]) -> Signal:
 
 def apply_n_phases(signal: Signal, n: int) -> Signal:
     patterns = get_patterns(len(signal))
-    for i in range(n):
+    for _ in range(n):
         signal = apply_phase_of_fft(signal, patterns)
     return signal[:8]
 
@@ -43,10 +43,10 @@ def apply_n_phases(signal: Signal, n: int) -> Signal:
 def real_signal(signal: Signal) -> Signal:
     input_signal = signal * 10_000
     offset = int(to_str(signal[:7]))
-    signal = reversed(input_signal[offset:])
+    next_signal = reversed(input_signal[offset:])
     for _ in range(100):
-        signal = accumulate(signal, lambda a, b: (a + b) % 10)
-    return tuple(islice(reversed(tuple(signal)), 8))
+        next_signal = accumulate(next_signal, lambda a, b: (a + b) % 10)
+    return tuple(islice(reversed(tuple(next_signal)), 8))
 
 
 @timed

@@ -1,6 +1,5 @@
 from itertools import product
 from multiprocessing import Pool
-from typing import List
 
 from helpers import read_puzzle
 
@@ -11,7 +10,7 @@ def power_level(serial: int, x: int, y: int) -> int:
     return ((x + 10) * y + serial) * (x + 10) // 100 % 10 - 5
 
 
-Table = List[List[int]]
+Table = list[list[int]]
 
 
 def summed_area_table(serial: int) -> Table:
@@ -19,15 +18,21 @@ def summed_area_table(serial: int) -> Table:
     for x in range(1, GRID + 1):
         t.append([0])
         for y in range(1, GRID + 1):
-            t[x].append(power_level(serial, x, y) +
-                        t[x][y - 1] + t[x - 1][y] - t[x - 1][y - 1])
+            t[x].append(
+                power_level(serial, x, y)
+                + t[x][y - 1]
+                + t[x - 1][y]
+                - t[x - 1][y - 1]
+            )
     return t
 
 
 def max_square(t: Table, size: int):
     max_ = (float('-inf'), 0, 0, 0)
     for x, y in product(range(size, GRID + 1), repeat=2):
-        power = t[x][y] - t[x][y - size] - t[x - size][y] + t[x - size][y - size]
+        power = (
+            t[x][y] - t[x][y - size] - t[x - size][y] + t[x - size][y - size]
+        )
         if power > max_[0]:
             max_ = (power, x - size + 1, y - size + 1, size)
     return max_

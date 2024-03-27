@@ -1,7 +1,7 @@
 from collections import deque
+from collections.abc import Iterable
 from dataclasses import replace
 from enum import IntEnum
-from typing import Iterable
 
 from helpers import read_puzzle
 from intcode import Computer, Intcode, parse
@@ -25,7 +25,7 @@ def around(pos: Coord) -> Iterable[Coord]:
 def map_to_str(m: Map) -> str:
     symbols = ('#', '.', 'O', ' ')
     x_min, x_max, y_min, y_max = 0, 0, 0, 0
-    for y, x in m.keys():
+    for y, x in m:
         x_min = min(x_min, x)
         x_max = max(x_max, x)
         y_min = min(y_min, y)
@@ -40,7 +40,9 @@ def map_to_str(m: Map) -> str:
 def find_shortest_path_to_oxygen(program: Intcode) -> tuple[int, Map]:
     pos = (0, 0)
     visited: Map = {pos: Tile.EMPTY}
-    queue = deque([(0, pos, Computer(program))])
+    queue: deque[tuple[int, Coord, Computer]] = deque([
+        (0, pos, Computer(program))
+    ])
     steps_to_oxygen = 0
     while queue:
         depth, pos, comp = queue.popleft()
@@ -61,8 +63,9 @@ def find_shortest_path_to_oxygen(program: Intcode) -> tuple[int, Map]:
 
 def time_to_fill(m: Map) -> int:
     m = m.copy()
-    pos_oxygen = next(pos for pos in m if m[pos] is Tile.OXYGEN)
-    queue = deque([(0, pos_oxygen)])
+    time = 0
+    pos = next(pos for pos in m if m[pos] is Tile.OXYGEN)
+    queue: deque[tuple[int, Coord]] = deque([(time, pos)])
     while queue:
         time, pos = queue.popleft()
         for next_pos in around(pos):

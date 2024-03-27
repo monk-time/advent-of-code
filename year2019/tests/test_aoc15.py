@@ -1,4 +1,4 @@
-from ..aoc15 import solve
+from year2019.aoc15 import solve
 
 
 def test_solve():

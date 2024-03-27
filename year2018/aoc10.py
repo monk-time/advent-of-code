@@ -1,18 +1,19 @@
 import re
 from collections import namedtuple
-from typing import List, Tuple
 
 from helpers import read_puzzle
 
 Point = namedtuple('Point', 'x y dx dy')
-Points = List[Point]
+Points = list[Point]
 
 
 def parse(s: str) -> Points:
-    return [Point(*map(int, re.findall(r'-?\d+', l))) for l in s.splitlines()]
+    return [
+        Point(*map(int, re.findall(r'-?\d+', line))) for line in s.splitlines()
+    ]
 
 
-def dimensions(points: Points) -> Tuple[int, int, int, int]:
+def dimensions(points: Points) -> tuple[int, int, int, int]:
     min_x = min(p.x for p in points)
     max_x = max(p.x for p in points)
     min_y = min(p.y for p in points)
@@ -28,7 +29,7 @@ def points_to_str(points: Points) -> str:
     for p in points:
         x, y = p.x - min_x, p.y - min_y
         s = screen[y]
-        screen[y] = s[:x] + '#' + s[x + 1:]
+        screen[y] = s[:x] + '#' + s[x + 1 :]
     return '\n'.join(screen)
 
 

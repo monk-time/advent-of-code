@@ -2,16 +2,17 @@ import re
 from heapq import heappop, heappush
 from itertools import product
 from math import log2
-from typing import List, Tuple
 
 from helpers import read_puzzle
 
-Bot = Tuple[int, ...]
+Bot = tuple[int, ...]
 
 
-def parse(s: str) -> List[Bot]:
-    return [tuple(int(x) for x in re.findall(r'-?\d+', line))
-            for line in s.splitlines()]
+def parse(s: str) -> list[Bot]:
+    return [
+        tuple(int(x) for x in re.findall(r'-?\d+', line))
+        for line in s.splitlines()
+    ]
 
 
 def dist(a: Bot, b: Bot):
@@ -22,7 +23,7 @@ def is_in_range(source: Bot, other: Bot) -> bool:
     return (dist(source, other)) <= source[3]
 
 
-def count_in_range(bots: List[Bot]) -> int:
+def count_in_range(bots: list[Bot]) -> int:
     best_bot = max(bots, key=lambda b: b[3])
     return sum(is_in_range(best_bot, b) for b in bots)
 
@@ -43,7 +44,7 @@ def intersect_count(box, bots):
     return sum(1 for b in bots if does_intersect(box, b))
 
 
-def shortest_manhattan(bots: List[Bot]):
+def shortest_manhattan(bots: list[Bot]):
     # Find a box big enough to contain everything in range
     maxabscord = max(max(abs(b[i]) + b[3] for b in bots) for i in range(3))
     size = 2 ** int(log2(maxabscord))
@@ -51,7 +52,7 @@ def shortest_manhattan(bots: List[Bot]):
 
     workheap = [(-len(bots), -2 * size, 3 * size, initial_box)]
     while workheap:
-        (negreach, negsz, dist_to_orig, box_) = heappop(workheap)
+        (_negreach, negsz, dist_to_orig, box_) = heappop(workheap)
         if negsz == -1:
             return dist_to_orig
         newsz = negsz // -2
@@ -60,8 +61,10 @@ def shortest_manhattan(bots: List[Bot]):
             newbox1 = tuple(newbox0[i] + newsz for i in range(3))
             newbox = (newbox0, newbox1)
             newreach = intersect_count(newbox, bots)
-            heappush(workheap,
-                     (-newreach, -newsz, dist(newbox0, (0, 0, 0)), newbox))
+            heappush(
+                workheap, (-newreach, -newsz, dist(newbox0, (0, 0, 0)), newbox)
+            )
+    return None
 
 
 def solve():

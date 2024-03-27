@@ -2,14 +2,14 @@ from itertools import pairwise
 
 import pytest
 
-from ..aoc16 import (
+from year2019.aoc16 import (
     apply_n_phases,
     apply_phase_of_fft,
+    get_patterns,
     parse,
     pattern,
-    solve,
     real_signal,
-    get_patterns,
+    solve,
 )
 
 

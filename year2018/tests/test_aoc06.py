@@ -1,8 +1,16 @@
+from collections.abc import Iterable
 from string import ascii_letters
-from typing import Iterable
 
-from ..aoc06 import Grid, Point, fill_grid, grid_size, \
-    largest_finite, parse_coords, safe_region, solve
+from year2018.aoc06 import (
+    Grid,
+    Point,
+    fill_grid,
+    grid_size,
+    largest_finite,
+    parse_coords,
+    safe_region,
+    solve,
+)
 
 sample = '1, 1\n1, 6\n8, 3\n3, 4\n5, 5\n8, 9'
 points_ = parse_coords(sample)
@@ -17,12 +25,14 @@ def test_grid_size():
 
 
 def grid_to_str(grid: Grid, points: Iterable[Point]) -> str:
-    names = dict(zip(points, ascii_letters))  # 52 points max
+    # max 52 points
+    names: dict[Point | str, str] = dict(zip(points, ascii_letters))
     names['.'] = '.'
     names[' '] = ' '
     xs, ys = grid_size(points)
-    return '\n'.join(''.join(names[grid.get((i, j), ' ')] for i in xs)
-                     for j in ys)
+    return '\n'.join(
+        ''.join(names[grid.get((i, j), ' ')] for i in xs) for j in ys
+    )
 
 
 def test_fill_grid():

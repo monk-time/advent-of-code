@@ -1,13 +1,13 @@
 import re
+from collections.abc import Iterable
 from copy import deepcopy
 from dataclasses import dataclass
 from itertools import combinations
 from math import lcm
-from typing import Iterable
 
 from helpers import read_puzzle
 
-Coord = list[int, int, int]
+Coord = list[int]
 Planets = list['Planet']
 
 
@@ -52,19 +52,19 @@ def total_energy(planets: Planets):
 
 
 def find_loop(planets: Planets):
+    def get_hash(pls: Planets, dim: int) -> tuple[tuple[int, int], ...]:
+        return tuple((pl.pos[dim], pl.vel[dim]) for pl in pls)
+
     periods = []
     for dim in range(3):
         pls = deepcopy(planets)
-        get_hash = lambda pls_: tuple(
-            (pl.pos[dim], pl.vel[dim]) for pl in pls_
-        )
-        cache = set(get_hash(pls))
-        count = -1  # no idea why but it works
+        cache = {get_hash(pls, dim)}
+        count = 0
         while True:
             apply_gravity_to_dim(dim, pls)
             apply_velocity_to_dim(dim, pls)
             count += 1
-            hash_ = get_hash(pls)
+            hash_ = get_hash(pls, dim)
             if hash_ in cache:
                 periods.append(count)
                 break

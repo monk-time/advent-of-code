@@ -1,4 +1,4 @@
-from ..aoc07 import parse, solve, work
+from year2018.aoc07 import parse, solve, work
 
 sample = """
 Step C must be finished before step A can begin.
@@ -13,16 +13,20 @@ Step F must be finished before step E can begin.
 
 def test_parse():
     assert parse(sample) == {
-        'in': {'A': ['C'],
-               'B': ['A'],
-               'D': ['A'],
-               'E': ['B', 'D', 'F'],
-               'F': ['C']},
-        'out': {'A': ['B', 'D'],
-                'B': ['E'],
-                'C': ['A', 'F'],
-                'D': ['E'],
-                'F': ['E']}
+        'in': {
+            'A': ['C'],
+            'B': ['A'],
+            'D': ['A'],
+            'E': ['B', 'D', 'F'],
+            'F': ['C'],
+        },
+        'out': {
+            'A': ['B', 'D'],
+            'B': ['E'],
+            'C': ['A', 'F'],
+            'D': ['E'],
+            'F': ['E'],
+        },
     }
 
 

@@ -1,11 +1,11 @@
 import pytest
 
-from ..aoc07 import find_max_output, parse, solve
+from year2019.aoc07 import find_max_output, parse, solve
 
 
 @pytest.mark.parametrize(
     'test_input, expected',
-    [
+    (
         ('3,15,3,16,1002,16,10,16,1,16,15,15,4,15,99,0,0', 43210),
         (
             '3,23,3,24,1002,24,10,24,1002,23,-1,23,'
@@ -17,7 +17,7 @@ from ..aoc07 import find_max_output, parse, solve
             '1002,33,7,33,1,33,31,31,1,32,31,31,4,31,99,0,0,0',
             65210,
         ),
-    ],
+    ),
 )
 def test_find_max_output(test_input, expected):
     assert find_max_output(parse(test_input)) == expected
@@ -25,7 +25,7 @@ def test_find_max_output(test_input, expected):
 
 @pytest.mark.parametrize(
     'test_input, expected',
-    [
+    (
         (
             '3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,'
             '27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5',
@@ -37,10 +37,10 @@ def test_find_max_output(test_input, expected):
             '2,53,55,53,4,53,1001,56,-1,56,1005,56,6,99,0,0,0,0,10',
             18216,
         ),
-    ],
+    ),
 )
 def test_find_max_output_looped(test_input, expected):
-    assert find_max_output(parse(test_input), True) == expected
+    assert find_max_output(parse(test_input), use_loop=True) == expected
 
 
 def test_solve():

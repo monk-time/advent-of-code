@@ -1,4 +1,4 @@
-from ..aoc09 import Computer, parse, solve
+from year2019.aoc09 import Computer, parse, solve
 
 
 def test_run_intcode():

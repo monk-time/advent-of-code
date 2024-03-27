@@ -2,7 +2,13 @@ from inspect import cleandoc
 
 import pytest
 
-from ..aoc12 import execute_time_step, find_loop, parse, solve, total_energy
+from year2019.aoc12 import (
+    execute_time_step,
+    find_loop,
+    parse,
+    solve,
+    total_energy,
+)
 
 sample1 = cleandoc(
     """
@@ -24,7 +30,7 @@ sample2 = cleandoc(
 
 
 @pytest.mark.parametrize(
-    'sample, steps, expected', [(sample1, 10, 179), (sample2, 100, 1940)]
+    'sample, steps, expected', ((sample1, 10, 179), (sample2, 100, 1940))
 )
 def test_total_energy(sample, steps, expected):
     planets = list(parse(sample))

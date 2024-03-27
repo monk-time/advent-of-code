@@ -1,16 +1,15 @@
 import re
 from collections import Counter, defaultdict
-from itertools import chain, groupby
-from typing import Dict, List, Tuple
+from itertools import chain, groupby, starmap
 
 from helpers import read_puzzle
 
-Naps = List[range]
-Guards = Dict[int, Naps]
+Naps = list[range]
+Guards = dict[int, Naps]
 
 
-def sleep_ranges(schedule: List[int]) -> Naps:
-    return [range(a, b) for a, b in zip(schedule[::2], schedule[1::2])]
+def sleep_ranges(schedule: list[int]) -> Naps:
+    return list(starmap(range, zip(schedule[::2], schedule[1::2])))
 
 
 def parse_journal(journal: str) -> Guards:
@@ -18,10 +17,12 @@ def parse_journal(journal: str) -> Guards:
     guards = defaultdict(list)
     for is_new_shift, actions in groupby(records, lambda r: 'Guard' in r):
         if is_new_shift:
-            id_ = int(re.search(r'#(\d+)', next(actions)).group(1))
+            id_ = int(re.search(r'#(\d+)', next(actions)).group(1))  # type: ignore
         else:
-            schedule = [int(re.search(r':(\d\d)', a).group(1)) for a in actions]
-            # noinspection PyUnboundLocalVariable
+            schedule = [
+                int(re.search(r':(\d\d)', a).group(1))  # type: ignore
+                for a in actions
+            ]
             guards[id_].extend(sleep_ranges(schedule))
     return guards
 
@@ -31,7 +32,7 @@ def total_time_asleep(naps: Naps) -> int:
     return sum(map(len, naps))
 
 
-def snooziest_minute(naps: Naps) -> Tuple[int, int]:
+def snooziest_minute(naps: Naps) -> tuple[int, int]:
     """Find the minute during which the guard is most often asleep."""
     return Counter(chain(*naps)).most_common(1)[0]
 

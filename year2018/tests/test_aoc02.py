@@ -1,19 +1,33 @@
 import pytest
 
-from ..aoc02 import checksum, has_exactly_n_of_any_letter, is_correct_pair, \
-    matching_letters, part2, solve
+from year2018.aoc02 import (
+    checksum,
+    has_exactly_n_of_any_letter,
+    is_correct_pair,
+    matching_letters,
+    part2,
+    solve,
+)
 
-box_ids = ['abcdef', 'bababc', 'abbcde', 'abcccd', 'aabcdd', 'abcdee', 'ababab']
+box_ids = [
+    'abcdef',
+    'bababc',
+    'abbcde',
+    'abcccd',
+    'aabcdd',
+    'abcdee',
+    'ababab',
+]
 bools2 = [False, True, True, False, True, True, False]
 bools3 = [False, True, False, True, False, False, True]
 
 
-@pytest.mark.parametrize("box_id, expected", zip(box_ids, bools2))
+@pytest.mark.parametrize('box_id, expected', zip(box_ids, bools2))
 def test_has_exactly_n_of_any_letter_basic_2(box_id, expected):
     assert has_exactly_n_of_any_letter(box_id, 2) == expected
 
 
-@pytest.mark.parametrize("box_id, expected", zip(box_ids, bools3))
+@pytest.mark.parametrize('box_id, expected', zip(box_ids, bools3))
 def test_has_exactly_n_of_any_letter_basic_3(box_id, expected):
     assert has_exactly_n_of_any_letter(box_id, 3) == expected
 

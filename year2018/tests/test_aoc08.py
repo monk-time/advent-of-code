@@ -1,6 +1,12 @@
 import pytest
 
-from ..aoc08 import Node, metadata_as_indices, metadata_rec, parse_tree, solve
+from year2018.aoc08 import (
+    Node,
+    metadata_as_indices,
+    metadata_rec,
+    parse_tree,
+    solve,
+)
 
 samples = [
     ('0 0', '[0 0 ()]', []),
@@ -44,26 +50,25 @@ samples = [
         '[1 3 [1 2 [1 1 [0 1 (6)] (7)] (8 9)] (1 1 2)]',
         [6, 7, 8, 9, 1, 1, 2],
     ),
-
 ]
 
 
-@pytest.mark.parametrize("input_str, tree_str, metadata", samples)
-def test_metadata_rec(input_str, tree_str, metadata):
+@pytest.mark.parametrize('input_str, tree_str, metadata', samples)
+def test_metadata_rec(input_str, tree_str, metadata):  # noqa: ARG001
     tree = parse_tree(input_str)
     assert list(metadata_rec(tree)) == metadata
 
 
 def node_to_str(node: Node) -> str:
-    meta_str = ' '.join(map(str, node.meta))
-    children_str = ' '.join(map(node_to_str, node.children))
-    if children_str:
-        children_str += ' '
-    return f'[{len(node.children)} {len(node.meta)} {children_str}({meta_str})]'
+    meta = ' '.join(map(str, node.meta))
+    children = ' '.join(map(node_to_str, node.children))
+    if children:
+        children += ' '
+    return f'[{len(node.children)} {len(node.meta)} {children}({meta})]'
 
 
-@pytest.mark.parametrize("input_str, tree_str, metadata", samples)
-def test_build_tree(input_str, tree_str, metadata):
+@pytest.mark.parametrize('input_str, tree_str, metadata', samples)
+def test_build_tree(input_str, tree_str, metadata):  # noqa: ARG001
     assert node_to_str(parse_tree(input_str)) == tree_str
 
 

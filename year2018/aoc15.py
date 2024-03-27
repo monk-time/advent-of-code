@@ -1,9 +1,13 @@
 from dataclasses import dataclass, replace
-from typing import Dict, List, Optional, Tuple, Union
 
 from helpers import read_puzzle
 
-Square = Tuple[int, int]
+Square = tuple[int, int]
+
+
+def around(sq: Square) -> tuple[Square, Square, Square, Square]:
+    i, j = sq
+    return ((i - 1, j), (i, j - 1), (i, j + 1), (i + 1, j))
 
 
 @dataclass(order=True)
@@ -24,8 +28,8 @@ class Unit:
 class State:
     height: int
     width: int
-    map: Dict[Square, Union[Unit, str]]
-    units: List[Unit]
+    map: dict[Square, Unit | str]
+    units: list[Unit]
     rounds_played: int = 0
     finished: bool = False
 
@@ -42,16 +46,19 @@ class State:
                     map_[(i, j)] = unit
                 else:
                     map_[(i, j)] = ch
-        return cls(height=len(lines), width=len(lines[0]),
-                   map=map_, units=units)
+        return cls(
+            height=len(lines), width=len(lines[0]), map=map_, units=units
+        )
 
-    def __str__(self, hp: bool = False):
+    def __str__(self, *, hp: bool = False):
         """Get a text representation of the map."""
-        map_ = [''.join(str(self.map[(i, j)]) for j in range(self.width))
-                for i in range(self.height)]
+        map_ = [
+            ''.join(str(self.map[(i, j)]) for j in range(self.width))
+            for i in range(self.height)
+        ]
         if hp:
             for unit in sorted(self.units):
-                i, j = unit.sq
+                i, _ = unit.sq
                 map_[i] += ', ' if len(map_[i]) > self.width else '   '
                 map_[i] += f'{unit.type}({unit.hp})'
         return '\n'.join(map_)
@@ -61,19 +68,22 @@ class State:
         units_new = []
         map_new = self.map.copy()
         for unit in self.units:
-            unit = replace(unit)
-            units_new.append(unit)
-            map_new[unit.sq] = unit
+            unit_new = replace(unit)
+            units_new.append(unit_new)
+            map_new[unit_new.sq] = unit_new
         return replace(self, map=map_new, units=units_new)
 
-    def targets_in_range(self, u: Unit) -> List[Unit]:
+    def targets_in_range(self, u: Unit) -> list[Unit]:
         """Get all enemies adjacent to the unit."""
-        i, j = u.sq
-        return [t for sq2 in ((i - 1, j), (i, j - 1), (i, j + 1), (i + 1, j))
-                if (t := self.map.get(sq2, None))
-                and isinstance(t, Unit) and u.is_enemy(t)]
+        return [
+            t
+            for sq2 in around(u.sq)
+            if (t := self.map.get(sq2, None))
+            and isinstance(t, Unit)
+            and u.is_enemy(t)
+        ]
 
-    def find_path(self, unit: Unit) -> Optional[Square]:
+    def find_path(self, unit: Unit) -> Square | None:
         """Find the next step needed to reach the closest enemy.
 
         If multiple enemy are at the same distance, the one which is first
@@ -85,20 +95,18 @@ class State:
         belongs to based on the direction of the first step, resolving ties
         in reading order.
         """
-        i0, j0 = unit.sq
         # Each visited square is labeled with the direction of the first step
         # that would bring the unit to it.
-        visited = {(i0 - 1, j0): 0, (i0, j0 - 1): 1,  # ULRD -> 0123
-                   (i0, j0 + 1): 2, (i0 + 1, j0): 3, (i0, j0): 4}
+        # ULRD -> 0123
+        visited = dict(zip((*around(unit.sq), unit.sq), range(5)))
         # Points are always added to layer in the order of their labels
-        layer: List[Square] = [unit.sq]
+        layer: list[Square] = [unit.sq]
         final_layer = False
         nearest_in_range = []
         while layer and not final_layer:
             next_layer = []
             for sq in layer:
-                i, j = sq
-                for sq_next in ((i - 1, j), (i, j - 1), (i, j + 1), (i + 1, j)):
+                for sq_next in around(sq):
                     x = self.map.get(sq_next, None)
                     if x is None or x == '#':
                         continue
@@ -117,8 +125,7 @@ class State:
             return None
         chosen_in_range = sorted(nearest_in_range)[0]
         direction = visited[chosen_in_range]
-        return [(i0 - 1, j0), (i0, j0 - 1),
-                (i0, j0 + 1), (i0 + 1, j0)][direction]
+        return around(unit.sq)[direction]
 
     def move(self, unit: Unit):
         if not (sq_new := self.find_path(unit)):
@@ -170,14 +177,14 @@ def play_round(st: State) -> State:
     return st
 
 
-def outcome(s: str, force_elf_victory: bool = False) -> int:
+def outcome(s: str, *, force_elf_victory: bool = False) -> int:
     elf_power = 3
     st = State.fromstring(s, elf_power=elf_power)
     elfs_at_start = st.elfs_alive()
     while not st.finished:
         st = play_round(st)
     if force_elf_victory:
-        while not st.elfs_alive() == elfs_at_start:
+        while st.elfs_alive() != elfs_at_start:
             elf_power += 1
             st = State.fromstring(s, elf_power=elf_power)
             while not st.finished:

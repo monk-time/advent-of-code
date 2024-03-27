@@ -2,7 +2,13 @@ from inspect import cleandoc
 
 import pytest
 
-from ..aoc23 import count_in_range, is_in_range, parse, shortest_manhattan, solve
+from year2018.aoc23 import (
+    count_in_range,
+    is_in_range,
+    parse,
+    shortest_manhattan,
+    solve,
+)
 
 sample_str = cleandoc("""
     pos=<0,0,0>, r=4
@@ -38,8 +44,17 @@ def test_parse(sample):
 
 def test_is_in_range(sample):
     bot = sample[0]
-    assert [is_in_range(bot, b) for b in sample] == \
-           [True, True, True, True, False, True, True, True, False]
+    assert [is_in_range(bot, b) for b in sample] == [
+        True,
+        True,
+        True,
+        True,
+        False,
+        True,
+        True,
+        True,
+        False,
+    ]
 
 
 def test_count_in_range(sample):
@@ -47,14 +62,16 @@ def test_count_in_range(sample):
 
 
 def test_shortest_manhattan():
-    bots = parse(cleandoc("""
-        pos=<10,12,12>, r=2
-        pos=<12,14,12>, r=2
-        pos=<16,12,12>, r=4
-        pos=<14,14,14>, r=6
-        pos=<50,50,50>, r=200
-        pos=<10,10,10>, r=5
-    """))
+    bots = parse(
+        cleandoc("""
+            pos=<10,12,12>, r=2
+            pos=<12,14,12>, r=2
+            pos=<16,12,12>, r=4
+            pos=<14,14,14>, r=6
+            pos=<50,50,50>, r=200
+            pos=<10,10,10>, r=5
+        """)
+    )
     assert shortest_manhattan(bots) == 36
 
 

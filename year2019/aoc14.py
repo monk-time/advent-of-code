@@ -29,10 +29,10 @@ def parse(s: str) -> Reactions:
     return {(r := parse_reaction(line)).name: r for line in s.split('\n')}
 
 
-def calc_ore_for_fuel(reactions: Reactions, fuel: int = 1) -> int:
+def calc_ore_for_fuel(reactions: Reactions, fuel: int = 1) -> tuple[int, int]:
     edges = {r.name: list(r.inputs) for r in reactions.values()}
     vertices_sorted = nx.topological_sort(nx.DiGraph(edges))
-    queue = {v: 0 for v in reversed(list(vertices_sorted))}
+    queue = dict.fromkeys(reversed(list(vertices_sorted)), 0)
     queue['FUEL'] = fuel
     coef = 1
     while len(queue) > 1:
@@ -57,7 +57,7 @@ def calc_fuel_from_trillion_ore(reactions: Reactions) -> int:
     fuel = flawless_fuel * flawless_times
     ore_left = 1_000_000_000_000 % ore_per_flawless_fuel
 
-    extra_fuel, extra_ore = 0, 0
+    extra_fuel, extra_ore, next_fuel = 0, 0, 0
     while extra_ore <= ore_left:
         next_fuel = (ore_left - extra_ore) // ore_per_fuel or 1
         extra_fuel += next_fuel

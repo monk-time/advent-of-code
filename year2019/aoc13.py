@@ -26,7 +26,7 @@ def read_tiles(program: Intcode) -> TileMap:
     tiles = {}
     while True:
         try:
-            x, y, tile_id = [next(gen) for _ in range(3)]
+            x, y, tile_id = [next(gen) for _ in range(3)]  # noqa: UP027
             tiles[(x, y)] = Tile.from_index(tile_id)
         except StopIteration:
             return tiles
@@ -34,21 +34,23 @@ def read_tiles(program: Intcode) -> TileMap:
 
 def print_tiles(tiles: TileMap):
     os.system('cls')
-    height = max(y for _, y in tiles.keys()) + 1  # coords are 0-based
-    width = max(x for x, _ in tiles.keys()) + 1
+    height = max(y for _, y in tiles) + 1  # coords are 0-based
+    width = max(x for x, _ in tiles) + 1
     line = '\n'.join(
         ''.join(tiles[(x, y)] for x in range(width)) for y in range(height)
     )
     print(line)
 
 
-def find_paddle_and_ball(tiles: TileMap) -> Coord:
+def find_paddle_and_ball(tiles: TileMap) -> tuple[Coord, Coord]:
     paddle, ball = None, None
     for coord, tile in tiles.items():
         if tile is Tile.BALL:
             ball = coord
         elif tile is Tile.PADDLE:
             paddle = coord
+    assert paddle is not None
+    assert ball is not None
     return paddle, ball
 
 

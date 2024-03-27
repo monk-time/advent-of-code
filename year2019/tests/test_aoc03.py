@@ -1,4 +1,4 @@
-from ..aoc03 import (
+from year2019.aoc03 import (
     find_closest_intersection,
     find_min_intersection_by_steps,
     parse,

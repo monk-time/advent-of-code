@@ -14,7 +14,7 @@ def paint_panels(program: Intcode, starting_color: int = 0):
     robot_pos = (0, 0)
     robot_dir = (0, -1)
     count_painted = 0
-    painted_panels = {(0, 0): starting_color}
+    painted_panels: dict[Coord, int] = {(0, 0): starting_color}
     gen = iter(Computer(program))
     while True:
         try:

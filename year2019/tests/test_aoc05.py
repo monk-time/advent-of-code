@@ -1,11 +1,11 @@
 import pytest
 
-from ..aoc05 import parse, run_with_input, solve
+from year2019.aoc05 import parse, run_with_input, solve
 
 
 @pytest.mark.parametrize(
     'test_input, input_value, expected',
-    [
+    (
         ('3,9,8,9,10,9,4,9,99,-1,8', 8, 1),
         ('3,9,8,9,10,9,4,9,99,-1,8', 1, 0),
         ('3,9,7,9,10,9,4,9,99,-1,8', 7, 1),
@@ -39,7 +39,7 @@ from ..aoc05 import parse, run_with_input, solve
             9,
             1001,
         ),
-    ],
+    ),
 )
 def test_run_intcode(test_input, input_value, expected):
     program = parse(test_input)
