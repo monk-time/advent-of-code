@@ -1,3 +1,5 @@
+// https://adventofcode.com/2016/day/11
+
 'use strict';
 
 (f => { console.time('main'); f(); console.timeEnd('main'); })(() => { // eslint-disable-line

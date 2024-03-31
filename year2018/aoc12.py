@@ -1,3 +1,5 @@
+# https://adventofcode.com/2018/day/12
+
 import re
 from collections import deque
 from collections.abc import Iterable

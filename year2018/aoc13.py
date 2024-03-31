@@ -1,3 +1,5 @@
+# https://adventofcode.com/2018/day/13
+
 from collections import namedtuple
 from collections.abc import Iterable
 from itertools import product

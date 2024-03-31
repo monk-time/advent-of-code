@@ -1,3 +1,5 @@
+# https://adventofcode.com/2018/day/22
+
 import re
 from collections.abc import Iterable
 from itertools import product

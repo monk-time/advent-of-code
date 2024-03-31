@@ -1,3 +1,5 @@
+# https://adventofcode.com/2018/day/24
+
 import re
 from copy import deepcopy
 from dataclasses import dataclass

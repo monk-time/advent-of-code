@@ -1,3 +1,5 @@
+# https://adventofcode.com/2018/day/1
+
 from collections.abc import Iterable
 from itertools import cycle
 

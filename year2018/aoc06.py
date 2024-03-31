@@ -1,3 +1,5 @@
+# https://adventofcode.com/2018/day/6
+
 import re
 from collections import Counter
 from collections.abc import Iterable

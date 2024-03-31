@@ -1,3 +1,5 @@
+// https://adventofcode.com/2015/day/4
+
 // Using [emn178's js-md5 library](https://www.npmjs.com/package/js-md5).
 // Average exec. time (i7-4710HQ): 1.9 sec in FF42 (Scratchpad), 2.1 sec in Chrome 47 (Snippets).
 /* eslint-disable no-eval */

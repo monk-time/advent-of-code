@@ -1,3 +1,5 @@
+# https://adventofcode.com/2019/day/10
+
 from collections.abc import Iterable
 from itertools import product
 from math import gcd

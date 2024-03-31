@@ -1,3 +1,5 @@
+# https://adventofcode.com/2018/day/14
+
 from collections.abc import Iterable
 
 from helpers import read_puzzle

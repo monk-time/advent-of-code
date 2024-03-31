@@ -1,3 +1,5 @@
+# https://adventofcode.com/2019/day/8
+
 from collections.abc import Iterable
 
 from PIL import Image

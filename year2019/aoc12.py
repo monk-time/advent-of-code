@@ -1,3 +1,5 @@
+# https://adventofcode.com/2019/day/12
+
 import re
 from collections.abc import Iterable
 from copy import deepcopy

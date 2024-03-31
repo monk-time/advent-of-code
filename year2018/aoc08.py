@@ -1,3 +1,5 @@
+# https://adventofcode.com/2018/day/8
+
 from collections.abc import Iterable
 from dataclasses import dataclass, field
 

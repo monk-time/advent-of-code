@@ -1,3 +1,5 @@
+// https://adventofcode.com/2015/day/9
+
 // 180 ms, generates all permutations of cities, small memory usage
 // (updates min-max dist. on-the-fly instead of storing all distances in a 8!-length array)
 

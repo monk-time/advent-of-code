@@ -1,3 +1,5 @@
+# https://adventofcode.com/2018/day/3
+
 import re
 from collections import Counter, namedtuple
 from collections.abc import Iterable

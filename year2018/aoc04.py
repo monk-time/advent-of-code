@@ -1,3 +1,5 @@
+# https://adventofcode.com/2018/day/4
+
 import re
 from collections import Counter, defaultdict
 from itertools import chain, groupby, starmap

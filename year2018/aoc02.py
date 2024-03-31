@@ -1,3 +1,5 @@
+# https://adventofcode.com/2018/day/2
+
 from collections import Counter
 from collections.abc import Iterable
 from itertools import combinations

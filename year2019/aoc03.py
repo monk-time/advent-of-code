@@ -1,3 +1,5 @@
+# https://adventofcode.com/2019/day/3
+
 from helpers import read_puzzle
 
 Wire = list[tuple[str, int]]

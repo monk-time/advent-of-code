@@ -1,3 +1,5 @@
+# https://adventofcode.com/2019/day/16
+
 from itertools import accumulate, chain, cycle, islice, repeat, starmap
 from operator import mul
 

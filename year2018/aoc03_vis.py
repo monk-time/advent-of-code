@@ -1,3 +1,5 @@
+# https://adventofcode.com/2018/day/3
+
 import random
 
 from PIL import Image, ImageDraw

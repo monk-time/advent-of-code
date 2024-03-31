@@ -1,3 +1,5 @@
+# https://adventofcode.com/2019/day/17
+
 import re
 from collections.abc import Iterable
 from enum import StrEnum

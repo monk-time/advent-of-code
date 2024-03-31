@@ -1,3 +1,6 @@
+# https://adventofcode.com/2018/day/19
+
+
 def run(a: int):
     # Manually reconstructed from the input
     b = (1010, 10551410)[a]

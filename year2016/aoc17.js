@@ -1,3 +1,5 @@
+// https://adventofcode.com/2016/day/17
+
 /* eslint-disable no-eval */
 /* global md5 */
 

@@ -1,3 +1,5 @@
+// https://adventofcode.com/2016/day/13
+
 /* eslint-disable no-bitwise */
 
 'use strict';

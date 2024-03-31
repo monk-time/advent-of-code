@@ -1,3 +1,5 @@
+# https://adventofcode.com/2018/day/18
+
 from collections import Counter
 from dataclasses import dataclass
 from itertools import product

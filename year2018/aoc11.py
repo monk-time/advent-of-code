@@ -1,3 +1,5 @@
+# https://adventofcode.com/2018/day/11
+
 from itertools import product
 from multiprocessing import Pool
 

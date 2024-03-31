@@ -1,3 +1,5 @@
+# https://adventofcode.com/2018/day/23
+
 import re
 from heapq import heappop, heappush
 from itertools import product

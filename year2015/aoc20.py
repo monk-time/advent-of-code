@@ -1,3 +1,5 @@
+# https://adventofcode.com/2015/day/20
+
 import itertools as it
 from functools import reduce
 from math import floor, sqrt

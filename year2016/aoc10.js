@@ -1,3 +1,5 @@
+// https://adventofcode.com/2016/day/10
+
 /* eslint-disable no-return-assign */
 
 'use strict';
@@ -7,14 +9,17 @@
         constructor() {
             [this.chips, this.listeners] = [[], []];
         }
+
         setChip(chip) {
             this.chips.push(chip);
             this.notify();
         }
+
         attach(...listeners) {
             this.listeners.push(...listeners);
             this.notify();
         }
+
         notify() {
             if (this.chips.length !== this.listeners.length) return;
             this.chips.sort((a, b) => a - b);

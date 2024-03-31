@@ -1,3 +1,6 @@
+# https://adventofcode.com/2018/day/21
+
+
 def decoded():
     # Manually reconstructed from the input
     d = 0

@@ -1,3 +1,5 @@
+// https://adventofcode.com/2016/day/10
+
 /* eslint-disable no-return-assign, no-sequences */
 
 'use strict';

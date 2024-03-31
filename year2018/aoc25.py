@@ -1,3 +1,5 @@
+# https://adventofcode.com/2018/day/25
+
 from itertools import combinations
 
 from helpers import read_puzzle

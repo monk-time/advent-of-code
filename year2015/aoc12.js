@@ -1,3 +1,5 @@
+// https://adventofcode.com/2015/day/12
+
 'use strict';
 
 {
