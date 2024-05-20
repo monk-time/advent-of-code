@@ -8,7 +8,8 @@ pythonpath = [
 target-version = "py312"
 line-length = 79
 preview = true
-src = ["./*"]
+output-format = "concise" # preview mode switches this to full
+src = ["./*"] # fix first-party imports
 
 [tool.ruff.lint]
 select = [
@@ -27,6 +28,7 @@ select = [
     "DTZ",   # flake8-datetimez
     "EM",    # flake8-errmsg
     "ICN",   # flake8-import-conventions
+    "LOG",   # flake8-logging
     "PIE",   # flake8-pie
     "PT",    # flake8-pytest-style
     "RSE",   # flake8-raise
@@ -37,7 +39,6 @@ select = [
     "PL",    # pylint
     "PERF",  # perflint
     "FURB",  # refurb
-    "LOG",   # flake8-logging
     "RUF",   # ruff-specific rules
 ]
 ignore = [
@@ -47,6 +48,10 @@ ignore = [
     "D1",      # allow missing docstrings
     "PLC0415", # allow imports outside top-level
     "PLR2004", # allow magic values in comparisons
+]
+allowed-confusables = [
+    "а", "б", "в", "г", "е", "з", "и", "к", "м", "н", "о", "р", "с", "у", "ф", "х",
+    "А", "Б", "В", "Г", "Е", "З", "И", "К", "М", "Н", "О", "Р", "С", "У", "Ф", "Х",
 ]
 
 [tool.ruff.lint.pydocstyle]

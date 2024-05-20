@@ -95,5 +95,5 @@ class Computer:
         c = self.program[self.pointer + 3]
         match nth_digit(self.program[self.pointer], 5):
             case 2:
-                c = c + self.rel_base
+                c += self.rel_base
         return a, b, c

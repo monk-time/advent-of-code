@@ -3,6 +3,7 @@
 import re
 from collections import Counter, defaultdict
 from itertools import chain, groupby, starmap
+from operator import itemgetter
 
 from helpers import read_puzzle
 
@@ -47,7 +48,7 @@ def strategy1(guards: Guards):
 
 def strategy2(guards: Guards):
     stats = [(g, *snooziest_minute(guards[g])) for g in guards]
-    guard, minute, *_ = max(stats, key=lambda x: x[2])
+    guard, minute, *_ = max(stats, key=itemgetter(2))
     return guard * minute
 
 

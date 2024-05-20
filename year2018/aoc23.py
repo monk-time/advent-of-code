@@ -4,6 +4,7 @@ import re
 from heapq import heappop, heappush
 from itertools import product
 from math import log2
+from operator import itemgetter
 
 from helpers import read_puzzle
 
@@ -26,7 +27,7 @@ def is_in_range(source: Bot, other: Bot) -> bool:
 
 
 def count_in_range(bots: list[Bot]) -> int:
-    best_bot = max(bots, key=lambda b: b[3])
+    best_bot = max(bots, key=itemgetter(3))
     return sum(is_in_range(best_bot, b) for b in bots)
 
 

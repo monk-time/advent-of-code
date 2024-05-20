@@ -25,8 +25,7 @@ def find_max_output(program: Intcode, *, use_loop=False):
     phase_range = range(5, 10) if use_loop else range(5)
     for phases in permutations(phase_range):
         output = run(program, phases)
-        if output > max_output:
-            max_output = output
+        max_output = max(output, max_output)
     return max_output
 
 

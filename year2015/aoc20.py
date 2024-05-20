@@ -28,11 +28,11 @@ def prime_powers_decomp(n):
     while n > 1 and factor <= max_factor:
         if n % factor == 0:
             powers, cur_pow = [1, factor], factor
-            n = n // factor
+            n //= factor
             while n % factor == 0:
                 cur_pow *= factor
                 powers.append(cur_pow)
-                n = n // factor
+                n //= factor
             yield powers
             max_factor = floor(sqrt(n))
         factor += 2

@@ -125,7 +125,7 @@ class State:
             layer = next_layer
         if not final_layer:
             return None
-        chosen_in_range = sorted(nearest_in_range)[0]
+        chosen_in_range = min(nearest_in_range)
         direction = visited[chosen_in_range]
         return around(unit.sq)[direction]
 
