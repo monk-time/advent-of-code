@@ -37,7 +37,7 @@ def grid_to_str(grid: Grid, points: Iterable[Point]) -> str:
 
 def test_fill_grid():
     grid = fill_grid(points_)
-    assert grid_to_str(grid, points_) == '\n'.join([
+    assert grid_to_str(grid, points_) == '\n'.join([  # noqa: FLY002
         'aaaa.ccc',
         'aaddeccc',
         'adddeccc',

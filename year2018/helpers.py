@@ -62,10 +62,11 @@ def print_peak_memory_used():
     print(f'Peak memory used: {max_memory} MB')
 
 
-def border_wrap(lines: list[str]) -> str:
+def border_wrap(lines: list[str]) -> list[str]:
     """Draw a border around an equally sized set of lines."""
     n = len(lines[0])
-    upper = f'┌{'─' * n}┐'
-    lower = f'└{'─' * n}┘'
-    middle = (f'│{''.join(s)}│' for s in lines)
-    return '\n'.join((upper, *middle, lower))
+    return [
+        f'┌{'─' * n}┐',
+        *(f'│{''.join(s)}│' for s in lines),
+        f'└{'─' * n}┘',
+    ]

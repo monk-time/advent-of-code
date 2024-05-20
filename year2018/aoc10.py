@@ -1,11 +1,18 @@
 # https://adventofcode.com/2018/day/10
 
 import re
-from collections import namedtuple
+from typing import NamedTuple
 
 from helpers import read_puzzle
 
-Point = namedtuple('Point', 'x y dx dy')
+
+class Point(NamedTuple):
+    x: int
+    y: int
+    dx: int
+    dy: int
+
+
 Points = list[Point]
 
 

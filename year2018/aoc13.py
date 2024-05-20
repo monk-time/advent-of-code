@@ -1,13 +1,17 @@
 # https://adventofcode.com/2018/day/13
 
-from collections import namedtuple
 from collections.abc import Iterable
 from itertools import product
+from typing import NamedTuple
 
 from helpers import read_puzzle
 
-# turn: 0 = left, 1 = straight, 2 = right
-Cart = namedtuple('Cart', 'x y dir turn')
+
+class Cart(NamedTuple):
+    x: int
+    y: int
+    dir: str  # >, <, ^, v
+    turn: int  # 0 (left), 1 (straight), 2 (right)
 
 
 def parse(s: str) -> tuple[list[Cart], list[str]]:
@@ -74,7 +78,7 @@ def next_tick(carts_prev: list[Cart], tracks: list[str]):
     while carts_prev:
         cart = carts_prev.pop(0)
         x, y = look_ahead(cart)
-        # The cart can crash into a cart that either is yet to move or has moved
+        # A cart can crash into a cart that either is yet to move or has moved
         for carts in [carts_prev, carts_next]:
             victim = next((c for c in carts if (c.x, c.y) == (x, y)), None)
             if victim:

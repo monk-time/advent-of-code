@@ -58,18 +58,16 @@ def sign(x: int) -> int:
     return (x > 0) - (x < 0)
 
 
-# fmt: off
 angles: list[tuple[int, int]] = [
-    ( 0, -1),
-    ( 1, -1),
-    ( 1,  0),
-    ( 1,  1),
-    ( 0,  1),
-    (-1,  1),
-    (-1,  0),
+    (0, -1),
+    (1, -1),
+    (1, 0),
+    (1, 1),
+    (0, 1),
+    (-1, 1),
+    (-1, 0),
     (-1, -1),
 ]
-# fmt: on
 
 
 def radial_sort(t: tuple[int, int]) -> tuple[int, float]:

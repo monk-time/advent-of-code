@@ -1,13 +1,20 @@
 # https://adventofcode.com/2018/day/3
 
 import re
-from collections import Counter, namedtuple
+from collections import Counter
 from collections.abc import Iterable
 from itertools import product
+from typing import NamedTuple
 
 from helpers import read_puzzle
 
-Claim = namedtuple('Claim', 'id left top width height')
+
+class Claim(NamedTuple):
+    id: int
+    left: int
+    top: int
+    width: int
+    height: int
 
 
 def parse(claim: str) -> Claim:

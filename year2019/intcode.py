@@ -5,6 +5,10 @@ from dataclasses import dataclass
 Intcode = list[int]
 
 
+class UnknownOpCodeError(Exception):
+    pass
+
+
 def parse(s: str) -> Intcode:
     return [int(line) for line in s.split(',')]
 
@@ -69,7 +73,7 @@ class Computer:
                     return
                 case _:
                     msg = f'Unknown opcode {op} at {self.pointer=}'
-                    raise Exception(msg)
+                    raise UnknownOpCodeError(msg)
 
     def get_parameters(
         self, count: int

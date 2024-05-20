@@ -10,23 +10,29 @@ from year2018.aoc13 import (
     solve,
 )
 
-sample = cleandoc(r"""
-    /->-\        
-    |   |  /----\
-    | /-+--+-\  |
-    | | |  | v  |
-    \-+-/  \-+--/
-      \------/   
+
+def preserve_whitespace(s: str) -> str:
+    """Avoid problems with linters and autoformatting on save."""
+    return cleandoc(s).replace('.', '')
+
+
+sample = preserve_whitespace(r"""
+    ./->-\        .
+    .|   |  /----\.
+    .| /-+--+-\  |.
+    .| | |  | v  |.
+    .\-+-/  \-+--/.
+    .  \------/   .
 """)
 
-sample2 = cleandoc(r"""
-    />-<\  
-    |   |  
-    | /<+-\
-    | | | v
-    \>+</ |
-      |   ^
-      \<->/
+sample2 = preserve_whitespace(r"""
+    ./>-<\  .
+    .|   |  .
+    .| /<+-\.
+    .| | | v.
+    .\>+</ |.
+    .  |   ^.
+    .  \<->/.
 """)
 
 
@@ -36,13 +42,13 @@ def test_parse():
         Cart(x=2, y=0, dir='>', turn=0),
         Cart(x=9, y=3, dir='v', turn=0),
     ]
-    assert '\n'.join(tracks) == cleandoc(r"""
-        /---\        
-        |   |  /----\
-        | /-+--+-\  |
-        | | |  | |  |
-        \-+-/  \-+--/
-          \------/   
+    assert '\n'.join(tracks) == preserve_whitespace(r"""
+        ./---\        .
+        .|   |  /----\.
+        .| /-+--+-\  |.
+        .| | |  | |  |.
+        .\-+-/  \-+--/.
+        .  \------/   .
     """)
 
 
@@ -110,27 +116,27 @@ def test_state_to_str():
 def test_next_tick_sample():
     carts, tracks, crashes = next_tick(*parse(sample))
     assert crashes == []
-    assert state_to_str(carts, tracks) == cleandoc(r"""
-        /-->\        
-        |   |  /----\
-        | /-+--+-\  |
-        | | |  | |  |
-        \-+-/  \->--/
-          \------/   
+    assert state_to_str(carts, tracks) == preserve_whitespace(r"""
+        ./-->\        .
+        .|   |  /----\.
+        .| /-+--+-\  |.
+        .| | |  | |  |.
+        .\-+-/  \->--/.
+        .  \------/   .
     """)
 
 
 def test_next_tick_sample2():
     carts, tracks, crashes = next_tick(*parse(sample2))
     assert crashes == [(2, 0), (2, 4), (6, 4)]
-    assert state_to_str(carts, tracks) == cleandoc(r"""
-        /---\  
-        |   |  
-        | v-+-\
-        | | | |
-        \-+-/ |
-          |   |
-          ^---^
+    assert state_to_str(carts, tracks) == preserve_whitespace(r"""
+        ./---\  .
+        .|   |  .
+        .| v-+-\.
+        .| | | |.
+        .\-+-/ |.
+        .  |   |.
+        .  ^---^.
     """)
 
 

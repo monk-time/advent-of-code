@@ -25,7 +25,7 @@ def matching_letters(box_a: str, box_b: str) -> str:
 
 
 def is_correct_pair(box_a: str, box_b: str) -> bool:
-    """Two IDs are correct if they differ by exactly one character at the same position."""
+    """Check if two IDs differ by exactly one char at the same position."""
     return len(matching_letters(box_a, box_b)) == len(box_a) - 1
 
 

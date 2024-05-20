@@ -64,7 +64,6 @@ def run_game(program: Intcode):
         try:
             x = next(gen)
             if x is None:
-                # print_tiles(tiles)
                 paddle, ball = find_paddle_and_ball(tiles)
                 x_diff = ball[0] - paddle[0]
                 joystick_pos = -1 if x_diff < 0 else (1 if x_diff > 0 else 0)
