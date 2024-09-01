@@ -30,16 +30,17 @@ class Computer:
             self.program = defaultdict(lambda: 0, enumerate(self.program))
 
     def __iter__(self) -> Generator[int, int, None]:
-        """Execute the Intcode program."""
+        """Execute the Intcode program.
+
+        Raises:
+            UnknownOpCodeError: if encountered an unknown op code
+        """
         while True:
             op = self.program[self.pointer] % 100
             match op:
                 case 1 | 2:  # add, multiply
                     a, b, c = self.get_parameters(3)  # type: ignore
-                    if op == 1:
-                        self.program[c] = a + b
-                    else:
-                        self.program[c] = a * b
+                    self.program[c] = a + b if op == 1 else a * b
                     self.pointer += 4
                 case 3:  # input
                     a = self.program[self.pointer + 1]
@@ -51,19 +52,14 @@ class Computer:
                     a: int = self.get_parameters(1)  # type: ignore
                     self.pointer += 2
                     yield a
-                case 5:  # jump-if-true
+                case 5 | 6:  # jump-if-true, jump-if-false
                     a, b = self.get_parameters(2)  # type: ignore
-                    self.pointer = b if a else self.pointer + 3
-                case 6:  # jump-if-false
-                    a, b = self.get_parameters(2)  # type: ignore
-                    self.pointer = b if not a else self.pointer + 3
-                case 7:  # less than
+                    cond = a if op == 5 else not a
+                    self.pointer = b if cond else self.pointer + 3
+                case 7 | 8:  # less than, equals
                     a, b, c = self.get_parameters(3)  # type: ignore
-                    self.program[c] = 1 if a < b else 0
-                    self.pointer += 4
-                case 8:  # equals
-                    a, b, c = self.get_parameters(3)  # type: ignore
-                    self.program[c] = 1 if a == b else 0
+                    cond = a < b if op == 7 else a == b
+                    self.program[c] = 1 if cond else 0
                     self.pointer += 4
                 case 9:  # relative base offset
                     a: int = self.get_parameters(1)  # type: ignore

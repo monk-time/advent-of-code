@@ -45,9 +45,9 @@ class State:
                     power = elf_power if ch == 'E' else 3
                     unit = Unit((i, j), ch, power=power)
                     units.append(unit)
-                    map_[(i, j)] = unit
+                    map_[i, j] = unit
                 else:
-                    map_[(i, j)] = ch
+                    map_[i, j] = ch
         return cls(
             height=len(lines), width=len(lines[0]), map=map_, units=units
         )
@@ -55,7 +55,7 @@ class State:
     def __str__(self, *, hp: bool = False):
         """Get a text representation of the map."""
         map_ = [
-            ''.join(str(self.map[(i, j)]) for j in range(self.width))
+            ''.join(str(self.map[i, j]) for j in range(self.width))
             for i in range(self.height)
         ]
         if hp:

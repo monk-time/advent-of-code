@@ -31,6 +31,6 @@ IMG_SIZE = (max_x - min_x + 1, max_y - min_y + 1)
 im = Image.new('RGB', IMG_SIZE, 'white')
 px = im.load()
 for x, y in grid:
-    px[x - min_x, y - min_y] = color_map[grid[(x, y)]]
+    px[x - min_x, y - min_y] = color_map[grid[x, y]]
 
 im.save('aoc06.png', 'PNG')

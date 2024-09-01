@@ -28,6 +28,8 @@ ignore = [
     "E731",    # lambda-assignment           (precludes a concise functional style)
     "PLC0415", # import-outside-top-level    (sometimes imports in a function are necessary)
     "PLR2004", # magic-value-comparison      (demands too many constants)
+    "DOC201",  # docstring-missing-returns   (excessive documentation)
+    "DOC402",  # docstring-missing-yields    (excessive documentation)
 ]
 allowed-confusables = [
     "а", "б", "в", "г", "е", "з", "и", "к", "м", "н", "о", "р", "с", "у", "ф", "х",

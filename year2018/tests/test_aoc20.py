@@ -12,10 +12,10 @@ from year2018.aoc20 import (
 
 def test_parse_map():
     m = parse_map('^ENWWW$')
-    assert m[(0, -1)] == '#'
-    assert m[(0, 0)] == 'X'
-    assert m[(0, 1)] == '|'
-    assert m[(0, 2)] == '.'
+    assert m[0, -1] == '#'
+    assert m[0, 0] == 'X'
+    assert m[0, 1] == '|'
+    assert m[0, 2] == '.'
 
 
 samples = (

@@ -13,7 +13,7 @@ def prime_powers_decomp(n):
     """
     if n <= 1:
         yield [1]
-        raise StopIteration
+        return
     # check powers of 2
     powers, cur_pow = [1], 1
     while n % 2 == 0:

@@ -19,16 +19,16 @@ def test_map_init(sample):
     assert sample.depth == 510
     assert sample.target == (10, 10)
     assert len(sample.erosion.keys()) == 121
-    assert sample.erosion[(0, 0)] == 510
-    assert sample.erosion[(0, 1)] == 17317
-    assert sample.erosion[(1, 0)] == 8415
-    assert sample.erosion[(1, 1)] == 1805
-    assert sample.erosion[(10, 10)] == 510
-    assert sample.cave[(0, 0)] == '.'
-    assert sample.cave[(0, 1)] == '='
-    assert sample.cave[(1, 0)] == '.'
-    assert sample.cave[(1, 1)] == '|'
-    assert sample.cave[(10, 10)] == '.'
+    assert sample.erosion[0, 0] == 510
+    assert sample.erosion[0, 1] == 17317
+    assert sample.erosion[1, 0] == 8415
+    assert sample.erosion[1, 1] == 1805
+    assert sample.erosion[10, 10] == 510
+    assert sample.cave[0, 0] == '.'
+    assert sample.cave[0, 1] == '='
+    assert sample.cave[1, 0] == '.'
+    assert sample.cave[1, 1] == '|'
+    assert sample.cave[10, 10] == '.'
 
 
 def test_map_str(sample):

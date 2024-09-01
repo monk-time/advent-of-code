@@ -28,8 +28,8 @@ def read_tiles(program: Intcode) -> TileMap:
     tiles = {}
     while True:
         try:
-            x, y, tile_id = [next(gen) for _ in range(3)]  # noqa: UP027
-            tiles[(x, y)] = Tile.from_index(tile_id)
+            x, y, tile_id = [next(gen) for _ in range(3)]
+            tiles[x, y] = Tile.from_index(tile_id)
         except StopIteration:
             return tiles
 
@@ -39,7 +39,7 @@ def print_tiles(tiles: TileMap):
     height = max(y for _, y in tiles) + 1  # coords are 0-based
     width = max(x for x, _ in tiles) + 1
     line = '\n'.join(
-        ''.join(tiles[(x, y)] for x in range(width)) for y in range(height)
+        ''.join(tiles[x, y] for x in range(width)) for y in range(height)
     )
     print(line)
 
@@ -73,7 +73,7 @@ def run_game(program: Intcode):
             if (x, y) == (-1, 0):
                 score = tile_id
                 continue
-            tiles[(x, y)] = Tile.from_index(tile_id)
+            tiles[x, y] = Tile.from_index(tile_id)
         except StopIteration:
             return score
 

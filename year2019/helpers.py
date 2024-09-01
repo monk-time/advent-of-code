@@ -11,6 +11,9 @@ def read_puzzle(
 
     The number of the puzzle is determined by the filename of the caller,
     or can be specified explicitly.
+
+    Raises:
+        FileNotFoundError: if cannot find the puzzle file
     """
     if number:
         year_dir = Path(f'year{year}')

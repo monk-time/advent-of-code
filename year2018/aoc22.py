@@ -31,10 +31,10 @@ class Map:
                 if y == 0
                 else y * 48271
                 if x == 0
-                else self.erosion[(y - 1, x)] * self.erosion[(y, x - 1)]
+                else self.erosion[y - 1, x] * self.erosion[y, x - 1]
             )
-            self.erosion[(y, x)] = (geoindex + self.depth) % 20183
-            self.cave[(y, x)] = '.=|'[self.erosion[(y, x)] % 3]
+            self.erosion[y, x] = (geoindex + self.depth) % 20183
+            self.cave[y, x] = '.=|'[self.erosion[y, x] % 3]
 
     def __str__(self):
         y_max, x_max = self.corner
@@ -44,7 +44,7 @@ class Map:
                 if (y, x) == (0, 0)
                 else 'T'
                 if (y, x) == self.target
-                else self.cave[(y, x)]
+                else self.cave[y, x]
                 for x in range(x_max + 1)
             )
             for y in range(y_max + 1)
@@ -62,7 +62,7 @@ class Map:
 def calc_risk(m: Map) -> int:
     y_t, x_t = m.target
     return sum(
-        '.=|'.index(m.cave[(y, x)])
+        '.=|'.index(m.cave[y, x])
         for y in range(y_t + 1)
         for x in range(x_t + 1)
     )

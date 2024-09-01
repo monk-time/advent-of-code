@@ -86,10 +86,10 @@ def st_move_big():
 def test_state_fromstring(st_sample):
     assert st_sample.height == 5
     assert st_sample.width == 7
-    assert st_sample.map[(0, 0)] == '#'
-    assert st_sample.map[(1, 1)] == '.'
-    assert st_sample.map[(1, 2)] == Unit((1, 2), 'G')
-    assert st_sample.map[(1, 4)] == Unit((1, 4), 'E')
+    assert st_sample.map[0, 0] == '#'
+    assert st_sample.map[1, 1] == '.'
+    assert st_sample.map[1, 2] == Unit((1, 2), 'G')
+    assert st_sample.map[1, 4] == Unit((1, 4), 'E')
     assert st_sample.units == [
         Unit((1, 2), 'G'),
         Unit((1, 4), 'E'),
