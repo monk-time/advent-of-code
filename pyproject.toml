@@ -3,6 +3,7 @@ pythonpath = [
     "year2018",
     "year2019",
 ]
+addopts="-n auto"
 
 [tool.ruff]
 target-version = "py312"
