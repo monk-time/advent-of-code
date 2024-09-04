@@ -4,7 +4,6 @@ from bisect import insort
 from collections import deque
 from collections.abc import Iterable
 from dataclasses import dataclass
-from functools import cache
 from operator import itemgetter
 from string import ascii_lowercase, ascii_uppercase
 
@@ -44,48 +43,54 @@ def parse(s: str) -> TileMap:
     )
 
 
-@cache
 def find_reachable_keys_bfs(
-    tiles: TileMap, start: Coord, keys: frozenset[str]
-) -> dict[str, int]:
+    tiles: TileMap, start: Coord
+) -> Iterable[tuple[str, int, list[str]]]:
     visited: set[Coord] = {start}
-    queue: deque[tuple[Coord, int]] = deque([(start, 0)])
-    reachable_keys: dict[str, int] = {}
+    queue: deque[tuple[Coord, int, list[str]]] = deque([(start, 0, [])])
     while queue:
-        prev_pos, steps = queue.popleft()
-        steps += 1
-        for pos in around(prev_pos):
-            tile = tiles[pos]
-            if (
-                pos in visited
-                or tile.is_wall()
-                or (tile.is_door() and tile.value.lower() not in keys)
-            ):
+        pos, steps, req_keys = queue.popleft()
+        for next_pos in around(pos):
+            tile = tiles[next_pos]
+            if next_pos in visited or tile.is_wall():
                 continue
-            if tile.is_key() and tile.value not in keys:
-                reachable_keys[tile.value] = steps
+            if tile.is_key():
+                yield (tile.value, steps + 1, req_keys)
                 continue
-            queue.append((pos, steps))
-            visited.add(pos)
-    return reachable_keys
+            next_req_keys = req_keys
+            if tile.is_door():
+                next_req_keys = [*req_keys, tile.value.lower()]
+            queue.append((next_pos, steps + 1, next_req_keys))
+            visited.add(next_pos)
 
 
 def shortest_path_len(tiles: TileMap) -> int:
     start = next(c for c, tile in tiles.items() if tile.value == '@')
-    key_dict = {
-        tile.value: pos for pos, tile in tiles.items() if tile.is_key()
+    start_graph = sorted(find_reachable_keys_bfs(tiles, start))
+    key_graph = {
+        tile.value: sorted(find_reachable_keys_bfs(tiles, pos))
+        for pos, tile in tiles.items()
+        if tile.is_key()
     }
-    queue: deque[tuple[Coord, int, list[str]]] = deque([(start, 0, [])])
-    shortest_path: list[str] = []
+    queue: deque[tuple[str, int, list[str]]] = deque(
+        (key, steps, [key]) for key, steps, doors in start_graph if not doors
+    )
+    visited = {}
     while queue:
-        pos, steps, keys = queue.popleft()
-        reachable_keys = find_reachable_keys_bfs(tiles, pos, frozenset(keys))
-        if not reachable_keys:
-            print(shortest_path)
-            return steps
-        for key, steps_to_key in reachable_keys.items():
-            item_to_queue = (key_dict[key], steps + steps_to_key, [*keys, key])
-            insort(queue, item_to_queue, key=itemgetter(1))
+        key, steps, keys = queue.popleft()
+        reachable_keys = key_graph[key]
+        for next_key, steps_to_key, doors in reachable_keys:
+            if not all(door in keys for door in doors):
+                continue
+            next_keys = [*keys, next_key] if next_key not in keys else keys
+            next_steps = steps + steps_to_key
+            if len(next_keys) == len(key_graph):
+                return next_steps
+            visited_key = (next_key, frozenset(next_keys))
+            if visited_key in visited and next_steps >= visited[visited_key]:
+                continue
+            insort(queue, (next_key, next_steps, next_keys), key=itemgetter(1))
+            visited[visited_key] = next_steps
     return 0
 
 
