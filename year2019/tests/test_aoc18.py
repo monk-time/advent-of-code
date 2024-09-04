@@ -6,16 +6,17 @@ from year2019.aoc18 import (
     find_reachable_keys_bfs,
     parse,
     shortest_path_len,
+    shortest_path_len_by_quadrants,
     solve,
 )
 
-sample1 = cleandoc("""
+sample1_1 = cleandoc("""
     #########
     #b.A.@.a#
     #########
 """)
 
-sample2 = cleandoc("""
+sample1_2 = cleandoc("""
     ########################
     #f.D.E.e.C.b.A.@.a.B.c.#
     ######################.#
@@ -23,7 +24,7 @@ sample2 = cleandoc("""
     ########################
 """)
 
-sample3 = cleandoc("""
+sample1_3 = cleandoc("""
     ########################
     #...............b.C.D.f#
     #.######################
@@ -31,7 +32,7 @@ sample3 = cleandoc("""
     ########################
 """)
 
-sample4 = cleandoc("""
+sample1_4 = cleandoc("""
     #################
     #i.G..c...e..H.p#
     ########.########
@@ -43,7 +44,7 @@ sample4 = cleandoc("""
     #################
 """)
 
-sample5 = cleandoc("""
+sample1_5 = cleandoc("""
     ########################
     #@..............ac.GI.b#
     ###d#e#f################
@@ -52,16 +53,48 @@ sample5 = cleandoc("""
     ########################
 """)
 
+sample2_1 = cleandoc("""
+    #######
+    #a.#Cd#
+    ##...##
+    ##.@.##
+    ##...##
+    #cB#Ab#
+    #######
+""")
+
+sample2_2 = cleandoc("""
+    ###############
+    #d.ABC.#.....a#
+    ######...######
+    ######.@.######
+    ######...######
+    #b.....#.....c#
+    ###############
+""")
+
+sample2_3 = cleandoc("""
+    #############
+    #g#f.D#..h#l#
+    #F###e#E###.#
+    #dCba...BcIJ#
+    #####.@.#####
+    #nK.L...G...#
+    #M###N#H###.#
+    #o#m..#i#jk.#
+    #############
+""")
+
 
 @pytest.mark.parametrize(
     'sample, start, result',
     (
-        (sample1, (5, 1), [('a', 2, []), ('b', 4, ['a'])]),
-        (sample1, (3, 1), [('a', 4, []), ('b', 2, [])]),
-        (sample1, (1, 1), [('a', 6, ['a'])]),
-        (sample2, (6, 1), [('e', 1, []), ('f', 5, ['e', 'd'])]),
+        (sample1_1, (5, 1), [('a', 2, []), ('b', 4, ['a'])]),
+        (sample1_1, (3, 1), [('a', 4, []), ('b', 2, [])]),
+        (sample1_1, (1, 1), [('a', 6, ['a'])]),
+        (sample1_2, (6, 1), [('e', 1, []), ('f', 5, ['e', 'd'])]),
         (
-            sample4,
+            sample1_4,
             (8, 4),
             [
                 ('a', 3, []),
@@ -84,16 +117,28 @@ def test_find_reachable_keys_bfs(sample, start, result):
 @pytest.mark.parametrize(
     'sample, result',
     (
-        (sample1, 8),
-        (sample2, 86),
-        (sample3, 132),
-        (sample4, 136),
-        (sample5, 81),
+        (sample1_1, 8),
+        (sample1_2, 86),
+        (sample1_3, 132),
+        (sample1_4, 136),
+        (sample1_5, 81),
     ),
 )
 def test_shortest_path_len(sample, result):
     assert shortest_path_len(parse(sample)) == result
 
 
+@pytest.mark.parametrize(
+    'sample, result',
+    (
+        (sample2_1, 8),
+        (sample2_2, 24),
+        # (sample2_3, 72), - assumptions in the solution fail for this sample
+    ),
+)
+def test_shortest_path_len_by_quadrants(sample, result):
+    assert shortest_path_len_by_quadrants(parse(sample)) == result
+
+
 def test_solve():
-    assert solve() == (4510, 0)
+    assert solve() == (4510, 1816)

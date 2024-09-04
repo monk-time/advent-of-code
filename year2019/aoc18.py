@@ -7,8 +7,6 @@ from dataclasses import dataclass
 from operator import itemgetter
 from string import ascii_lowercase, ascii_uppercase
 
-from frozendict import frozendict
-
 from helpers import read_puzzle
 
 
@@ -25,9 +23,12 @@ class Tile:
     def is_door(self) -> bool:
         return self.value in ascii_uppercase
 
+    def is_start(self) -> bool:
+        return self.value == '@'
+
 
 type Coord = tuple[int, int]
-type TileMap = frozendict[Coord, Tile]
+type TileMap = dict[Coord, Tile]
 
 
 def around(pos: Coord) -> Iterable[Coord]:
@@ -36,11 +37,15 @@ def around(pos: Coord) -> Iterable[Coord]:
 
 
 def parse(s: str) -> TileMap:
-    return frozendict(
-        ((x, y), Tile(char))
+    return {
+        (x, y): Tile(char)
         for y, line in enumerate(s.split())
         for x, char in enumerate(line)
-    )
+    }
+
+
+def get_start(tiles: TileMap) -> Coord:
+    return next(c for c, tile in tiles.items() if tile.is_start())
 
 
 def find_reachable_keys_bfs(
@@ -65,26 +70,23 @@ def find_reachable_keys_bfs(
 
 
 def shortest_path_len(tiles: TileMap) -> int:
-    start = next(c for c, tile in tiles.items() if tile.value == '@')
-    start_graph = sorted(find_reachable_keys_bfs(tiles, start))
     key_graph = {
         tile.value: sorted(find_reachable_keys_bfs(tiles, pos))
         for pos, tile in tiles.items()
-        if tile.is_key()
+        if tile.is_key() or tile.is_start()
     }
-    queue: deque[tuple[str, int, list[str]]] = deque(
-        (key, steps, [key]) for key, steps, doors in start_graph if not doors
-    )
+    queue: deque[tuple[str, int, list[str]]] = deque([('@', 0, [])])
     visited = {}
     while queue:
         key, steps, keys = queue.popleft()
         reachable_keys = key_graph[key]
         for next_key, steps_to_key, doors in reachable_keys:
-            if not all(door in keys for door in doors):
+            # First condition is a hack for part 2
+            if any(door in key_graph and door not in keys for door in doors):
                 continue
             next_keys = [*keys, next_key] if next_key not in keys else keys
             next_steps = steps + steps_to_key
-            if len(next_keys) == len(key_graph):
+            if len(next_keys) == len(key_graph) - 1:  # compensate for @
                 return next_steps
             visited_key = (next_key, frozenset(next_keys))
             if visited_key in visited and next_steps >= visited[visited_key]:
@@ -94,9 +96,34 @@ def shortest_path_len(tiles: TileMap) -> int:
     return 0
 
 
+def shortest_path_len_by_quadrants(tiles: TileMap) -> int:
+    # Relies on a falsy assumption that in a quadrant we can ignore doors
+    # that don't have keys in it.
+    start = get_start(tiles)
+    wall_offsets = ((-1, 0), (0, -1), (0, 0), (0, 1), (1, 0))
+    for i, j in wall_offsets:
+        tiles[start[0] + i, start[1] + j] = Tile('#')
+    start_offsets = ((-1, -1), (-1, 1), (1, -1), (1, 1))
+    for i, j in start_offsets:
+        tiles[start[0] + i, start[1] + j] = Tile('@')
+    filter_by_pred = lambda pred: {
+        (i, j): tile for (i, j), tile in tiles.items() if pred(i, j)
+    }
+    quadrants: list[TileMap] = [
+        filter_by_pred(lambda i, j: i <= start[0] and j <= start[1]),
+        filter_by_pred(lambda i, j: i >= start[0] and j <= start[1]),
+        filter_by_pred(lambda i, j: i <= start[0] and j >= start[1]),
+        filter_by_pred(lambda i, j: i >= start[0] and j >= start[1]),
+    ]
+    return sum(shortest_path_len(quadrant) for quadrant in quadrants)
+
+
 def solve() -> tuple[int, int]:
     tiles = parse(read_puzzle())
-    return shortest_path_len(tiles), 0
+    return (
+        shortest_path_len(tiles),
+        shortest_path_len_by_quadrants(tiles),
+    )
 
 
 if __name__ == '__main__':
