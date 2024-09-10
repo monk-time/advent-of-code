@@ -54,9 +54,7 @@ def parse_tiles(lines: list[str]) -> TileMap:
 def render_tiles(tiles: TileMap) -> list[str]:
     height = max(y for _, y in tiles) + 1  # coords are 0-based
     width = max(x for x, _ in tiles) + 1
-    return [
-        ''.join(tiles[x, y] for x in range(width)) for y in range(height)
-    ]
+    return [''.join(tiles[x, y] for x in range(width)) for y in range(height)]
 
 
 def around(pos: Coord) -> Iterable[Coord]:

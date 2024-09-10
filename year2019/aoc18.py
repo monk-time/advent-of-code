@@ -1,10 +1,9 @@
 # https://adventofcode.com/2019/day/18
 
-from bisect import insort
 from collections import deque
 from collections.abc import Iterable
 from dataclasses import dataclass
-from operator import itemgetter
+from heapq import heappop, heappush
 from string import ascii_lowercase, ascii_uppercase
 
 from helpers import read_puzzle
@@ -75,10 +74,10 @@ def shortest_path_len(tiles: TileMap) -> int:
         for pos, tile in tiles.items()
         if tile.is_key() or tile.is_start()
     }
-    queue: deque[tuple[str, int, list[str]]] = deque([('@', 0, [])])
+    queue: list[tuple[int, str, list[str]]] = [(0, '@', [])]
     visited = {}
     while queue:
-        key, steps, keys = queue.popleft()
+        steps, key, keys = heappop(queue)
         reachable_keys = key_graph[key]
         for next_key, steps_to_key, doors in reachable_keys:
             # First condition is a hack for part 2
@@ -88,11 +87,11 @@ def shortest_path_len(tiles: TileMap) -> int:
             next_steps = steps + steps_to_key
             if len(next_keys) == len(key_graph) - 1:  # compensate for @
                 return next_steps
-            visited_key = (next_key, frozenset(next_keys))
-            if visited_key in visited and next_steps >= visited[visited_key]:
+            key_state = (next_key, frozenset(next_keys))
+            if key_state in visited and next_steps >= visited[key_state]:
                 continue
-            insort(queue, (next_key, next_steps, next_keys), key=itemgetter(1))
-            visited[visited_key] = next_steps
+            heappush(queue, (next_steps, next_key, next_keys))
+            visited[key_state] = next_steps
     return 0
 
 
