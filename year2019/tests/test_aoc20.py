@@ -11,13 +11,16 @@ def preserve_whitespace(s: str) -> str:
 
 
 sample1 = preserve_whitespace("""
-    |   A    |
-    |   A    |
-    |  #.##  |
-    |BB..##  |
-    |  ####  |
-    |BB....ZZ|
-    |  ####  |
+    |     A     |
+    |     A     |
+    |  ###.###  |
+    |  ###.###  |
+    |  ## B ##  |
+    |  ## B ##  |
+    |  ##   ##  |
+    |  #######  |
+    |BB.......ZZ|
+    |  #######  |
 """)
 
 sample2 = preserve_whitespace("""
@@ -83,17 +86,71 @@ sample3 = preserve_whitespace("""
 """)
 
 
+sample4 = preserve_whitespace("""
+    |             Z L X W       C                 |
+    |             Z P Q B       K                 |
+    |  ###########.#.#.#.#######.###############  |
+    |  #...#.......#.#.......#.#.......#.#.#...#  |
+    |  ###.#.#.#.#.#.#.#.###.#.#.#######.#.#.###  |
+    |  #.#...#.#.#...#.#.#...#...#...#.#.......#  |
+    |  #.###.#######.###.###.#.###.###.#.#######  |
+    |  #...#.......#.#...#...#.............#...#  |
+    |  #.#########.#######.#.#######.#######.###  |
+    |  #...#.#    F       R I       Z    #.#.#.#  |
+    |  #.###.#    D       E C       H    #.#.#.#  |
+    |  #.#...#                           #...#.#  |
+    |  #.###.#                           #.###.#  |
+    |  #.#....OA                       WB..#.#..ZH|
+    |  #.###.#                           #.#.#.#  |
+    |CJ......#                           #.....#  |
+    |  #######                           #######  |
+    |  #.#....CK                         #......IC|
+    |  #.###.#                           #.###.#  |
+    |  #.....#                           #...#.#  |
+    |  ###.###                           #.#.#.#  |
+    |XF....#.#                         RF..#.#.#  |
+    |  #####.#                           #######  |
+    |  #......CJ                       NM..#...#  |
+    |  ###.#.#                           #.###.#  |
+    |RE....#.#                           #......RF|
+    |  ###.###        X   X       L      #.#.#.#  |
+    |  #.....#        F   Q       P      #.#.#.#  |
+    |  ###.###########.###.#######.#########.###  |
+    |  #.....#...#.....#.......#...#.....#.#...#  |
+    |  #####.#.###.#######.#######.###.###.#.#.#  |
+    |  #.......#.......#.#.#.#.#...#...#...#.#.#  |
+    |  #####.###.#####.#.#.#.#.###.###.#.###.###  |
+    |  #.......#.....#.#...#...............#...#  |
+    |  #############.#.#.###.###################  |
+    |               A O F   N                     |
+    |               A A D   M                     |
+""")
+
+
 @pytest.mark.parametrize(
     'sample, result',
     (
-        (sample1, 6),
+        (sample1, 8),
         (sample2, 23),
         (sample3, 58),
     ),
 )
 def test_find_min_path_len(sample, result):
-    assert find_min_path_len(TileMap.from_str(sample)) == result
+    tile_map = TileMap.from_str(sample)
+    assert find_min_path_len(tile_map) == result
+
+
+@pytest.mark.parametrize(
+    'sample, result',
+    (
+        (sample2, 26),
+        (sample4, 396),
+    ),
+)
+def test_find_min_path_len_recursive(sample, result):
+    tile_map = TileMap.from_str(sample)
+    assert find_min_path_len(tile_map, recursive=True) == result
 
 
 def test_solve():
-    assert solve() == (496, 0)
+    assert solve() == (496, 5886)
