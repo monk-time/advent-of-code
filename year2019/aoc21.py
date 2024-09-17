@@ -27,27 +27,23 @@ def find_hull_damage(program: Intcode, springscript: str) -> int:
 
 def solve() -> tuple[int, int]:
     program = parse(read_puzzle())
-    # (^A | ^B | ^C) & D - jump if any of the next three spots is empty
+    # ^(A & B & C) & D - jump if any of the next three spots is empty
     springscript_walk = cleandoc("""
-        NOT A J
-        NOT B T
-        OR T J
-        NOT C T
-        OR T J
+        OR A J
+        AND B J
+        AND C J
+        NOT J J
         AND D J
         WALK
     """)
     # The same as previous but at least one of E and H should be solid
-    # Fills T with the value of E first
     springscript_run = cleandoc("""
-        NOT A J
-        NOT B T
-        OR T J
-        NOT C T
-        OR T J
+        OR A J
+        AND B J
+        AND C J
+        NOT J J
         AND D J
-        NOT E T
-        NOT T T
+        OR E T
         OR H T
         AND T J
         RUN
