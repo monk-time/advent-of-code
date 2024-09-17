@@ -52,8 +52,8 @@ sample4 = cleandoc("""
 )
 def test_shuffle(sample, result):
     start, step = shuffle(sample.splitlines(), 10)
-    assert view(10, start, step) == result
+    assert view(start, step, 10) == result
 
 
 def test_solve():
-    assert solve() == (4649, 0)
+    assert solve() == (4649, 68849657493596)
