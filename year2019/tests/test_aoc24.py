@@ -2,7 +2,7 @@ from inspect import cleandoc
 
 import pytest
 
-from year2019.aoc24 import calc_bio, parse, part1, solve, update_grid
+from year2019.aoc24 import parse, part1, part2, solve, update_grid
 
 sample1 = cleandoc("""
     ....#
@@ -66,13 +66,13 @@ def test_update_grid(sample, result):
     assert update_grid(parse(sample)) == parse(result)
 
 
-def test_calc_bio():
-    assert calc_bio(parse(sample_bio)) == 2129920
-
-
 def test_part1():
     assert part1(parse(sample1)) == 2129920
 
 
+def test_part2():
+    assert part2(parse(sample1), 10) == 99
+
+
 def test_solve():
-    assert solve() == (0, 0)
+    assert solve() == (17863741, 2029)

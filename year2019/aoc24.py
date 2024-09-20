@@ -1,49 +1,117 @@
 # https://adventofcode.com/2019/day/24
 
+from collections import defaultdict
+from collections.abc import Generator
+from itertools import product
+
 from helpers import read_puzzle
 
-type Grid = tuple[tuple[bool, ...], ...]
+type Coord = tuple[int, int]
+type Coords = frozenset[Coord]
+type AdjTable = dict[Coord, Coords]
+type CoordsRec = defaultdict[int, Coords]
 
 
-def parse(s: str) -> Grid:
-    return tuple(tuple(ch == '#' for ch in line) for line in s.split())
+def around(c: Coord) -> Generator[Coord, None, None]:
+    x, y = c
+    yield from ((x, y - 1), (x, y + 1), (x - 1, y), (x + 1, y))
 
 
-def update_tile(i: int, j: int, grid: Grid) -> bool:
-    bug_count = (
-        (i > 0 and grid[i - 1][j])
-        + (j > 0 and grid[i][j - 1])
-        + (i < 4 and grid[i + 1][j])
-        + (j < 4 and grid[i][j + 1])
+def is_in_bounds(c: Coord) -> bool:
+    x, y = c
+    return 0 <= x <= 4 and 0 <= y <= 4
+
+
+COORDS: tuple[Coord, ...] = tuple(product(range(5), repeat=2))  # type: ignore
+ADJ: AdjTable = {c: frozenset(filter(is_in_bounds, around(c))) for c in COORDS}
+ADJ_TO_INNER: AdjTable = {
+    (2, 1): frozenset((i, 0) for i in range(5)),  # top
+    (1, 2): frozenset((0, j) for j in range(5)),  # left
+    (3, 2): frozenset((4, j) for j in range(5)),  # right
+    (2, 3): frozenset((i, 4) for i in range(5)),  # bottom
+}
+ADJ_TO_OUTER: AdjTable = {
+    **{(0, j): frozenset(((1, 2),)) for j in (1, 2, 3)},
+    **{(4, j): frozenset(((3, 2),)) for j in (1, 2, 3)},
+    **{(i, 0): frozenset(((2, 1),)) for i in (1, 2, 3)},
+    **{(i, 4): frozenset(((2, 3),)) for i in (1, 2, 3)},
+    (0, 0): frozenset(((2, 1), (1, 2))),
+    (4, 0): frozenset(((2, 1), (3, 2))),
+    (0, 4): frozenset(((1, 2), (2, 3))),
+    (4, 4): frozenset(((3, 2), (2, 3))),
+}
+
+
+def parse(s: str) -> Coords:
+    return frozenset(
+        (i, j)
+        for i, line in enumerate(s.split())
+        for j, ch in enumerate(line)
+        if ch == '#'
     )
-    return bug_count == 1 or (bug_count == 2 and not grid[i][j])
 
 
-def update_grid(grid: Grid) -> Grid:
-    return tuple(
-        tuple(update_tile(i, j, grid) for j in range(5)) for i in range(5)
-    )
+def will_be_a_bug(c: Coord, bugs: Coords) -> bool:
+    bug_count = len(ADJ[c] & bugs)
+    return bug_count == 1 or (bug_count == 2 and c not in bugs)
 
 
-def calc_bio(grid: Grid) -> int:
-    return sum(
-        grid[i][j] and 2 ** (i * 5 + j) for i in range(5) for j in range(5)
-    )
+def update_grid(bugs: Coords) -> Coords:
+    return frozenset(c for c in COORDS if will_be_a_bug(c, bugs))
 
 
-def part1(grid: Grid) -> int:
-    cache = {grid}
+def part1(bugs: Coords) -> int:
+    cache = {bugs}
     while True:
-        grid = update_grid(grid)
-        if grid in cache:
+        bugs = update_grid(bugs)
+        if bugs in cache:
             break
-        cache.add(grid)
-    return calc_bio(grid)
+        cache.add(bugs)
+    return sum(2 ** (i * 5 + j) for (i, j) in bugs)
+
+
+def will_be_a_bug_rec(
+    c: Coord, bugs: Coords, inner: Coords, outer: Coords
+) -> bool:
+    adj = ADJ[c] - {(2, 2)}
+    adj_inner = ADJ_TO_INNER.get(c, frozenset())
+    adj_outer = ADJ_TO_OUTER.get(c, frozenset())
+    bug_count = (
+        len(adj & bugs) + len(adj_inner & inner) + len(adj_outer & outer)
+    )
+    return bug_count == 1 or (bug_count == 2 and c not in bugs)
+
+
+def update_grid_rec(
+    levels: CoordsRec, min_lvl: int, max_lvl: int
+) -> tuple[CoordsRec, int, int]:
+    next_levels: CoordsRec = defaultdict(frozenset)
+    for lvl in range(min_lvl - 1, max_lvl + 2):
+        outer = levels[lvl - 1]
+        inner = levels[lvl + 1]
+        next_level = frozenset(
+            c
+            for c in COORDS
+            if c != (2, 2) and will_be_a_bug_rec(c, levels[lvl], inner, outer)
+        )
+        next_levels[lvl] = next_level
+        if next_level:
+            min_lvl = min(lvl, min_lvl)
+            max_lvl = max(lvl, max_lvl)
+    return next_levels, min_lvl, max_lvl
+
+
+def part2(bugs: Coords, minutes: int = 200) -> int:
+    levels, min_lvl, max_lvl = defaultdict(frozenset), 0, 0
+    levels[0] = bugs
+    for _ in range(minutes):
+        levels, min_lvl, max_lvl = update_grid_rec(levels, min_lvl, max_lvl)
+    return sum(len(level) for level in levels.values())
 
 
 def solve() -> tuple[int, int]:
-    grid = parse(read_puzzle())
-    return part1(grid), 0
+    bugs = parse(read_puzzle())
+    return part1(bugs), part2(bugs)
 
 
 if __name__ == '__main__':
