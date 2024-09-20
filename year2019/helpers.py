@@ -1,4 +1,5 @@
 import inspect
+import os
 import re
 import timeit
 from pathlib import Path
@@ -73,3 +74,21 @@ def border_wrap(lines: list[str]) -> list[str]:
         *(f'│{''.join(s)}│' for s in lines),
         f'└{'─' * n}┘',
     ]
+
+
+def fetch_inputs(year: int) -> None:
+    import requests
+
+    for day in range(25, 26):
+        r = requests.get(
+            f'https://adventofcode.com/{year}/day/{day}/input',
+            cookies={'session': os.environ['SESSION']},
+        )
+        path = Path('inputs') / f'aoc{day:0>2}.txt'
+        path.touch()
+        path.write_text(r.text, encoding='utf-8', newline='\n')
+        print(f'Downloaded input file for day #{day}')
+
+
+if __name__ == '__main__':
+    fetch_inputs(2020)

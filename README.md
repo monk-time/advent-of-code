@@ -3,7 +3,7 @@ My solutions in Python 3 and JavaScript (ES2015+) for [Advent of Code](http://ad
 
 ### How to run
 
-All `.js` files should be run in Firefox/Chrome console on the puzzle's /input page. 
+All `.js` files should be run in Firefox/Chrome console on the puzzle's /input page.
 
 Python solutions have inputs already downloaded into input/ folder and can be run as stand-alone files:
 ```bash
@@ -19,3 +19,4 @@ Detailed problem descriptions for each year can be found here:
 - [Year 2017](https://adventofcode.com/2017)
 - [Year 2018](https://adventofcode.com/2018)
 - [Year 2019](https://adventofcode.com/2019)
+- [Year 2020](https://adventofcode.com/2020)
