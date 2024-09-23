@@ -1,15 +1,23 @@
 # https://adventofcode.com/2020/day/5
 
+from collections.abc import Generator
+
 from helpers import read_puzzle
 
 
-def parse(s: str) -> list[int]:
-    return [int(line) for line in s.split()]
+def parse(s: str) -> Generator[tuple[int, int], None, None]:
+    table = str.maketrans('FBLR', '0101')
+    for line in s.split():
+        binary = line.translate(table)
+        yield int(binary[:7], 2), int(binary[7:], 2)
 
 
 def solve() -> tuple[int, int]:
-    _puzzle = parse(read_puzzle())
-    return 0, 0
+    seat_ids = {a * 8 + b for (a, b) in parse(read_puzzle())}
+    return (
+        max(seat_ids),
+        sum(range(min(seat_ids), max(seat_ids) + 1)) - sum(seat_ids),
+    )
 
 
 if __name__ == '__main__':

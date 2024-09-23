@@ -1,15 +1,30 @@
 # https://adventofcode.com/2020/day/6
 
+from collections import Counter
+
 from helpers import read_puzzle
 
+type Groups = list[tuple[Counter[str], int]]
 
-def parse(s: str) -> list[int]:
-    return [int(line) for line in s.split()]
+
+def parse(s: str) -> Groups:
+    return [
+        (Counter(group.replace('\n', '')), group.count('\n') + 1)
+        for group in s.split('\n\n')
+    ]
+
+
+def count_questions_any(groups: Groups) -> int:
+    return sum(len(counter) for counter, _ in groups)
+
+
+def count_questions_all(groups: Groups) -> int:
+    return sum(v == n for counter, n in groups for v in counter.values())
 
 
 def solve() -> tuple[int, int]:
-    _puzzle = parse(read_puzzle())
-    return 0, 0
+    groups = parse(read_puzzle())
+    return count_questions_any(groups), count_questions_all(groups)
 
 
 if __name__ == '__main__':
