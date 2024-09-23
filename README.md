@@ -10,10 +10,18 @@ Python solutions have inputs already downloaded into input/ folder and can be ru
 python year2019/aoc17.py
 ```
 
-Python solutions have tests written in pytest.
+### Testing
+
+All python solutions have tests written for Pytest, ranging from basic checks for final answers for simple puzzles to extensive coverage for more complex puzzles. Tests run on all available CPUs using `pytest-xdist`.
+```bash
+pytest
+pytest year2018/
+pytest year2019/tests/test_aoc17.py
+```
+
 
 ### Problem descriptions
-Detailed problem descriptions for each year can be found here:
+Links to detailed problem descriptions for each year can be found in the top comment in each solution file and also accessed here:
 - [Year 2015](https://adventofcode.com/2015)
 - [Year 2016](https://adventofcode.com/2016)
 - [Year 2017](https://adventofcode.com/2017)
