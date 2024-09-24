@@ -1,15 +1,55 @@
 # https://adventofcode.com/2020/day/8
 
+from dataclasses import dataclass
+
 from helpers import read_puzzle
 
+type Program = list[tuple[str, int]]
 
-def parse(s: str) -> list[int]:
-    return [int(line) for line in s.split()]
+
+@dataclass(frozen=True)
+class Result:
+    acc: int
+    inf_loop: bool
+
+
+def parse(s: str) -> Program:
+    return [((a := line.split())[0], int(a[1])) for line in s.split('\n')]
+
+
+def run(program: Program) -> Result:
+    pointer, acc, visited = 0, 0, set()
+    while pointer not in visited and pointer < len(program):
+        visited.add(pointer)
+        match program[pointer]:
+            case ('acc', n):
+                acc += n
+                pointer += 1
+            case ('jmp', n):
+                pointer += n
+            case ('nop', _):
+                pointer += 1
+    return Result(acc=acc, inf_loop=pointer < len(program))
+
+
+def fix(program: Program) -> Result:
+    flip = {'jmp': 'nop', 'nop': 'jmp'}
+    for i in range(len(program)):
+        cmd, n = program[i]
+        if cmd == 'acc':
+            continue
+        program[i] = (flip[cmd], n)
+        result = run(program)
+        program[i] = (cmd, n)
+        if not result.inf_loop:
+            return result
+    msg = 'Unfixable program'
+    raise ValueError(msg)
 
 
 def solve() -> tuple[int, int]:
-    _puzzle = parse(read_puzzle())
-    return 0, 0
+    program = parse(read_puzzle())
+    return run(program).acc, fix(program).acc
 
 
 if __name__ == '__main__':
