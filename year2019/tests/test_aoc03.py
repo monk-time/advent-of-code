@@ -38,8 +38,7 @@ def test_find_min_intersection_by_steps():
     wire1, wire2 = parse(example1)
     assert find_min_intersection_by_steps(wire1, wire2) == 30
     wire1, wire2 = parse(
-        'R75,D30,R83,U83,L12,D49,R71,U7,L72\n'
-        'U62,R66,U55,R34,D71,R55,D58,R83'
+        'R75,D30,R83,U83,L12,D49,R71,U7,L72\nU62,R66,U55,R34,D71,R55,D58,R83'
     )
     assert find_min_intersection_by_steps(wire1, wire2) == 610
     wire1, wire2 = parse(

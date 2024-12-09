@@ -101,7 +101,7 @@ def turn(direction: Direction):
 def walk_through_all(tiles: TileMap) -> Iterable[int | str]:
     pos = next(pos for pos, tile in tiles.items() if tile.is_direction())
     direction = tiles[pos]
-    direction = cast(Direction, direction)
+    direction = cast('Direction', direction)
     steps = 0
     while True:
         next_pos = step(pos, direction)

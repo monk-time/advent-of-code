@@ -66,7 +66,7 @@ def str_n_gens(gens: int, rules: set[str], pots: str, i_zero: int):
     lines = [(max_i_zero - i_zero) * '.' + pots for pots, i_zero in states]
     max_len = max(len(pots) for pots in lines)
     return [
-        f'{i:{len(str(gens))}d}: {pots.ljust(max_len, '.')}'
+        f'{i:{len(str(gens))}d}: {pots.ljust(max_len, ".")}'
         for i, pots in enumerate(lines)
     ]
 

@@ -70,9 +70,9 @@ def border_wrap(lines: list[str]) -> list[str]:
     """Draw a border around an equally sized set of lines."""
     n = len(lines[0])
     return [
-        f'┌{'─' * n}┐',
-        *(f'│{''.join(s)}│' for s in lines),
-        f'└{'─' * n}┘',
+        f'┌{"─" * n}┐',
+        *(f'│{"".join(s)}│' for s in lines),
+        f'└{"─" * n}┘',
     ]
 
 
