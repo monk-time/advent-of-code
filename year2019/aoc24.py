@@ -12,7 +12,7 @@ type AdjTable = dict[Coord, Coords]
 type CoordsRec = defaultdict[int, Coords]
 
 
-def around(c: Coord) -> Generator[Coord, None, None]:
+def around(c: Coord) -> Generator[Coord]:
     x, y = c
     yield from ((x, y - 1), (x, y + 1), (x - 1, y), (x + 1, y))
 

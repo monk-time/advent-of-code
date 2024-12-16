@@ -5,7 +5,7 @@ from collections.abc import Generator
 from helpers import read_puzzle
 
 
-def parse(s: str) -> Generator[tuple[int, int], None, None]:
+def parse(s: str) -> Generator[tuple[int, int]]:
     table = str.maketrans('FBLR', '0101')
     for line in s.split():
         binary = line.translate(table)

@@ -29,7 +29,7 @@ class Computer:
         else:
             self.program = defaultdict(lambda: 0, enumerate(self.program))
 
-    def __iter__(self) -> Generator[int, int, None]:
+    def __iter__(self) -> Generator[int, int]:
         """Execute the Intcode program.
 
         Raises:

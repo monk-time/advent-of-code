@@ -14,7 +14,7 @@ type MoveInfo = tuple[Coord, int]  # 1/-1 if on outer/inner edge; 0 otherwise
 type Tiles = dict[Coord, str]
 
 
-def around(pos: Coord) -> Generator[Coord, None, None]:
+def around(pos: Coord) -> Generator[Coord]:
     x, y = pos
     yield from ((x, y - 1), (x, y + 1), (x - 1, y), (x + 1, y))
 
@@ -82,7 +82,7 @@ class TileMap:
             letters.reverse()
         return ''.join(letters)
 
-    def step(self, pos: Coord) -> Generator[MoveInfo, None, None]:
+    def step(self, pos: Coord) -> Generator[MoveInfo]:
         if pos in self.portals:
             portal = self.portals[pos]
             if portal.next_pos is not None:
