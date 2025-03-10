@@ -1,6 +1,6 @@
 # https://adventofcode.com/2019/day/16
 
-from itertools import accumulate, chain, cycle, islice, repeat, starmap
+from itertools import accumulate, chain, cycle, islice, repeat
 from operator import mul
 
 from helpers import read_puzzle, timed
@@ -30,7 +30,7 @@ def get_patterns(length: int) -> tuple[Signal, ...]:
 
 def apply_phase_of_fft(signal: Signal, patterns: tuple[Signal, ...]) -> Signal:
     n = len(signal)
-    apply_pattern = lambda i: starmap(mul, zip(signal[i:], patterns[i][i:]))
+    apply_pattern = lambda i: map(mul, signal[i:], patterns[i][i:])
     get_digit = lambda i: abs(sum(apply_pattern(i))) % 10
     return tuple(get_digit(i) for i in range(n))
 

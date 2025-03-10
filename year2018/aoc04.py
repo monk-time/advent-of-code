@@ -2,7 +2,7 @@
 
 import re
 from collections import Counter, defaultdict
-from itertools import chain, groupby, starmap
+from itertools import chain, groupby
 from operator import itemgetter
 
 from helpers import read_puzzle
@@ -12,7 +12,7 @@ Guards = dict[int, Naps]
 
 
 def sleep_ranges(schedule: list[int]) -> Naps:
-    return list(starmap(range, zip(schedule[::2], schedule[1::2])))
+    return list(map(range, schedule[::2], schedule[1::2]))
 
 
 def parse_journal(journal: str) -> Guards:
