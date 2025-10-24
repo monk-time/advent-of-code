@@ -1,8 +1,12 @@
 # https://adventofcode.com/2018/day/14
 
-from collections.abc import Iterable
+
+from typing import TYPE_CHECKING
 
 from helpers import read_puzzle
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 
 def scoreboard() -> Iterable[tuple[list[int], int]]:

@@ -1,10 +1,12 @@
 # https://adventofcode.com/2018/day/13
 
-from collections.abc import Iterable
 from itertools import product
-from typing import NamedTuple
+from typing import TYPE_CHECKING, NamedTuple
 
 from helpers import read_puzzle
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 
 class Cart(NamedTuple):

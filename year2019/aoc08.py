@@ -1,10 +1,14 @@
 # https://adventofcode.com/2019/day/8
 
-from collections.abc import Iterable
+
+from typing import TYPE_CHECKING
 
 from PIL import Image
 
 from helpers import read_puzzle
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 Layer = list[str]
 Layers = list[Layer]

@@ -1,10 +1,13 @@
 # https://adventofcode.com/2019/day/10
 
-from collections.abc import Iterable
 from itertools import product
 from math import gcd
+from typing import TYPE_CHECKING
 
 from helpers import read_puzzle
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 Map = list[list[str]]
 Coord = tuple[int, int]

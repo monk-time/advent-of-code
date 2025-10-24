@@ -1,10 +1,13 @@
 # https://adventofcode.com/2018/day/2
 
 from collections import Counter
-from collections.abc import Iterable
 from itertools import combinations
+from typing import TYPE_CHECKING
 
 from helpers import read_puzzle
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 
 def has_exactly_n_of_any_letter(box_id: str, n: int) -> bool:

@@ -1,10 +1,13 @@
 # https://adventofcode.com/2019/day/24
 
 from collections import defaultdict
-from collections.abc import Generator
 from itertools import product
+from typing import TYPE_CHECKING
 
 from helpers import read_puzzle
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
 
 type Coord = tuple[int, int]
 type Coords = frozenset[Coord]

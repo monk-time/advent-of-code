@@ -1,9 +1,12 @@
 # https://adventofcode.com/2018/day/1
 
-from collections.abc import Iterable
 from itertools import cycle
+from typing import TYPE_CHECKING
 
 from helpers import read_puzzle
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 
 def parse(seq: str) -> Iterable[int]:

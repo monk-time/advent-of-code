@@ -2,10 +2,13 @@
 
 import re
 from collections import deque
-from collections.abc import Iterable
 from itertools import islice
+from typing import TYPE_CHECKING
 
 from helpers import read_puzzle
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 sample = """initial state: #..#.#..##......###...###
 

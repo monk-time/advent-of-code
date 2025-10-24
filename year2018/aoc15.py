@@ -22,7 +22,7 @@ class Unit:
     def __str__(self):
         return self.type
 
-    def is_enemy(self, target: 'Unit'):
+    def is_enemy(self, target: Unit):
         return self.type != target.type
 
 
@@ -65,7 +65,7 @@ class State:
                 map_[i] += f'{unit.type}({unit.hp})'
         return '\n'.join(map_)
 
-    def deepcopy(self) -> 'State':
+    def deepcopy(self) -> State:
         """Return a deep copy of the state."""
         units_new = []
         map_new = self.map.copy()

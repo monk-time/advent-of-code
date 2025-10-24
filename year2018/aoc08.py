@@ -1,15 +1,18 @@
 # https://adventofcode.com/2018/day/8
 
-from collections.abc import Iterable
 from dataclasses import dataclass, field
+from typing import TYPE_CHECKING
 
 from helpers import read_puzzle
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 
 @dataclass
 class Node:
     end: int | None = None
-    children: list['Node'] = field(default_factory=list)
+    children: list[Node] = field(default_factory=list)
     meta: list[int] = field(default_factory=list)
 
 

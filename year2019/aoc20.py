@@ -1,13 +1,15 @@
 # https://adventofcode.com/2019/day/20
 
 from collections import defaultdict, deque
-from collections.abc import Generator
 from dataclasses import dataclass
 from operator import add, itemgetter, sub
 from string import ascii_uppercase
-from typing import Self
+from typing import TYPE_CHECKING, Self
 
 from helpers import read_puzzle
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
 
 type Coord = tuple[int, int]
 type MoveInfo = tuple[Coord, int]  # 1/-1 if on outer/inner edge; 0 otherwise
@@ -75,8 +77,8 @@ class TileMap:
         if True not in portal_bools:
             return None
         portal_pos1 = near[portal_bools.index(True)]
-        delta: Coord = tuple(map(sub, portal_pos1, pos))
-        portal_pos2 = tuple(map(add, portal_pos1, delta))
+        delta: Coord = tuple(map(sub, portal_pos1, pos, strict=True))
+        portal_pos2 = tuple(map(add, portal_pos1, delta, strict=True))
         letters = [tiles[portal_pos1], tiles[portal_pos2]]
         if delta in {(-1, 0), (0, -1)}:
             letters.reverse()

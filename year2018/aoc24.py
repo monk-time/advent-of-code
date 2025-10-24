@@ -22,7 +22,7 @@ class Group:
     boost: int = 0
 
     @classmethod
-    def frommatch(cls, m: Match, **kwargs) -> 'Group':
+    def frommatch(cls, m: Match, **kwargs) -> Group:
         d = {
             k: int(v) if v and v.isdigit() else v
             for k, v in m.groupdict().items()
@@ -42,7 +42,7 @@ class Group:
     def power(self) -> int:
         return self.units * (self.dmg + self.boost)
 
-    def dmg_to(self, target: 'Group') -> int:
+    def dmg_to(self, target: Group) -> int:
         if self.dmg_type in target.immune:
             return 0
         if self.dmg_type in target.weak:

@@ -1,9 +1,12 @@
 # https://adventofcode.com/2020/day/4
 
 import re
-from collections.abc import Callable
+from typing import TYPE_CHECKING
 
 from helpers import read_puzzle
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 type Passport = dict[str, str]
 

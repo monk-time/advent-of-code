@@ -1,10 +1,13 @@
 # https://adventofcode.com/2020/day/15
 
 from collections import defaultdict
-from collections.abc import Generator
 from itertools import islice
+from typing import TYPE_CHECKING
 
 from helpers import read_puzzle
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
 
 PART_1 = 2020
 PART_2 = 30000000

@@ -1,12 +1,14 @@
 # https://adventofcode.com/2019/day/17
 
 import re
-from collections.abc import Iterable
 from enum import StrEnum
-from typing import Literal, cast, get_args
+from typing import TYPE_CHECKING, Literal, cast, get_args
 
 from helpers import read_puzzle
 from intcode import Computer, Intcode, parse
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 
 class Tile(StrEnum):

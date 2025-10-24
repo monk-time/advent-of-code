@@ -1,12 +1,15 @@
 # https://adventofcode.com/2018/day/22
 
 import re
-from collections.abc import Iterable
 from itertools import product
+from typing import TYPE_CHECKING
 
 import networkx as nx
 
 from helpers import read_puzzle
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 Point = tuple[int, int]
 

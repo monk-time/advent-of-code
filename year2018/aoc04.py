@@ -12,7 +12,7 @@ Guards = dict[int, Naps]
 
 
 def sleep_ranges(schedule: list[int]) -> Naps:
-    return list(map(range, schedule[::2], schedule[1::2]))
+    return list(map(range, schedule[::2], schedule[1::2], strict=True))
 
 
 def parse_journal(journal: str) -> Guards:

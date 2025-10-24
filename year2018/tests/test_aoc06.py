@@ -1,5 +1,5 @@
-from collections.abc import Iterable
 from string import ascii_letters
+from typing import TYPE_CHECKING
 
 from year2018.aoc06 import (
     Grid,
@@ -11,6 +11,9 @@ from year2018.aoc06 import (
     safe_region,
     solve,
 )
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 sample = '1, 1\n1, 6\n8, 3\n3, 4\n5, 5\n8, 9'
 points_ = parse_coords(sample)

@@ -1,12 +1,15 @@
 # https://adventofcode.com/2019/day/15
 
 from collections import deque
-from collections.abc import Iterable
 from dataclasses import replace
 from enum import IntEnum
+from typing import TYPE_CHECKING
 
 from helpers import read_puzzle
 from intcode import Computer, Intcode, parse
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 
 class Tile(IntEnum):

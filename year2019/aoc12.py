@@ -1,13 +1,16 @@
 # https://adventofcode.com/2019/day/12
 
 import re
-from collections.abc import Iterable
 from copy import deepcopy
 from dataclasses import dataclass
 from itertools import combinations
 from math import lcm
+from typing import TYPE_CHECKING
 
 from helpers import read_puzzle
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 Coord = list[int]
 Planets = list['Planet']

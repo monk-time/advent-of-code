@@ -1,8 +1,12 @@
 # https://adventofcode.com/2020/day/5
 
-from collections.abc import Generator
+
+from typing import TYPE_CHECKING
 
 from helpers import read_puzzle
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
 
 
 def parse(s: str) -> Generator[tuple[int, int]]:

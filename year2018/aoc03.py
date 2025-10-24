@@ -2,11 +2,13 @@
 
 import re
 from collections import Counter
-from collections.abc import Iterable
 from itertools import product
-from typing import NamedTuple
+from typing import TYPE_CHECKING, NamedTuple
 
 from helpers import read_puzzle
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 
 class Claim(NamedTuple):
