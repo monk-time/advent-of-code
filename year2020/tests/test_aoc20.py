@@ -123,13 +123,13 @@ sample = cleandoc("""
 """)
 
 
-@pytest.fixture
+@pytest.fixture(scope='module')
 def grid():
     tiles = list(parse(sample))
     return fill_grid(connect(tiles))
 
 
-@pytest.fixture
+@pytest.fixture(scope='module')
 def tile(grid):
     return stitch(grid)
 
