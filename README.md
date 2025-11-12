@@ -28,3 +28,4 @@ Links to detailed problem descriptions for each year can be found in the top com
 - [Year 2018](https://adventofcode.com/2018)
 - [Year 2019](https://adventofcode.com/2019)
 - [Year 2020](https://adventofcode.com/2020)
+- [Year 2020](https://adventofcode.com/2021)
