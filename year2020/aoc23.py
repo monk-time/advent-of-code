@@ -10,72 +10,74 @@ if TYPE_CHECKING:
     from collections.abc import Iterator
 
 
-class Node[T]:
-    __slots__ = ('next', 'val')
-
-    def __init__(self, val: T, next: Node[T] | None = None):  # noqa: A002
-        self.val = val
-        self.next = next or self
-
-    def __repr__(self) -> str:
-        return f'Node({self.val}, {self.next.val})'
-
-    def walk(self) -> Iterator[Node[T]]:
-        node = self
-        while True:
-            yield node
-            node = node.next
-            if node == self:
-                break
-
-    def to_str(self) -> str:
-        return ' '.join(str(n.val) for n in self.walk())
+type Links = list[int]
 
 
-def parse(s: str) -> Node[int]:
-    nodes = [Node(val=int(val)) for val in s]
-    for n1, n2 in pairwise([*nodes, nodes[0]]):
-        n1.next = n2
-    return nodes[0]
+def parse(s: str) -> Links:
+    """Get a list of connections. If 1 is followed by 2, then links[1] == 2.
+
+    The first element in the list is the starting cup.
+    """
+    links = [0 for _ in range(len(s) + 1)]
+    for a, b in pairwise(s + s[0]):
+        links[int(a)] = int(b)
+    links[0] = int(s[0])
+    return links
 
 
-def simulate(node: Node[int], steps: int) -> Node[int]:
-    nodes = {n.val: n for n in node.walk()}
-    min_, max_ = min(nodes), max(nodes)
+def walk(links: Links, start: int | None = None) -> Iterator[int]:
+    if start is None:
+        start = links[0]
+    node = start
+    while True:
+        yield node
+        node = links[node]
+        if node == start:
+            break
+
+
+def to_str(links: Links, start: int | None = None) -> str:
+    return ' '.join(str(n) for n in walk(links, start))
+
+
+def simulate(links: Links, steps: int) -> Links:
+    min_, max_ = 1, len(links) - 1
+    cur = links[0]
     for _ in range(steps):
-        n3 = (n2 := (n1 := node.next).next).next
-        node.next = n3.next
+        n3 = links[n2 := links[n1 := links[cur]]]
+        links[cur] = links[n3]
 
-        val = node.val
+        dest = cur
         while True:
-            val = val - 1 if val > min_ else max_
-            if val != n1.val and val != n2.val and val != n3.val:  # noqa: PLR1714
+            dest = dest - 1 if dest > min_ else max_
+            if dest != n1 and dest != n2 and dest != n3:  # noqa: PLR1714
                 break
-        dest = nodes[val]
 
-        n3.next = dest.next
-        dest.next = n1
-        node = node.next
-    return nodes[1]
-
-
-def pad(node: Node[int], total: int) -> Node[int]:
-    max_val = max(n.val for n in node.walk())
-    *_, last = node.walk()
-    new_node = node
-    for val in range(total, max_val, -1):
-        new_node = Node(val, new_node)
-    last.next = new_node
-    return node
+        links[n3] = links[dest]
+        links[dest] = n1
+        cur = links[cur]
+    links[0] = cur
+    return links
 
 
-def part1(node: Node[int]) -> str:
-    return simulate(node, steps=100).to_str()[1:].replace(' ', '')
+def pad(links: Links, total: int) -> Links:
+    max_ = len(links) - 1
+    links += [0] * (total - max_)
+    *_, last = walk(links)
+    for val in range(max_ + 1, total + 1):
+        links[last] = last = val
+    links[last] = links[0]
+    return links
 
 
-def part2(node: Node[int]) -> int:
-    node = simulate(pad(node, total=1_000_000), steps=10_000_000)
-    return node.next.val * node.next.next.val
+def part1(links: Links) -> str:
+    links = simulate(links, steps=100)
+    return to_str(links, start=1)[1:].replace(' ', '')
+
+
+def part2(links: Links) -> int:
+    links = simulate(pad(links, total=1_000_000), steps=10_000_000)
+    return links[1] * links[links[1]]
 
 
 def solve() -> tuple[str, int]:
