@@ -1,5 +1,5 @@
 # advent-of-code
-My solutions in Python 3 and JavaScript (ES2015+) for [Advent of Code](http://adventofcode.com/) — *"a series of small programming puzzles for a variety of skill levels."*
+My solutions in Python 3 (3.14+) and JavaScript (ES2015+) for [Advent of Code](http://adventofcode.com/) — *"a series of small programming puzzles for a variety of skill levels."*
 
 ### How to run
 
