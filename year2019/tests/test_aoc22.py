@@ -50,7 +50,7 @@ sample4 = cleandoc("""
         (sample4, (9, 2, 5, 8, 1, 4, 7, 0, 3, 6)),
     ),
 )
-def test_shuffle(sample, result):
+def test_shuffle(sample: str, result: tuple[int, ...]):
     start, step = shuffle(sample.splitlines(), 10)
     assert view(start, step, 10) == result
 

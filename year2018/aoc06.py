@@ -23,7 +23,7 @@ def parse_coords(s: str) -> list[Point]:
 def grid_size(points: Iterable[Point]) -> tuple[range, range]:
     """Find the miminum area that contains all points."""
 
-    def get_range(arr):
+    def get_range(arr: list[int]) -> range:
         return range(min(arr), max(arr) + 1)
 
     p_xs = [x for x, _ in points]

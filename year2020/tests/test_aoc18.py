@@ -14,7 +14,7 @@ from year2020.aoc18 import calc_1, calc_2, parse_tokens, solve
         ('((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2', 13632),
     ),
 )
-def test_calc_1(s, result):
+def test_calc_1(s: str, result: int):
     assert calc_1(parse_tokens(s)) == result
 
 
@@ -29,7 +29,7 @@ def test_calc_1(s, result):
         ('((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2', 23340),
     ),
 )
-def test_calc_2(s, result):
+def test_calc_2(s: str, result: int):
     assert calc_2(parse_tokens(s)) == result
 
 

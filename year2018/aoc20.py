@@ -6,12 +6,12 @@ from typing import TYPE_CHECKING
 from helpers import read_puzzle
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable
+    from collections.abc import Callable, Iterable
 
 Point = tuple[int, int]
 Map = dict[Point, str]
 
-turns = {
+turns: dict[str, Callable[[Point], tuple[Point, Point, str]]] = {
     'N': lambda t: ((t[0] - 2, t[1]), (t[0] - 1, t[1]), '-'),
     'S': lambda t: ((t[0] + 2, t[1]), (t[0] + 1, t[1]), '-'),
     'W': lambda t: ((t[0], t[1] - 2), (t[0], t[1] - 1), '|'),

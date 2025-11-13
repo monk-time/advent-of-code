@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 from helpers import read_puzzle
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable
+    from collections.abc import Callable, Iterable
 
 
 @dataclass(frozen=True)
@@ -99,6 +99,9 @@ def shortest_path_len(tiles: TileMap) -> int:
 
 
 def shortest_path_len_by_quadrants(tiles: TileMap) -> int:
+    def filter_by_pred(pred: Callable[[int, int], bool]):
+        return {(i, j): tile for (i, j), tile in tiles.items() if pred(i, j)}
+
     # Relies on a falsy assumption that in a quadrant we can ignore doors
     # that don't have keys in it.
     start = get_start(tiles)
@@ -108,9 +111,6 @@ def shortest_path_len_by_quadrants(tiles: TileMap) -> int:
     start_offsets = ((-1, -1), (-1, 1), (1, -1), (1, 1))
     for i, j in start_offsets:
         tiles[start[0] + i, start[1] + j] = Tile('@')
-    filter_by_pred = lambda pred: {
-        (i, j): tile for (i, j), tile in tiles.items() if pred(i, j)
-    }
     quadrants: list[TileMap] = [
         filter_by_pred(lambda i, j: i <= start[0] and j <= start[1]),
         filter_by_pred(lambda i, j: i >= start[0] and j <= start[1]),

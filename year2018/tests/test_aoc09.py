@@ -13,7 +13,7 @@ samples = [
 
 
 @pytest.mark.parametrize('input_str, result', samples)
-def test_high_score(input_str, result):
+def test_high_score(input_str: str, result: int):
     assert high_score(input_str) == result
 
 

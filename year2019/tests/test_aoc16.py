@@ -3,6 +3,7 @@ from itertools import pairwise
 import pytest
 
 from year2019.aoc16 import (
+    Signal,
     apply_n_phases,
     apply_phase_of_fft,
     get_patterns,
@@ -26,7 +27,7 @@ from year2019.aoc16 import (
         (8, (0, 0, 0, 0, 0, 0, 0, 1)),
     ),
 )
-def test_pattern(times, expected):
+def test_pattern(times: int, expected: Signal):
     assert pattern(length=8, times=times) == expected
 
 
@@ -53,7 +54,7 @@ def test_apply_phase_of_fft():
         ('69317163492948606335995924319873', '52432133'),
     ),
 )
-def test_apply_n_phases(test_input, expected):
+def test_apply_n_phases(test_input: str, expected: str):
     assert apply_n_phases(parse(test_input), 100) == parse(expected)
 
 
@@ -65,7 +66,7 @@ def test_apply_n_phases(test_input, expected):
         ('03081770884921959731165446850517', '53553731'),
     ),
 )
-def test_real_signal(test_input, expected):
+def test_real_signal(test_input: str, expected: str):
     assert real_signal(parse(test_input)) == parse(expected)
 
 

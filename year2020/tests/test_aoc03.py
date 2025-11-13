@@ -23,7 +23,7 @@ sample = cleandoc("""
     'slope, result',
     (((1, 1), 2), ((3, 1), 7), ((5, 1), 3), ((7, 1), 4), ((1, 2), 2)),
 )
-def test_count_trees(slope, result):
+def test_count_trees(slope: tuple[int, int], result: int):
     assert count_trees(parse(sample), *slope) == result
 
 

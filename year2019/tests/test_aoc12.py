@@ -32,7 +32,7 @@ sample2 = cleandoc(
 @pytest.mark.parametrize(
     'sample, steps, expected', ((sample1, 10, 179), (sample2, 100, 1940))
 )
-def test_total_energy(sample, steps, expected):
+def test_total_energy(sample: str, steps: int, expected: int):
     planets = list(parse(sample))
     for _ in range(steps):
         execute_time_step(planets)

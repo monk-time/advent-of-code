@@ -18,7 +18,8 @@ def parse(s: str) -> Program:
 
 
 def run(program: Program) -> Result:
-    pointer, acc, visited = 0, 0, set()
+    pointer, acc = 0, 0
+    visited: set[int] = set()
     while pointer not in visited and pointer < len(program):
         visited.add(pointer)
         match program[pointer]:
@@ -29,6 +30,9 @@ def run(program: Program) -> Result:
                 pointer += n
             case ('nop', _):
                 pointer += 1
+            case _:
+                msg = 'Unexpected op'
+                raise ValueError(msg)
     return Result(acc=acc, inf_loop=pointer < len(program))
 
 

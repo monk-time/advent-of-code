@@ -111,7 +111,7 @@ samples = (
 
 
 @pytest.mark.parametrize('puzzle, map_str', samples)
-def test_map_to_str(puzzle, map_str):
+def test_map_to_str(puzzle: str, map_str: str):
     assert map_to_str(parse_map(puzzle)) == map_str
 
 
@@ -120,7 +120,7 @@ part1 = ((pzl, (n, 0)) for (pzl, _), n in zip(samples, sample_n_doors))
 
 
 @pytest.mark.parametrize('puzzle, n_doors', part1)
-def test_max_doors_in_shortest_path(puzzle, n_doors):
+def test_max_doors_in_shortest_path(puzzle: str, n_doors: tuple[int, int]):
     assert max_doors_in_shortest_path(parse_map(puzzle)) == n_doors
 
 

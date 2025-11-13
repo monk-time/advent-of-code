@@ -16,7 +16,7 @@ WIDTH = 25
 HEIGHT = 6
 
 
-def split_into_layers(arr, size: int) -> Layers:
+def split_into_layers(arr: str, size: int) -> list[str]:
     return [arr[i : i + size] for i in range(0, len(arr), size)]
 
 
@@ -41,11 +41,11 @@ def decode_image(s: str, width: int, height: int) -> Layer:
 
 
 def paint(layer: Layer, width: int, height: int, *, show_image: bool = True):
-    colors = [(0, 0, 0), (255, 255, 255), (128, 128, 128)]
+    colors = ((0, 0, 0), (255, 255, 255), (128, 128, 128))
     pixels = [colors[int(px)] for px in layer]
     if show_image:
         im = Image.new('RGB', (width, height))
-        im.putdata(pixels)
+        im.putdata(pixels)  # type: ignore
         im.show()
 
 

@@ -2,8 +2,12 @@
 
 from itertools import accumulate, chain, cycle, islice, repeat
 from operator import mul
+from typing import TYPE_CHECKING
 
 from helpers import read_puzzle, timed
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 PATTERN = (0, 1, 0, -1)
 
@@ -29,11 +33,13 @@ def get_patterns(length: int) -> tuple[Signal, ...]:
 
 
 def apply_phase_of_fft(signal: Signal, patterns: tuple[Signal, ...]) -> Signal:
+    def apply_pattern(i: int):
+        return map(mul, signal[i:], patterns[i][i:], strict=True)
+
+    def get_digit(i: int) -> int:
+        return abs(sum(apply_pattern(i))) % 10
+
     n = len(signal)
-    apply_pattern = lambda i: map(
-        mul, signal[i:], patterns[i][i:], strict=True
-    )
-    get_digit = lambda i: abs(sum(apply_pattern(i))) % 10
     return tuple(get_digit(i) for i in range(n))
 
 
@@ -48,8 +54,9 @@ def real_signal(signal: Signal) -> Signal:
     input_signal = signal * 10_000
     offset = int(to_str(signal[:7]))
     next_signal = reversed(input_signal[offset:])
+    func: Callable[[int, int], int] = lambda a, b: (a + b) % 10
     for _ in range(100):
-        next_signal = accumulate(next_signal, lambda a, b: (a + b) % 10)
+        next_signal = accumulate(next_signal, func)
     return tuple(islice(reversed(tuple(next_signal)), 8))
 
 

@@ -5,9 +5,11 @@ from collections import defaultdict
 
 from helpers import read_puzzle
 
+type Graph = dict[str, defaultdict[str, list[str]]]
 
-def parse(steps: str) -> dict[str, defaultdict[str, list[str]]]:
-    graph = {'out': defaultdict(list), 'in': defaultdict(list)}
+
+def parse(steps: str) -> Graph:
+    graph: Graph = {'out': defaultdict(list), 'in': defaultdict(list)}
     for s in steps.splitlines():
         a, b = re.findall(r'\b[A-Z]\b', s)
         graph['out'][a].append(b)

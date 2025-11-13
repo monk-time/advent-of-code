@@ -8,7 +8,7 @@ from year2018.aoc08 import (
     solve,
 )
 
-samples = [
+samples: list[tuple[str, str, list[int]]] = [
     ('0 0', '[0 0 ()]', []),
     ('0 1 2', '[0 1 (2)]', [2]),
     ('0 2 3 4', '[0 2 (3 4)]', [3, 4]),
@@ -54,7 +54,7 @@ samples = [
 
 
 @pytest.mark.parametrize('input_str, tree_str, metadata', samples)
-def test_metadata_rec(input_str, tree_str, metadata):  # noqa: ARG001
+def test_metadata_rec(input_str: str, tree_str: str, metadata: list[int]):  # noqa: ARG001
     tree = parse_tree(input_str)
     assert list(metadata_rec(tree)) == metadata
 
@@ -68,7 +68,7 @@ def node_to_str(node: Node) -> str:
 
 
 @pytest.mark.parametrize('input_str, tree_str, metadata', samples)
-def test_build_tree(input_str, tree_str, metadata):  # noqa: ARG001
+def test_build_tree(input_str: str, tree_str: str, metadata: list[int]):  # noqa: ARG001
     assert node_to_str(parse_tree(input_str)) == tree_str
 
 

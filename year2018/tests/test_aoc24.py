@@ -16,11 +16,11 @@ sample_str = cleandoc("""
 
 
 @pytest.fixture
-def sample():
+def sample() -> tuple[list[Group], list[Group]]:
     return parse(sample_str)
 
 
-def test_parse(sample):
+def test_parse(sample: tuple[list[Group], list[Group]]):
     assert sample == (
         [
             Group(
@@ -109,11 +109,11 @@ def test_parse(sample):
         ),
     ),
 )
-def test_parse_traits(s, traits):
+def test_parse_traits(s: str, traits: dict[str, tuple[str, ...]]):
     assert parse_traits(s) == traits
 
 
-def test_combat(sample):
+def test_combat(sample: tuple[list[Group], list[Group]]):
     assert combat(*sample) == 5216
 
 

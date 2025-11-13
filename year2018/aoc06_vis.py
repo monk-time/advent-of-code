@@ -16,7 +16,7 @@ colors = [
     if k != 'black'
 ]
 random.shuffle(colors)
-color_map: dict[Point | str, tuple] = {
+color_map: dict[Point | str, tuple[int, ...]] = {
     p: colors[i] for i, p in enumerate(points)
 }
 color_map['.'] = (0, 0, 0)
@@ -30,6 +30,7 @@ grid = fill_grid(points)
 IMG_SIZE = (max_x - min_x + 1, max_y - min_y + 1)
 im = Image.new('RGB', IMG_SIZE, 'white')
 px = im.load()
+assert px is not None
 for x, y in grid:
     px[x - min_x, y - min_y] = color_map[grid[x, y]]
 

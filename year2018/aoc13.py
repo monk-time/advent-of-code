@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, NamedTuple
 from helpers import read_puzzle
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable
+    from collections.abc import Callable, Iterable
 
 
 class Cart(NamedTuple):
@@ -17,7 +17,7 @@ class Cart(NamedTuple):
 
 
 def parse(s: str) -> tuple[list[Cart], list[str]]:
-    carts = []
+    carts: list[Cart] = []
     tracks = s.splitlines()
     m, n = len(tracks), len(tracks[0])
     for i, j in product(range(m), range(n)):
@@ -76,7 +76,8 @@ def move(c: Cart, ahead: str) -> Cart:
 
 def next_tick(carts_prev: list[Cart], tracks: list[str]):
     carts_prev = carts_prev.copy()
-    carts_next, crashes = [], []
+    carts_next: list[Cart] = []
+    crashes: list[tuple[int, int]] = []
     while carts_prev:
         cart = carts_prev.pop(0)
         x, y = look_ahead(cart)
@@ -95,7 +96,7 @@ def next_tick(carts_prev: list[Cart], tracks: list[str]):
 
 def emulate(carts: list[Cart], tracks: list[str]) -> Iterable[str]:
     had_first_crash = False
-    answer = lambda a, b: f'{a},{b}'
+    answer: Callable[[int, int], str] = lambda a, b: f'{a},{b}'
     while len(carts) > 1:
         carts, tracks, crashes = next_tick(carts, tracks)
         if crashes and not had_first_crash:
@@ -106,7 +107,7 @@ def emulate(carts: list[Cart], tracks: list[str]) -> Iterable[str]:
 
 
 def solve():
-    return tuple(emulate(*parse(read_puzzle(stripchars='\n'))))
+    return tuple(emulate(*parse(read_puzzle(strip=False))))
 
 
 if __name__ == '__main__':

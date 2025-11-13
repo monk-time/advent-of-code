@@ -23,12 +23,12 @@ sample = """
 
 
 @pytest.fixture
-def st_sample():
+def st_sample() -> State:
     return State.fromstring(sample)
 
 
 @pytest.fixture
-def st_cross():
+def st_cross() -> State:
     return State.fromstring(
         cleandoc("""
             #####
@@ -41,7 +41,7 @@ def st_cross():
 
 
 @pytest.fixture
-def st_move1():
+def st_move1() -> State:
     return State.fromstring(
         cleandoc("""
             #######
@@ -54,7 +54,7 @@ def st_move1():
 
 
 @pytest.fixture
-def st_move2():
+def st_move2() -> State:
     return State.fromstring(
         cleandoc("""
             #######
@@ -67,7 +67,7 @@ def st_move2():
 
 
 @pytest.fixture
-def st_move_big():
+def st_move_big() -> State:
     return State.fromstring(
         cleandoc("""
             #########
@@ -83,7 +83,7 @@ def st_move_big():
     )
 
 
-def test_state_fromstring(st_sample):
+def test_state_fromstring(st_sample: State):
     assert st_sample.height == 5
     assert st_sample.width == 7
     assert st_sample.map[0, 0] == '#'
@@ -101,7 +101,7 @@ def test_state_fromstring(st_sample):
     ]
 
 
-def test_state_str(st_sample):
+def test_state_str(st_sample: State):
     assert str(st_sample) == sample
     assert st_sample.__str__(hp=True) == cleandoc("""
         #######
@@ -112,7 +112,7 @@ def test_state_str(st_sample):
     """)
 
 
-def test_state_deepcopy_basic(st_cross):
+def test_state_deepcopy_basic(st_cross: State):
     repr_cross = repr(st_cross)
     st_copy = st_cross.deepcopy()
     repr_copy = repr(st_copy)
@@ -125,7 +125,7 @@ def test_state_deepcopy_basic(st_cross):
     assert repr_cross == repr(st_cross)
 
 
-def test_state_deepcopy_after_death(st_cross):
+def test_state_deepcopy_after_death(st_cross: State):
     elf = next(u for u in st_cross.units if u.type == 'E')
     elf.hp = 1
     repr_cross = repr(st_cross)
@@ -135,7 +135,7 @@ def test_state_deepcopy_after_death(st_cross):
     assert repr_cross == repr(st_cross)
 
 
-def test_state_targets_in_range(st_cross, st_move1):
+def test_state_targets_in_range(st_cross: State, st_move1: State):
     g1, g2, e, g3, g4 = st_cross.units
     assert st_cross.targets_in_range(g1) == [e]
     assert st_cross.targets_in_range(e) == [g1, g2, g3, g4]
@@ -144,7 +144,7 @@ def test_state_targets_in_range(st_cross, st_move1):
     assert st_move1.targets_in_range(u) == []
 
 
-def test_state_find_path(st_move1, st_move2, st_move_big):
+def test_state_find_path(st_move1: State, st_move2: State, st_move_big: State):
     e = st_move1.units[0]
     assert st_move1.find_path(e) == (1, 2)
     g = st_move1.units[2]
@@ -160,7 +160,7 @@ def test_state_find_path(st_move1, st_move2, st_move_big):
     assert st_move_big.find_path(g) == (4, 2)
 
 
-def test_state_move(st_move1):
+def test_state_move(st_move1: State):
     unit, _targets = st_move1.units[0], st_move1.units[1:]
     st_move1.move(unit)
     assert str(st_move1) == cleandoc("""
@@ -197,7 +197,7 @@ def test_state_move_tricky():
     """)
 
 
-def test_state_move_all(st_move_big):
+def test_state_move_all(st_move_big: State):
     st = play_round(st_move_big)
     assert str(st) == cleandoc("""
         #########
@@ -238,7 +238,7 @@ def test_state_move_all(st_move_big):
     """)
 
 
-def test_state_hit(st_sample):
+def test_state_hit(st_sample: State):
     target = st_sample.units[0]
     st_sample.hit(target, dmg=3)
     assert target.hp == 197
@@ -248,17 +248,17 @@ def test_state_hit(st_sample):
     assert target.hp == 0
 
 
-def test_state_hash(st_move2):
+def test_state_hash(st_move2: State):
     assert st_move2.hash() == 0
     st = play_round(st_move2)
     assert st.hash() == 200 * 2
 
 
-def test_state_elfs_alive(st_sample):
+def test_state_elfs_alive(st_sample: State):
     assert st_sample.elfs_alive() == 4
 
 
-def test_play_round_no_moves(st_cross):
+def test_play_round_no_moves(st_cross: State):
     # Check target selection in reading order
     st = st_cross
     st = play_round(st)
@@ -311,7 +311,7 @@ def test_play_round_no_moves(st_cross):
     """)
 
 
-def test_play_round_played_rounds(st_cross):
+def test_play_round_played_rounds(st_cross: State):
     while not st_cross.finished:
         st_cross = play_round(st_cross)
     # 200 = 16 * 4 * 3 + 8, combat ends before the last goblin can act
@@ -446,12 +446,12 @@ def test_play_round_full():
 
 
 @pytest.mark.parametrize('puzzle, num_outcome', zip(samples, outcomes1))
-def test_outcome(puzzle, num_outcome):
+def test_outcome(puzzle: str, num_outcome: int):
     assert outcome(cleandoc(puzzle)) == num_outcome
 
 
 @pytest.mark.parametrize('puzzle, num_outcome', zip(samples, outcomes2))
-def test_outcome_part2(puzzle, num_outcome):
+def test_outcome_part2(puzzle: str, num_outcome: int):
     assert outcome(cleandoc(puzzle), force_elf_victory=True) == num_outcome
 
 

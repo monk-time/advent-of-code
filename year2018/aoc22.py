@@ -11,7 +11,7 @@ from helpers import read_puzzle
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
-Point = tuple[int, int]
+type Point = tuple[int, int]
 
 
 class Map:
@@ -76,7 +76,7 @@ tool_map = {'.': 'ct', '=': 'cn', '|': 'tn'}
 
 
 def shortest_path(m: Map):
-    g = nx.Graph()
+    g: nx.Graph[tuple[Point, str]] = nx.Graph()
     for p1 in m.cave:
         tools = tool_map[m.cave[p1]]
         g.add_edge((p1, tools[0]), (p1, tools[1]), weight=7)

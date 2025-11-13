@@ -4,9 +4,13 @@ import itertools as it
 from functools import reduce
 from math import floor, sqrt
 from operator import mul
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Iterable
 
 
-def prime_powers_decomp(n):
+def prime_powers_decomp(n: int) -> Iterable[list[int]]:
     """Generate arrays of powers of prime divisors that divide n.
 
     220 -> [1, 2, 4], [1, 5], [1, 11]
@@ -40,11 +44,11 @@ def prime_powers_decomp(n):
         yield [1, n]
 
 
-def mul_iter(iterable) -> int:
+def mul_iter(iterable: Iterable[int]) -> int:
     return reduce(mul, iterable)
 
 
-def divisors(n) -> list:
+def divisors(n: int) -> list[int]:
     """Return a list of all divisors of n.
 
     220 -> [1, 2, 4, 5, 10, 11, 20, 22, 44, 55, 110, 220]
@@ -52,7 +56,7 @@ def divisors(n) -> list:
     return sorted(map(mul_iter, it.product(*prime_powers_decomp(n))))
 
 
-def presents_1(n):
+def presents_1(n: int) -> int:
     return sum(divisors(n)) * 10
 
 
@@ -61,7 +65,7 @@ cache = {}
 HOUSE_LIMIT = 50
 
 
-def sum_of_underused_divisors(n):
+def sum_of_underused_divisors(n: int) -> int:
     divs = divisors(n)
     for d in divs:
         if d not in cache:
@@ -71,11 +75,11 @@ def sum_of_underused_divisors(n):
     return sum(d for d in divs if cache[d] <= HOUSE_LIMIT)
 
 
-def presents_2(n):
+def presents_2(n: int) -> int:
     return sum_of_underused_divisors(n) * 11
 
 
-def first_house_with(n, houses):
+def first_house_with(n: int, houses: Callable[[int], int]) -> int:
     return next(it.dropwhile(lambda x: houses(x) < n, it.count(1)))
 
 

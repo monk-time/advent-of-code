@@ -23,7 +23,7 @@ def get_shifts(x: int, y: int, m: Map) -> Iterable[tuple[int, int]]:
         range(-width + 1, width), range(-height + 1, height)
     ):
         if (
-            (dx, dy) != 0
+            (dx, dy) != (0, 0)
             and gcd(dx, dy) == 1
             and 0 <= x + dx < width
             and 0 <= y + dy < height

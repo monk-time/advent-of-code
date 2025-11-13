@@ -3,6 +3,8 @@ from inspect import cleandoc
 import pytest
 
 from year2020.aoc20 import (
+    Tile,
+    Tiles,
     connect,
     fill_grid,
     find_monsters,
@@ -124,17 +126,17 @@ sample = cleandoc("""
 
 
 @pytest.fixture(scope='module')
-def grid():
+def grid() -> Tiles:
     tiles = list(parse(sample))
     return fill_grid(connect(tiles))
 
 
 @pytest.fixture(scope='module')
-def tile(grid):
+def tile(grid: Tiles) -> Tile:
     return stitch(grid)
 
 
-def test_fill_grid(grid):
+def test_fill_grid(grid: Tiles):
     assert [[tile.id for tile in row] for row in grid] == [
         [2971, 1489, 1171],
         [2729, 1427, 2473],
@@ -142,11 +144,11 @@ def test_fill_grid(grid):
     ]
 
 
-def test_verify_corners(grid):
+def test_verify_corners(grid: Tiles):
     assert verify_corners(grid) == 20899048083289
 
 
-def test_stitch(tile):
+def test_stitch(tile: Tile):
     expected = cleandoc("""
         ...###...##...#...#..###
         .#.###..##..##..####.##.
@@ -176,7 +178,7 @@ def test_stitch(tile):
     assert tile.data == tuple(expected)
 
 
-def test_find_monsters(tile):
+def test_find_monsters(tile: Tile):
     assert find_monsters(tile) == 273
 
 

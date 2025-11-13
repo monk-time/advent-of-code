@@ -3,10 +3,14 @@ import os
 import re
 import timeit
 from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 
 def read_puzzle(
-    number: int | None = None, year: int | None = 2018, stripchars=None
+    number: int | None = None, year: int | None = 2018, *, strip: bool = True
 ) -> str:
     """Read the contents of the input file for the current puzzle.
 
@@ -33,17 +37,18 @@ def read_puzzle(
         year_dir = next(
             parent for parent in caller_path.parents if 'year' in parent.stem
         )
-    puzzle_input = year_dir / 'inputs' / f'aoc{number:02d}.txt'
-    return puzzle_input.read_text(encoding='utf-8').strip(stripchars)
+    path = year_dir / 'inputs' / f'aoc{number:02d}.txt'
+    input_text = path.read_text(encoding='utf-8')
+    return input_text.strip() if strip else input_text
 
 
-def timed(f):
+def timed[**P, T](f: Callable[P, T]) -> Callable[P, T]:
     """Decorate a function to measure its execution time.
 
     Use as a wrapper for recursive functions.
     """
 
-    def inner(*args, **kwargs):
+    def inner(*args: P.args, **kwargs: P.kwargs) -> T:
         start = timeit.default_timer()
         result = f(*args, **kwargs)
         total = timeit.default_timer() - start

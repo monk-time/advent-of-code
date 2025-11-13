@@ -3,6 +3,8 @@ from inspect import cleandoc
 import pytest
 
 from year2020.aoc21 import (
+    AlrgMap,
+    Food,
     count_safe,
     find_allergens,
     format_bad_ingrs,
@@ -19,16 +21,16 @@ sample = cleandoc("""
 
 
 @pytest.fixture(scope='module')
-def foods():
+def foods() -> list[Food]:
     return list(parse(sample))
 
 
 @pytest.fixture(scope='module')
-def alrg_map(foods):
+def alrg_map(foods: list[Food]) -> AlrgMap:
     return find_allergens(foods)
 
 
-def test_find_allergens(foods):
+def test_find_allergens(foods: list[Food]):
     assert find_allergens(foods) == {
         'fish': 'sqjhc',
         'dairy': 'mxmxvkd',
@@ -36,11 +38,11 @@ def test_find_allergens(foods):
     }
 
 
-def test_count_safe(foods, alrg_map):
+def test_count_safe(foods: list[Food], alrg_map: AlrgMap):
     assert count_safe(foods, alrg_map) == 5
 
 
-def test_format_bad_ingrs(alrg_map):
+def test_format_bad_ingrs(alrg_map: AlrgMap):
     assert format_bad_ingrs(alrg_map) == 'mxmxvkd,sqjhc,fvjkl'
 
 

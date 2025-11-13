@@ -105,7 +105,8 @@ def update_grid_rec(
 
 
 def part2(bugs: Coords, minutes: int = 200) -> int:
-    levels, min_lvl, max_lvl = defaultdict(frozenset), 0, 0
+    levels: CoordsRec = defaultdict(frozenset)
+    min_lvl, max_lvl = 0, 0
     levels[0] = bugs
     for _ in range(minutes):
         levels, min_lvl, max_lvl = update_grid_rec(levels, min_lvl, max_lvl)

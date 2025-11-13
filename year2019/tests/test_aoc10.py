@@ -3,6 +3,7 @@ from inspect import cleandoc
 import pytest
 
 from year2019.aoc10 import (
+    Map,
     count_visible_from,
     find_best_location,
     parse,
@@ -116,7 +117,7 @@ m5 = parse(
         (4, 4, 7),
     ),
 )
-def test_count_visible_from(x, y, expected):
+def test_count_visible_from(x: int, y: int, expected: int):
     assert count_visible_from(x, y, m1) == expected
 
 
@@ -130,7 +131,7 @@ def test_count_visible_from(x, y, expected):
         (m5, (210, 11, 13)),
     ),
 )
-def test_find_best_location(test_map, expected):
+def test_find_best_location(test_map: Map, expected: tuple[int, int, int]):
     assert find_best_location(test_map) == expected
 
 

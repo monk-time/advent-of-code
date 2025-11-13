@@ -22,7 +22,7 @@ def test_gen_memory_game():
         ((3, 1, 2), 1836),
     ),
 )
-def test_get_2020th_num(start_nums, result):
+def test_get_2020th_num(start_nums: tuple[int, ...], result: int):
     assert get_nth_num(start_nums, PART_1) == result
 
 
@@ -38,7 +38,7 @@ def test_get_2020th_num(start_nums, result):
         ((3, 1, 2), 362),
     ),
 )
-def test_get_30000000th_num(start_nums, result):
+def test_get_30000000th_num(start_nums: tuple[int, ...], result: int):
     assert get_nth_num(start_nums, PART_2) == result
 
 

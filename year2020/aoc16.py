@@ -22,8 +22,10 @@ class TicketData:
 
 
 def parse(s: str) -> TicketData:
+    def find_ints(arr: str):
+        return map(int, re.findall(r'\d+', arr))
+
     parts = s.split('\n\n')
-    find_ints = lambda arr: map(int, re.findall(r'\d+', arr))
     rules: Rules = tuple(
         batched(batched(find_ints(parts[0]), 2, strict=True), 2, strict=True)
     )  # type: ignore

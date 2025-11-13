@@ -47,7 +47,7 @@ def infix_to_postfix(tokens: Tokens, precedence: Precedence) -> Tokens:
 
 
 def calc_postfix(postfix: Tokens) -> int:
-    stack = []
+    stack: list[int] = []
     for token in postfix:
         if isinstance(token, int):
             stack.append(token)

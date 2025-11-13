@@ -1,56 +1,69 @@
 # https://adventofcode.com/2018/day/23
 
 import re
+from dataclasses import dataclass
 from heapq import heappop, heappush
 from itertools import product
 from math import log2
-from operator import itemgetter
+from operator import attrgetter
+from typing import Self, cast
 
 from helpers import read_puzzle
 
-Bot = tuple[int, ...]
+type Coord = tuple[int, int, int]
+type Box = tuple[Coord, Coord]
+
+
+@dataclass(frozen=True)
+class Bot:
+    pos: Coord
+    radius: int
+
+    @classmethod
+    def from_str(cls, s: str) -> Self:
+        x, y, z, r = re.findall(r'-?\d+', s)
+        return cls(pos=(int(x), int(y), int(z)), radius=int(r))
 
 
 def parse(s: str) -> list[Bot]:
-    return [
-        tuple(int(x) for x in re.findall(r'-?\d+', line))
-        for line in s.splitlines()
-    ]
+    return [Bot.from_str(line) for line in s.splitlines()]
 
 
-def dist(a: Bot, b: Bot):
-    return abs(a[0] - b[0]) + abs(a[1] - b[1]) + abs(a[2] - b[2])
+def dist(a: Coord, b: Coord) -> int:
+    return sum(abs(a[i] - b[i]) for i in range(3))
 
 
 def is_in_range(source: Bot, other: Bot) -> bool:
-    return (dist(source, other)) <= source[3]
+    return (dist(source.pos, other.pos)) <= source.radius
 
 
 def count_in_range(bots: list[Bot]) -> int:
-    best_bot = max(bots, key=itemgetter(3))
+    best_bot = max(bots, key=attrgetter('radius'))
     return sum(is_in_range(best_bot, b) for b in bots)
 
 
 # Part 2 copied from a solution by fizbin:
 # https://www.reddit.com/r/adventofcode/comments/a8s17l/_/ecfmpy0/
-def does_intersect(box, bot: Bot) -> bool:
+def does_intersect(box: Box, bot: Bot) -> bool:
     d = 0
     for i in range(3):
         boxlow, boxhigh = box[0][i], box[1][i] - 1
-        d += abs(bot[i] - boxlow) + abs(bot[i] - boxhigh)
+        d += abs(bot.pos[i] - boxlow) + abs(bot.pos[i] - boxhigh)
         d -= boxhigh - boxlow
     d //= 2
-    return d <= bot[3]
+    return d <= bot.radius
 
 
-def intersect_count(box, bots):
+def intersect_count(box: Box, bots: list[Bot]):
     return sum(1 for b in bots if does_intersect(box, b))
 
 
 def shortest_manhattan(bots: list[Bot]):
     # Find a box big enough to contain everything in range
-    maxabscord = max(max(abs(b[i]) + b[3] for b in bots) for i in range(3))
-    size = 2 ** int(log2(maxabscord))
+    maxabscord = max(
+        max(abs(b.pos[i]) + b.radius for b in bots) for i in range(3)
+    )
+    size: int = 2 ** int(log2(maxabscord))
     initial_box = ((-size, -size, -size), (size, size, size))
 
     workheap = [(-len(bots), -2 * size, 3 * size, initial_box)]
@@ -60,8 +73,14 @@ def shortest_manhattan(bots: list[Bot]):
             return dist_to_orig
         newsz = negsz // -2
         for octant in product(range(2), repeat=3):
-            newbox0 = tuple(box_[0][i] + newsz * octant[i] for i in range(3))
-            newbox1 = tuple(newbox0[i] + newsz for i in range(3))
+            newbox0 = cast(
+                'Coord',
+                tuple(box_[0][i] + newsz * octant[i] for i in range(3)),
+            )
+            newbox1 = cast(
+                'Coord',
+                tuple(newbox0[i] + newsz for i in range(3)),
+            )
             newbox = (newbox0, newbox1)
             newreach = intersect_count(newbox, bots)
             heappush(

@@ -4,7 +4,7 @@ from helpers import read_puzzle
 from intcode import Computer, Intcode, parse
 
 
-def boost(program: Intcode, input_val):
+def boost(program: Intcode, input_val: int) -> int:
     gen = iter(Computer(program))
     next(gen)
     return gen.send(input_val)

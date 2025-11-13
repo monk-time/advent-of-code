@@ -12,16 +12,16 @@ def parse(s: str) -> MapData:
     return [tuple(line.split(')')) for line in s.split()]
 
 
-def count_orbits(g: nx.Graph) -> int:
-    return sum(nx.shortest_path_length(g, x, 'COM') for x in g.nodes)
+def count_orbits(g: nx.Graph[str]) -> int:
+    return int(sum(nx.shortest_path_length(g, x, 'COM') for x in g.nodes))
 
 
-def count_min_transfers(g: nx.Graph) -> int:
-    return nx.shortest_path_length(g, 'YOU', 'SAN') - 2
+def count_min_transfers(g: nx.Graph[str]) -> int:
+    return int(nx.shortest_path_length(g, 'YOU', 'SAN')) - 2
 
 
 def solve() -> tuple[int, int]:
-    g = nx.Graph(parse(read_puzzle()))
+    g: nx.Graph[str] = nx.Graph(parse(read_puzzle()))
     return count_orbits(g), count_min_transfers(g)
 
 

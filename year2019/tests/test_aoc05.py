@@ -41,7 +41,7 @@ from year2019.aoc05 import parse, run_with_input, solve
         ),
     ),
 )
-def test_run_intcode(test_input, input_value, expected):
+def test_run_intcode(test_input: str, input_value: int, expected: int):
     program = parse(test_input)
     assert list(run_with_input(program, input_value))[-1] == expected
 

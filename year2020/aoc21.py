@@ -30,13 +30,13 @@ def parse(s: str) -> Iterable[Food]:
 
 
 def find_allergens(foods: Iterable[Food]) -> AlrgMap:
-    all_alrgs: set[Alrg] = set().union(*(f['allergens'] for f in foods))
-    all_ingrs: set[Ingr] = set().union(*(f['ingredients'] for f in foods))
+    all_alrgs = set[Alrg]().union(*(f['allergens'] for f in foods))
+    all_ingrs = set[Ingr]().union(*(f['ingredients'] for f in foods))
     suspects: defaultdict[Alrg, set[Ingr]] = defaultdict(all_ingrs.copy)
     for food in foods:
         for alrg in food['allergens']:
             suspects[alrg] &= food['ingredients']
-    solved: set[Ingr] = set()
+    solved = set[Ingr]()
     queue = deque(all_alrgs)
     while queue:
         alrg = queue.popleft()
@@ -49,7 +49,7 @@ def find_allergens(foods: Iterable[Food]) -> AlrgMap:
 
 
 def count_safe(foods: Iterable[Food], alrg_map: AlrgMap) -> int:
-    all_ingrs: set[Ingr] = set().union(*(f['ingredients'] for f in foods))
+    all_ingrs = set[Ingr]().union(*(f['ingredients'] for f in foods))
     safe_ingrs = all_ingrs - set(alrg_map.values())
     return sum(len(f['ingredients'] & safe_ingrs) for f in foods)
 

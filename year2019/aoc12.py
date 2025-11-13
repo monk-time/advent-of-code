@@ -60,7 +60,7 @@ def find_loop(planets: Planets):
     def get_hash(pls: Planets, dim: int) -> tuple[tuple[int, int], ...]:
         return tuple((pl.pos[dim], pl.vel[dim]) for pl in pls)
 
-    periods = []
+    periods: list[int] = []
     for dim in range(3):
         pls = deepcopy(planets)
         cache = {get_hash(pls, dim)}

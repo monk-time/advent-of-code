@@ -32,7 +32,8 @@ TileMap = dict[Coord, Tile]
 
 def read_output(computer: Computer) -> list[str]:
     gen = iter(computer)
-    output, s = [], ''
+    output: list[str] = []
+    s = ''
     while True:
         tile_char = chr(next(gen))
         if tile_char == '\n':

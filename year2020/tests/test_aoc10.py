@@ -39,12 +39,12 @@ sample2 = [
 
 
 @pytest.mark.parametrize('arr, result', ((sample1, 35), (sample2, 220)))
-def test_difference(arr, result):
+def test_difference(arr: list[int], result: int):
     assert difference(arr) == result
 
 
 @pytest.mark.parametrize('arr, result', ((sample1, 8), (sample2, 19208)))
-def test_count_chains(arr, result):
+def test_count_chains(arr: list[int], result: int):
     assert count_chains(arr) == result
 
 

@@ -1,10 +1,16 @@
 # https://adventofcode.com/2019/day/5
 
+
+from typing import TYPE_CHECKING
+
 from helpers import read_puzzle
 from intcode import Computer, Intcode, parse
 
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
-def run_with_input(program: Intcode, value: int):
+
+def run_with_input(program: Intcode, value: int) -> Iterable[int]:
     gen = iter(Computer(program))
     next(gen)
     yield gen.send(value)

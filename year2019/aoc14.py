@@ -16,7 +16,7 @@ class Reaction:
     name: str
 
 
-Reactions = dict[str, Reaction]
+type Reactions = dict[str, Reaction]
 
 
 def parse_reaction(s: str) -> Reaction:
@@ -33,7 +33,8 @@ def parse(s: str) -> Reactions:
 
 def calc_ore_for_fuel(reactions: Reactions, fuel: int = 1) -> tuple[int, int]:
     edges = {r.name: list(r.inputs) for r in reactions.values()}
-    vertices_sorted = nx.topological_sort(nx.DiGraph(edges))
+    g: nx.DiGraph[str] = nx.DiGraph(edges)
+    vertices_sorted = nx.topological_sort(g)
     queue = dict.fromkeys(reversed(list(vertices_sorted)), 0)
     queue['FUEL'] = fuel
     coef = 1

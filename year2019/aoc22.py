@@ -21,6 +21,8 @@ def shuffle(commands: list[str], size: int) -> tuple[int, int]:
                 start = (start + int(n) * step) % size
             case ('deal with increment ', n):
                 step = (step * pow(int(n), -1, size)) % size
+            case _:
+                pass
     return start, step
 
 

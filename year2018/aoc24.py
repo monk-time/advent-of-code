@@ -4,8 +4,12 @@ import re
 from copy import deepcopy
 from dataclasses import dataclass
 from re import Match
+from typing import TYPE_CHECKING, Any, cast
 
 from helpers import read_puzzle
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 
 @dataclass
@@ -22,12 +26,12 @@ class Group:
     boost: int = 0
 
     @classmethod
-    def frommatch(cls, m: Match, **kwargs) -> Group:
+    def frommatch(cls, m: Match[str], **kwargs: Any) -> Group:
         d = {
             k: int(v) if v and v.isdigit() else v
             for k, v in m.groupdict().items()
         }
-        traits = parse_traits(d['traits'])  # type: ignore
+        traits = parse_traits(cast('str', d['traits']))
         del d['traits']
         return Group(**d, **kwargs, **traits)  # type: ignore
 
@@ -81,7 +85,7 @@ def parse_traits(s: str) -> dict[str, tuple[str, ...]]:
 def fight(immune: list[Group], infect: list[Group]):
     teams = {'Immune System': immune, 'Infection': infect}
     enemy_teams = {'Immune System': infect, 'Infection': immune}
-    targets = {}
+    targets: dict[Group, Group] = {}
 
     # Target selection phase
     for team_name, team in teams.items():
@@ -89,14 +93,18 @@ def fight(immune: list[Group], infect: list[Group]):
         for g in sorted(team, key=lambda x: (-x.power, -x.init)):
             if not ts:
                 break
-            t = min(ts, key=lambda x: (-g.dmg_to(x), -x.power, -x.init))
+            get_target_key: Callable[[Group], tuple[int, int, int]] = (
+                lambda x, g=g: (-g.dmg_to(x), -x.power, -x.init)
+            )
+            t = min(ts, key=get_target_key)
             if g.dmg_to(t) > 0:
                 ts.remove(t)
                 targets[g] = t
 
     # Attacking phase
     is_stalemate = True
-    for g in sorted(targets.keys(), key=lambda x: -x.init):
+    get_sort_key: Callable[[Group], int] = lambda x: -x.init
+    for g in sorted(targets.keys(), key=get_sort_key):
         if g.units == 0:
             continue
         t = targets[g]

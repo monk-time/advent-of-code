@@ -15,7 +15,7 @@ class Tile(StrEnum):
     BALL = '●'
 
     @classmethod
-    def from_index(cls, index: int):
+    def from_index(cls, index: int) -> Tile:
         return cls[cls._member_names_[index]]
 
 
@@ -25,7 +25,7 @@ TileMap = dict[Coord, Tile]
 
 def read_tiles(program: Intcode) -> TileMap:
     gen = iter(Computer(program))
-    tiles = {}
+    tiles: dict[Coord, Tile] = {}
     while True:
         try:
             x, y, tile_id = [next(gen) for _ in range(3)]
@@ -63,7 +63,7 @@ def run_game(program: Intcode):
     while True:
         try:
             x = next(gen)
-            if x is None:
+            if x is None:  # type: ignore
                 paddle, ball = find_paddle_and_ball(tiles)
                 x_diff = ball[0] - paddle[0]
                 joystick_pos = -1 if x_diff < 0 else (1 if x_diff > 0 else 0)

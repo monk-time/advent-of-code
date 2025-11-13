@@ -1,7 +1,7 @@
 # https://adventofcode.com/2018/day/8
 
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from helpers import read_puzzle
 
@@ -12,8 +12,8 @@ if TYPE_CHECKING:
 @dataclass
 class Node:
     end: int | None = None
-    children: list[Node] = field(default_factory=list)
-    meta: list[int] = field(default_factory=list)
+    children: list[Node] = field(default_factory=list['Node'])
+    meta: list[int] = field(default_factory=list[int])
 
 
 def parse_tree(s: str):
@@ -24,7 +24,7 @@ def parse_tree(s: str):
         for _ in range(n_children):
             child = parse_node(start)
             root.children.append(child)
-            start = child.end + 1  # type: ignore
+            start = cast('int', child.end) + 1
         root.end = start + n_meta - 1
         root.meta = nums[start : root.end + 1]
         return root

@@ -17,8 +17,8 @@ def get_output(program: Intcode) -> int:
     return comp.program[0]
 
 
-def find_input(program):
-    noun, verb = 0, 0  # PyCharm complains without this line
+def find_input(program: Intcode):
+    noun, verb = 0, 0
     for noun, verb in product(range(100), repeat=2):
         if get_output(init(program, noun, verb)) == 19690720:
             break

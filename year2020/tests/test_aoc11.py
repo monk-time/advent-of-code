@@ -1,9 +1,12 @@
+from __future__ import annotations
+
 from inspect import cleandoc
 
 import pytest
 
 from year2020.aoc11 import (
     Grid,
+    NeighborFunc,
     find_loop,
     get_adj_map,
     iterate,
@@ -177,7 +180,7 @@ def grid_to_str(grid: Grid) -> str:
 
 
 @pytest.mark.parametrize(
-    'neighbors, k, grid, next_grid',
+    'neighbors, k, sample, next_grid',
     (
         (neighbors_1, 4, sample1, sample2_1),
         (neighbors_1, 4, sample2_1, sample3_1),
@@ -192,8 +195,8 @@ def grid_to_str(grid: Grid) -> str:
         (neighbors_2, 5, sample6_2, sample7_2),
     ),
 )
-def test_iterate(neighbors, k, grid, next_grid):
-    grid = parse(grid)
+def test_iterate(neighbors: NeighborFunc, k: int, sample: str, next_grid: str):
+    grid = parse(sample)
     adj_map = get_adj_map(grid, neighbors)
     assert grid_to_str(iterate(grid, adj_map, k)) == next_grid
 

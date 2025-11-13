@@ -135,7 +135,7 @@ sample4 = preserve_whitespace("""
         (sample3, 58),
     ),
 )
-def test_find_min_path_len(sample, result):
+def test_find_min_path_len(sample: str, result: int):
     tile_map = TileMap.from_str(sample)
     assert find_min_path_len(tile_map) == result
 
@@ -147,7 +147,7 @@ def test_find_min_path_len(sample, result):
         (sample4, 396),
     ),
 )
-def test_find_min_path_len_recursive(sample, result):
+def test_find_min_path_len_recursive(sample: str, result: int):
     tile_map = TileMap.from_str(sample)
     assert find_min_path_len(tile_map, recursive=True) == result
 

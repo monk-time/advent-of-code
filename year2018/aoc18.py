@@ -25,7 +25,7 @@ class Map:
     def __hash__(self):
         return hash(str(self))
 
-    def count_adj(self, y, x):
+    def count_adj(self, y: int, x: int) -> tuple[int, int]:
         adj = (
             (y - 1, x - 1),
             (y - 1, x),
@@ -70,7 +70,8 @@ def update(map_: Map) -> Map:
 
 
 def count_after_n_ticks(map_: Map, ticks: int) -> int:
-    tick, cache = 0, {}
+    tick = 0
+    cache: dict[Map, Map] = {}
     while map_ not in cache:
         tick += 1
         if tick > ticks:

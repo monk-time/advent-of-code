@@ -398,7 +398,7 @@ def full_report(st: State, *, cycles: int) -> str:
 
 
 @pytest.mark.parametrize('dim, result', ((3, 112), (4, 848)))
-def test_cycle(dim, result):
+def test_cycle(dim: int, result: int):
     st = State.from_str(input_1, dim=dim)
     for _ in range(6):
         st.cycle()
@@ -408,7 +408,7 @@ def test_cycle(dim, result):
 @pytest.mark.parametrize(
     'report, dim, cycles', ((report_1, 3, 3), (report_2, 4, 2))
 )
-def test_full_report(report, dim, cycles):
+def test_full_report(report: str, dim: int, cycles: int):
     st = State.from_str(input_1, dim=dim)
     assert full_report(st, cycles=cycles) == report
 

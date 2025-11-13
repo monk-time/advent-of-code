@@ -96,7 +96,7 @@ sample5 = cleandoc(
         (sample5, 2210736),
     ),
 )
-def test_calc_ore_for_fuel(test_input, expected):
+def test_calc_ore_for_fuel(test_input: str, expected: int):
     assert calc_ore_for_fuel(parse(test_input))[0] == expected
 
 
@@ -108,7 +108,7 @@ def test_calc_ore_for_fuel(test_input, expected):
         (sample5, 460664),
     ),
 )
-def test_calc_fuel_from_trillion_ore(test_input, expected):
+def test_calc_fuel_from_trillion_ore(test_input: str, expected: int):
     assert calc_fuel_from_trillion_ore(parse(test_input)) == expected
 
 

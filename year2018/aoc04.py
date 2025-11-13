@@ -8,7 +8,7 @@ from operator import itemgetter
 from helpers import read_puzzle
 
 Naps = list[range]
-Guards = dict[int, Naps]
+Guards = defaultdict[int, Naps]
 
 
 def sleep_ranges(schedule: list[int]) -> Naps:
@@ -17,7 +17,8 @@ def sleep_ranges(schedule: list[int]) -> Naps:
 
 def parse_journal(journal: str) -> Guards:
     records = sorted(journal.splitlines())
-    guards = defaultdict(list)
+    guards: Guards = defaultdict(list)
+    id_ = 0
     for is_new_shift, actions in groupby(records, lambda r: 'Guard' in r):
         if is_new_shift:
             id_ = int(re.search(r'#(\d+)', next(actions)).group(1))  # type: ignore

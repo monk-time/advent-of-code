@@ -3,6 +3,7 @@ from inspect import cleandoc
 import pytest
 
 from year2019.aoc18 import (
+    Coord,
     find_reachable_keys_bfs,
     parse,
     shortest_path_len,
@@ -107,9 +108,11 @@ sample2_3 = cleandoc("""
                 ('h', 5, []),
             ],
         ),
-    ),
+    ),  # type: ignore
 )
-def test_find_reachable_keys_bfs(sample, start, result):
+def test_find_reachable_keys_bfs(
+    sample: str, start: Coord, result: list[tuple[str, int, list[str]]]
+):
     tiles = parse(sample)
     assert sorted(find_reachable_keys_bfs(tiles, start)) == result
 
@@ -124,7 +127,7 @@ def test_find_reachable_keys_bfs(sample, start, result):
         (sample1_5, 81),
     ),
 )
-def test_shortest_path_len(sample, result):
+def test_shortest_path_len(sample: str, result: int):
     assert shortest_path_len(parse(sample)) == result
 
 
@@ -136,7 +139,7 @@ def test_shortest_path_len(sample, result):
         # (sample2_3, 72), - assumptions in the solution fail for this sample
     ),
 )
-def test_shortest_path_len_by_quadrants(sample, result):
+def test_shortest_path_len_by_quadrants(sample: str, result: int):
     assert shortest_path_len_by_quadrants(parse(sample)) == result
 
 

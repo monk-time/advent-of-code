@@ -1,6 +1,6 @@
 import pytest
 
-from year2019.aoc02 import Computer, solve
+from year2019.aoc02 import Computer, Intcode, solve
 
 
 @pytest.mark.parametrize(
@@ -16,7 +16,7 @@ from year2019.aoc02 import Computer, solve
         ([1, 1, 1, 4, 99, 5, 6, 0, 99], [30, 1, 1, 4, 2, 5, 6, 0, 99]),
     ),
 )
-def test_run_intcode(test_input, expected):
+def test_run_intcode(test_input: Intcode, expected: list[int]):
     comp = Computer(test_input)
     for _ in comp:
         pass

@@ -19,7 +19,7 @@ from year2019.aoc07 import find_max_output, parse, solve
         ),
     ),
 )
-def test_find_max_output(test_input, expected):
+def test_find_max_output(test_input: str, expected: int):
     assert find_max_output(parse(test_input)) == expected
 
 
@@ -39,7 +39,7 @@ def test_find_max_output(test_input, expected):
         ),
     ),
 )
-def test_find_max_output_looped(test_input, expected):
+def test_find_max_output_looped(test_input: str, expected: int):
     assert find_max_output(parse(test_input), use_loop=True) == expected
 
 

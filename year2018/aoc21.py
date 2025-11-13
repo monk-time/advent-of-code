@@ -18,7 +18,7 @@ def decoded():
 
 def solve():
     gen = decoded()
-    exit_values = []
+    exit_values: list[int] = []
     while True:
         reg_a = next(gen)
         if reg_a in exit_values:

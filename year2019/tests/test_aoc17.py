@@ -54,7 +54,7 @@ def test_find_intersections():
         (sample2, 'R,8,R,8,R,4,R,4,R,8,L,6,L,2,R,4,R,4,R,8,R,8,R,8,L,6,L,2'),
     ),
 )
-def test_walk_through_all(sample, path):
+def test_walk_through_all(sample: str, path: str):
     tiles = parse_tiles(sample.split())
     assert ','.join(map(str, walk_through_all(tiles))) == path
 

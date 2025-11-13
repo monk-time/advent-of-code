@@ -11,11 +11,11 @@ sample_str = cleandoc("""
 
 
 @pytest.fixture
-def sample():
+def sample() -> Map:
     return Map(sample_str)
 
 
-def test_map_init(sample):
+def test_map_init(sample: Map):
     assert sample.depth == 510
     assert sample.target == (10, 10)
     assert len(sample.erosion.keys()) == 121
@@ -31,7 +31,7 @@ def test_map_init(sample):
     assert sample.cave[10, 10] == '.'
 
 
-def test_map_str(sample):
+def test_map_str(sample: Map):
     assert str(sample) == cleandoc("""
         M=.|=.|.|=.
         .|=|=|||..|
@@ -47,7 +47,7 @@ def test_map_str(sample):
     """)
 
 
-def test_calc_risk(sample):
+def test_calc_risk(sample: Map):
     assert calc_risk(sample) == 114
 
 

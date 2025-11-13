@@ -32,10 +32,16 @@ def parse(s: str) -> list[Entry]:
     return [Entry.from_str(line) for line in s.split('\n')]
 
 
+def is_valid_1(e: Entry) -> bool:
+    return e.x <= Counter(e.pwd)[e.char] <= e.y
+
+
+def is_valid_2(e: Entry) -> bool:
+    return (e.pwd[e.x - 1], e.pwd[e.y - 1]).count(e.char) == 1
+
+
 def solve() -> tuple[int, int]:
     entries = parse(read_puzzle())
-    is_valid_1 = lambda e: e.x <= Counter(e.pwd)[e.char] <= e.y
-    is_valid_2 = lambda e: (e.pwd[e.x - 1], e.pwd[e.y - 1]).count(e.char) == 1
     return (sum(map(is_valid_1, entries)), sum(map(is_valid_2, entries)))
 
 

@@ -29,7 +29,7 @@ class Point:
         return Point(self.y, self.x + 1)
 
 
-class Map(defaultdict):
+class Map(defaultdict[Point, str]):
     def __init__(self, s: str):
         super().__init__(lambda: '.')
         for line in s.splitlines():
@@ -39,8 +39,8 @@ class Map(defaultdict):
             for y in range(int(n2), int(n3) + 1):
                 self[Point(y, x) if dim1 == 'x' else Point(x, y)] = '#'
 
-        self.min_y = min(self.keys(), key=lambda point: point.y).y
-        self.max_y = max(self.keys(), key=lambda point: point.y).y
+        self.min_y: int = min(self.keys(), key=lambda point: point.y).y
+        self.max_y: int = max(self.keys(), key=lambda point: point.y).y
 
     def __str__(self):
         """Get a text representation of the map."""

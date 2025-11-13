@@ -1,16 +1,21 @@
 # https://adventofcode.com/2019/day/3
 
+from typing import TYPE_CHECKING
+
 from helpers import read_puzzle
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 Wire = list[tuple[str, int]]
 Coord = tuple[int, int]
 
 
 def parse(s: str) -> tuple[Wire, Wire]:
+    def parse_wire(s_: str) -> Wire:
+        return [(move[0], int(move[1:])) for move in s_.split(',')]
+
     wire1, wire2 = s.split()
-    parse_wire = lambda s_: [
-        (move[0], int(move[1:])) for move in s_.split(',')
-    ]
     return parse_wire(wire1), parse_wire(wire2)
 
 
@@ -41,7 +46,7 @@ def find_closest_intersection(wire1: Wire, wire2: Wire) -> int:
     mem2 = trace_wire(wire2)
     intersections = mem1.keys() & mem2.keys()
     closest = next(iter(intersections))
-    manhattan = lambda c: abs(c[0]) + abs(c[1])
+    manhattan: Callable[[Coord], int] = lambda c: abs(c[0]) + abs(c[1])
     for coord in intersections:
         if 0 < manhattan(coord) < manhattan(closest):
             closest = coord
@@ -53,7 +58,7 @@ def find_min_intersection_by_steps(wire1: Wire, wire2: Wire) -> int:
     mem2 = trace_wire(wire2)
     intersections = mem1.keys() & mem2.keys()
     closest = next(iter(intersections))
-    steps_total = lambda c: mem1[c] + mem2[c]
+    steps_total: Callable[[Coord], int] = lambda c: mem1[c] + mem2[c]
     for coord in intersections:
         if 0 < steps_total(coord) < steps_total(closest):
             closest = coord

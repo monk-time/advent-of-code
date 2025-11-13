@@ -90,18 +90,18 @@ sample_match_count = (0, 2, 3)
 
 
 @pytest.mark.parametrize(
-    'rules, result', zip(sample_rulesets, sample_resolved)
+    'sample, result', zip(sample_rulesets, sample_resolved)
 )
-def test_resolve(rules, result):
-    rules, _ = parse(rules)
+def test_resolve(sample: str, result: int):
+    rules, _ = parse(sample)
     assert resolve(rules)[0] == result
 
 
 @pytest.mark.parametrize(
-    'rules, result', zip(sample_rulesets, sample_match_count)
+    'sample, result', zip(sample_rulesets, sample_match_count)
 )
-def test_count_part1(rules, result):
-    rules, msgs = parse(rules)
+def test_count_part1(sample: str, result: int):
+    rules, msgs = parse(sample)
     assert count_part1(resolve(rules), msgs) == result
 
 

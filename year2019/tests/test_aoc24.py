@@ -62,7 +62,7 @@ sample_bio = cleandoc("""
         (sample4, sample5),
     ),
 )
-def test_update_grid(sample, result):
+def test_update_grid(sample: str, result: str):
     assert update_grid(parse(sample)) == parse(result)
 
 

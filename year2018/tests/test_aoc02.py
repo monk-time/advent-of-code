@@ -1,3 +1,5 @@
+# ruff: noqa: FBT001
+
 import pytest
 
 from year2018.aoc02 import (
@@ -23,12 +25,12 @@ bools3 = [False, True, False, True, False, False, True]
 
 
 @pytest.mark.parametrize('box_id, expected', zip(box_ids, bools2))
-def test_has_exactly_n_of_any_letter_basic_2(box_id, expected):
+def test_has_exactly_n_of_any_letter_basic_2(box_id: str, expected: bool):
     assert has_exactly_n_of_any_letter(box_id, 2) == expected
 
 
 @pytest.mark.parametrize('box_id, expected', zip(box_ids, bools3))
-def test_has_exactly_n_of_any_letter_basic_3(box_id, expected):
+def test_has_exactly_n_of_any_letter_basic_3(box_id: str, expected: bool):
     assert has_exactly_n_of_any_letter(box_id, 3) == expected
 
 

@@ -6,7 +6,7 @@ from year2018.aoc17 import Map, Point, add_water, count_wet, solve
 
 
 @pytest.fixture
-def sample():
+def sample() -> Map:
     return Map(
         cleandoc("""
             x=495, y=2..7
@@ -21,13 +21,13 @@ def sample():
     )
 
 
-def test_map_init(sample):
+def test_map_init(sample: Map):
     assert sample.max_y == 13
     assert sample[Point(1, 506)] == '#'
     assert sample[Point(2, 506)] == '#'
 
 
-def test_map_str(sample):
+def test_map_str(sample: Map):
     assert str(sample) == cleandoc("""
         ...........#
         #..#.......#
@@ -45,7 +45,7 @@ def test_map_str(sample):
     """)
 
 
-def test_add_water(sample):
+def test_add_water(sample: Map):
     add_water(sample)
     print()
     print(sample)
@@ -92,7 +92,7 @@ def test_add_water_two_spills():
     """)
 
 
-def test_count_wet(sample):
+def test_count_wet(sample: Map):
     assert count_wet(sample) == (0, 0)
     add_water(sample)
     assert count_wet(sample) == (57, 29)

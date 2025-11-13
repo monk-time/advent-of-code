@@ -2,9 +2,13 @@
 
 from bisect import bisect_left
 from itertools import product
+from typing import TYPE_CHECKING
 
 from helpers import read_puzzle
 from intcode import Computer, Intcode, parse
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 type Coord = tuple[int, int]
 
@@ -35,9 +39,9 @@ def calc_angles(program: Intcode) -> tuple[float, float]:
     y = 100000  # arbitrary point far enough to provide enough precision
     # Find any point inside of the beam
     mid = next(x for x in range(0, y * 4, 1000) if get_point(program, x, y))
-    x1_key = lambda x: get_point(program, x, y)
+    x1_key: Callable[[int], int] = lambda x: get_point(program, x, y)
     x1 = bisect_left(range(mid * 2), 1, hi=mid, key=x1_key)
-    x2_key = lambda x: -get_point(program, x, y)
+    x2_key: Callable[[int], int] = lambda x: -get_point(program, x, y)
     x2 = bisect_left(range(mid * 2), 0, lo=mid, key=x2_key)
     return y / x1, y / x2
 

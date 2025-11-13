@@ -112,7 +112,7 @@ def find_min_path_len(tile_map: TileMap, *, recursive: bool = False) -> int:
 
 
 def solve() -> tuple[int, int]:
-    tile_map = TileMap.from_str(read_puzzle(stripchars=''))
+    tile_map = TileMap.from_str(read_puzzle(strip=False))
     return (
         find_min_path_len(tile_map),
         find_min_path_len(tile_map, recursive=True),

@@ -23,9 +23,9 @@ def around(c: Coord) -> tuple[Coord, ...]:
 @dataclass
 class State:
     dim: int
-    active: set[Coord] = field(default_factory=set)
-    has_2: set[Coord] = field(default_factory=set)  # 2 active neighbors
-    has_3: set[Coord] = field(default_factory=set)  # 3 active neighbors
+    active: set[Coord] = field(default_factory=set[Coord])
+    has_2: set[Coord] = field(default_factory=set[Coord])  # 2 active neighbors
+    has_3: set[Coord] = field(default_factory=set[Coord])  # 3 active neighbors
     neighbor_count: defaultdict[Coord, int] = field(
         default_factory=lambda: defaultdict(int)
     )

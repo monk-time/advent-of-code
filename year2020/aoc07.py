@@ -21,7 +21,7 @@ def parse(s: str) -> Bags:
     return dict(parse_bag(line) for line in s.split('\n'))
 
 
-def mul(counter: Counter, n: int) -> Counter:
+def mul[T](counter: Counter[T], n: int) -> Counter[T]:
     return Counter({k: n * v for k, v in counter.items()})
 
 

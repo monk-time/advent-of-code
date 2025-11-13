@@ -82,7 +82,7 @@ def test_dist():
         ),
     ),
 )
-def test_count_constellations(s, n):
+def test_count_constellations(s: str, n: int):
     assert count_constellations(parse(s)) == n
 
 

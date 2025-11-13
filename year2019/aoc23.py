@@ -1,9 +1,12 @@
 # https://adventofcode.com/2019/day/23
 
 from collections import deque
+from typing import cast
 
 from helpers import read_puzzle
 from intcode import Computer, Intcode, parse
+
+type Coord = tuple[int, int]
 
 
 def network(program: Intcode, *, disable_nat: bool = True) -> int:  # noqa: C901
@@ -11,8 +14,9 @@ def network(program: Intcode, *, disable_nat: bool = True) -> int:  # noqa: C901
     for i, computer in enumerate(computers):
         next(computer)
         computer.send(i)
-    queue = [deque() for _ in range(50)]
-    nat, nat_history, queue_size = None, set(), 0
+    queue: list[deque[Coord]] = [deque() for _ in range(50)]
+    nat: Coord | None = None
+    nat_history, queue_size = set[int](), 0
     no_active_senders, is_idle = False, False
     while True:
         if no_active_senders and queue_size == 0:
@@ -26,7 +30,7 @@ def network(program: Intcode, *, disable_nat: bool = True) -> int:  # noqa: C901
                     x, y = queue[i].popleft()
                     queue_size -= 1
                 else:
-                    x, y = nat  # type: ignore
+                    x, y = cast('Coord', nat)
                     is_idle = use_nat = False
                     if y in nat_history:
                         return y
@@ -34,7 +38,7 @@ def network(program: Intcode, *, disable_nat: bool = True) -> int:  # noqa: C901
                 _, idest = computer.send(x), computer.send(y)
             while (
                 dest := idest if idest is not None else computer.send(-1)
-            ) is not None:
+            ) is not None:  # type: ignore
                 no_active_senders = False
                 idest = None
                 (x, y) = computer.send(-1), computer.send(-1)
@@ -47,7 +51,7 @@ def network(program: Intcode, *, disable_nat: bool = True) -> int:  # noqa: C901
                 queue_size += 1
 
 
-def solve() -> tuple[int, int]:
+def solve() -> Coord:
     program = parse(read_puzzle())
     return network(program), network(program, disable_nat=False)
 

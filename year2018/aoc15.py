@@ -38,7 +38,8 @@ class State:
     @classmethod
     def fromstring(cls, s: str, elf_power: int = 3):
         lines = s.splitlines()
-        map_, units = {}, []
+        map_: dict[Square, Unit | str] = {}
+        units: list[Unit] = []
         for i, line in enumerate(lines):
             for j, ch in enumerate(line):
                 if ch in 'EG':
@@ -67,7 +68,7 @@ class State:
 
     def deepcopy(self) -> State:
         """Return a deep copy of the state."""
-        units_new = []
+        units_new: list[Unit] = []
         map_new = self.map.copy()
         for unit in self.units:
             unit_new = replace(unit)
@@ -104,9 +105,9 @@ class State:
         # Points are always added to layer in the order of their labels
         layer: list[Square] = [unit.sq]
         final_layer = False
-        nearest_in_range = []
+        nearest_in_range: list[Square] = []
         while layer and not final_layer:
-            next_layer = []
+            next_layer: list[Square] = []
             for sq in layer:
                 for sq_next in around(sq):
                     x = self.map.get(sq_next, None)

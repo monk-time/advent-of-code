@@ -3,6 +3,7 @@ from inspect import cleandoc
 import pytest
 
 from year2018.aoc23 import (
+    Bot,
     count_in_range,
     is_in_range,
     parse,
@@ -24,25 +25,25 @@ sample_str = cleandoc("""
 
 
 @pytest.fixture
-def sample():
+def sample() -> list[Bot]:
     return parse(sample_str)
 
 
-def test_parse(sample):
+def test_parse(sample: str):
     assert sample == [
-        (0, 0, 0, 4),
-        (1, 0, 0, 1),
-        (4, 0, 0, 3),
-        (0, 2, 0, 1),
-        (0, 5, 0, 3),
-        (0, 0, 3, 1),
-        (1, 1, 1, 1),
-        (1, 1, 2, 1),
-        (1, 3, 1, 1),
+        Bot((0, 0, 0), 4),
+        Bot((1, 0, 0), 1),
+        Bot((4, 0, 0), 3),
+        Bot((0, 2, 0), 1),
+        Bot((0, 5, 0), 3),
+        Bot((0, 0, 3), 1),
+        Bot((1, 1, 1), 1),
+        Bot((1, 1, 2), 1),
+        Bot((1, 3, 1), 1),
     ]
 
 
-def test_is_in_range(sample):
+def test_is_in_range(sample: list[Bot]):
     bot = sample[0]
     assert [is_in_range(bot, b) for b in sample] == [
         True,
@@ -57,7 +58,7 @@ def test_is_in_range(sample):
     ]
 
 
-def test_count_in_range(sample):
+def test_count_in_range(sample: list[Bot]):
     assert count_in_range(sample) == 7
 
 

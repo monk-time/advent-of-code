@@ -2,22 +2,28 @@
 
 import operator
 import re
+from itertools import batched
+from typing import TYPE_CHECKING
 
 from helpers import read_puzzle
 
-tuple4 = tuple[int, ...]
-Sample = tuple[tuple4, tuple4, tuple4]
+if TYPE_CHECKING:
+    from collections.abc import Callable, Iterable
+
+type Tuple4 = tuple[int, ...]
+type Sample = tuple[Tuple4, Tuple4, Tuple4]
 
 
-def parse(s: str) -> tuple[list[Sample], list[tuple4]]:
-    group_n = lambda iterable, n: list(zip(*([iter(iterable)] * n)))
+def parse(s: str) -> tuple[list[Sample], list[Tuple4]]:
     s1, s2 = s.split('\n\n\n\n')
     numbers1 = map(int, re.findall(r'\d+', s1))  # find all numbers
     numbers2 = map(int, re.findall(r'\d+', s2))  # find all numbers
-    return group_n(group_n(numbers1, 4), 3), group_n(numbers2, 4)
+    g4_1: Iterable[Tuple4] = batched(numbers1, 4, strict=True)
+    g4_2: Iterable[Tuple4] = batched(numbers2, 4, strict=True)
+    return list(batched(g4_1, 3, strict=True)), list(g4_2)  # type: ignore
 
 
-op_library = {
+op_library: dict[str, tuple[tuple[str, str], Callable[[int, int], int]]] = {
     'addr': (('r', 'r'), operator.add),
     'addi': (('r', 'i'), operator.add),
     'mulr': (('r', 'r'), operator.mul),
@@ -39,7 +45,7 @@ op_library = {
 opcodes = list(op_library.keys())
 
 
-def execute(instr: tuple4, reg: tuple4) -> tuple4:
+def execute(instr: Tuple4, reg: Tuple4) -> Tuple4:
     n, a, b, c = instr
     (a_type, b_type), func = op_library[opcodes[n]]
     a_val = reg[a] if a_type == 'r' else a
@@ -49,7 +55,7 @@ def execute(instr: tuple4, reg: tuple4) -> tuple4:
     return tuple(mut_reg)
 
 
-def matches(reg_before: tuple4, op: tuple4, reg_after: tuple4) -> list[int]:
+def matches(reg_before: Tuple4, op: Tuple4, reg_after: Tuple4) -> list[int]:
     regs = (
         (n, execute((n, *op[1:]), reg_before)) for n in range(len(opcodes))
     )
@@ -60,7 +66,7 @@ def count_more_than_3(samples: list[Sample]) -> int:
     return sum(int(len(matches(*sample)) >= 3) for sample in samples)
 
 
-def decode_and_run(samples: list[Sample], program: list[tuple4]) -> int:
+def decode_and_run(samples: list[Sample], program: list[Tuple4]) -> int:
     x_to_op_num: dict[int, int] = {}
     cache: dict[Sample, list[int]] = {}
     while len(x_to_op_num) < len(opcodes):

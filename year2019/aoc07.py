@@ -8,7 +8,7 @@ from intcode import Computer, Intcode, parse
 
 
 def run_amplifiers(
-    program: Intcode, phases: tuple[int, ...], initial_input=0
+    program: Intcode, phases: tuple[int, ...], initial_input: int = 0
 ) -> int:
     output = initial_input
     for i in range(5):
@@ -19,7 +19,7 @@ def run_amplifiers(
     return output
 
 
-def find_max_output(program: Intcode, *, use_loop=False):
+def find_max_output(program: Intcode, *, use_loop: bool = False):
     max_output = -inf
     run = run_amplifiers_loop if use_loop else run_amplifiers
     phase_range = range(5, 10) if use_loop else range(5)
@@ -30,7 +30,7 @@ def find_max_output(program: Intcode, *, use_loop=False):
 
 
 def run_amplifiers_loop(
-    program: Intcode, phases: tuple[int, ...], initial_input=0
+    program: Intcode, phases: tuple[int, ...], initial_input: int = 0
 ) -> int:
     output = initial_input
     gens = [iter(Computer(program)) for _ in range(5)]

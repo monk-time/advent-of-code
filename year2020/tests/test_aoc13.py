@@ -31,7 +31,7 @@ def test_earliest_bus():
         ('0\n1789,37,47,1889', 1202161486),
     ),
 )
-def test_chinese_remainder_theorem(sample, result):
+def test_chinese_remainder_theorem(sample: str, result: int):
     _, nums, remainders = parse(sample)
     assert chinese_remainder_theorem(nums, remainders) == result
 
