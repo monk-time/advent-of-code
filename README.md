@@ -21,6 +21,7 @@ pytest year2019/tests/test_aoc17.py
 
 
 ### Problem descriptions
+
 Links to detailed problem descriptions for each year can be found in the top comment in each solution file and also accessed here:
 - [Year 2015](https://adventofcode.com/2015)
 - [Year 2016](https://adventofcode.com/2016)
@@ -29,3 +30,22 @@ Links to detailed problem descriptions for each year can be found in the top com
 - [Year 2019](https://adventofcode.com/2019)
 - [Year 2020](https://adventofcode.com/2020)
 - [Year 2020](https://adventofcode.com/2021)
+
+### Problem tags
+
+Problems starting from year 2021 are tagged at the start of each file by their domain:
+
+#angle
+#binary
+#brackets
+#decoding
+#early-exit
+#frequency
+#graph-traversal
+#grid
+#instructions
+#multidimensional-grid
+#reduce
+#segmented-displays
+#sliding-window
+#triangular-numbers
