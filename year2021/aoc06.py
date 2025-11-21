@@ -1,5 +1,5 @@
 # https://adventofcode.com/2021/day/6
-# tags: #frequency
+# tags: #frequency #exponential-growth
 
 from helpers import read_puzzle
 

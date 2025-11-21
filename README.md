@@ -39,12 +39,16 @@ Problems starting from year 2021 are tagged at the start of each file by their d
 #binary
 #brackets
 #decoding
+#dijkstra
 #early-exit
+#exponential-growth
 #frequency
 #graph-traversal
 #grid
 #instructions
 #multidimensional-grid
+#paths
+#recursion
 #reduce
 #segmented-displays
 #sliding-window
