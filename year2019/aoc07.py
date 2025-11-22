@@ -3,8 +3,8 @@
 from itertools import permutations
 from math import inf
 
-from helpers import read_puzzle
 from intcode import Computer, Intcode, parse
+from utils_proxy import read_puzzle
 
 
 def run_amplifiers(

@@ -1,12 +1,11 @@
 # https://adventofcode.com/2021/day/15
 # tags: #grid #graph-traversal #dijkstra
 
-
 import heapq
 import math
 from collections import defaultdict
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 type Coord = tuple[int, int]
 type Grid = dict[Coord, int]

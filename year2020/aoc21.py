@@ -6,7 +6,7 @@ import re
 from collections import defaultdict, deque
 from typing import TYPE_CHECKING, NewType, TypedDict
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 if TYPE_CHECKING:
     from collections.abc import Iterable

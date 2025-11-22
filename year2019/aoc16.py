@@ -4,7 +4,7 @@ from itertools import accumulate, chain, cycle, islice, repeat
 from operator import mul
 from typing import TYPE_CHECKING
 
-from helpers import read_puzzle, timed
+from utils_proxy import read_puzzle, timed
 
 if TYPE_CHECKING:
     from collections.abc import Callable

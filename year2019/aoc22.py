@@ -3,7 +3,7 @@
 
 import re
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 REGEX = r'^(.+?)([-0-9]+)?$'
 

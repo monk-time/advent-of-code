@@ -3,7 +3,7 @@
 import re
 from typing import NamedTuple
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 
 class Point(NamedTuple):

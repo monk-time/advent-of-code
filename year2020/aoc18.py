@@ -4,7 +4,7 @@ from collections.abc import Iterable
 from functools import partial
 from operator import add, mul
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 type Tokens = Iterable[int | str]
 type Precedence = dict[str, int]

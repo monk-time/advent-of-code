@@ -4,7 +4,7 @@ import re
 from collections import deque
 from itertools import chain
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 # Patterns consist of two halves separated by |
 # Each half is a sequence of either rule indices or literal characters

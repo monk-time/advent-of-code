@@ -1,7 +1,7 @@
 # https://adventofcode.com/2019/day/11
 
-from helpers import read_puzzle
 from intcode import Computer, Intcode, parse
+from utils_proxy import read_puzzle
 
 CLOCKWISE_DIRS = [(1, 0), (0, 1), (-1, 0), (0, -1)]
 COLORS = ['.', '#']

@@ -3,7 +3,7 @@
 import re
 from collections.abc import Iterable
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 RE_MASK = re.compile(r'^mask = (?P<mask>[10X]+)$')
 RE_MEM = re.compile(r'^mem\[(?P<addr>\d+)\] = (?P<val>\d+)$')

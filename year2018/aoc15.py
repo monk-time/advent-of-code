@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass, replace
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 Square = tuple[int, int]
 

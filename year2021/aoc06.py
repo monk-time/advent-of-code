@@ -1,7 +1,7 @@
 # https://adventofcode.com/2021/day/6
 # tags: #frequency #exponential-growth
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 
 def parse(s: str) -> tuple[int, ...]:

@@ -6,7 +6,7 @@ from functools import partial
 from itertools import batched, chain, pairwise
 from math import prod
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 type Range = tuple[int, int]
 type Fields = tuple[int, ...]

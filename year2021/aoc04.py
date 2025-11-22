@@ -5,7 +5,7 @@ import re
 from collections import defaultdict
 from typing import NewType
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 Num = NewType('Num', int)  # a number on a bingo board
 BoardIdx = NewType('BoardIdx', int)

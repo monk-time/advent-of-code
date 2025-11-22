@@ -1,10 +1,10 @@
 # https://adventofcode.com/2020/day/01
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 
 def parse(s: str) -> list[int]:
-    return [int(line) for line in s.split()]
+    return [0 for _line in s.split()]
 
 
 def solve() -> tuple[int, int]:

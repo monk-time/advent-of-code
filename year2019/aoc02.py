@@ -2,8 +2,8 @@
 
 from itertools import product
 
-from helpers import read_puzzle
 from intcode import Computer, Intcode, parse
+from utils_proxy import read_puzzle
 
 
 def init(program: Intcode, noun: int, verb: int) -> Intcode:

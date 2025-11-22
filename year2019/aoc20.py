@@ -6,7 +6,7 @@ from operator import add, itemgetter, sub
 from string import ascii_uppercase
 from typing import TYPE_CHECKING, Self
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 if TYPE_CHECKING:
     from collections.abc import Generator

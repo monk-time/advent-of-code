@@ -6,7 +6,7 @@ from dataclasses import dataclass
 
 import networkx as nx
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 
 @dataclass

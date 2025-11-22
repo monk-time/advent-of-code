@@ -3,7 +3,7 @@
 
 from typing import TYPE_CHECKING, Literal, cast
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable

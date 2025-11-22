@@ -3,7 +3,7 @@
 import re
 from collections import defaultdict
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 type Graph = dict[str, defaultdict[str, list[str]]]
 

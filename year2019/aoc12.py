@@ -7,7 +7,7 @@ from itertools import combinations
 from math import lcm
 from typing import TYPE_CHECKING
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 if TYPE_CHECKING:
     from collections.abc import Iterable

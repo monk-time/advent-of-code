@@ -3,7 +3,7 @@
 from collections import Counter
 from itertools import combinations
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 
 def parse(s: str) -> list[int]:

@@ -3,7 +3,7 @@
 import re
 from collections import deque
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 
 def high_score(s: str) -> int:

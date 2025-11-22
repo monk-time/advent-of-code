@@ -4,8 +4,8 @@ import re
 from enum import StrEnum
 from typing import TYPE_CHECKING, Literal, cast, get_args
 
-from helpers import read_puzzle
 from intcode import Computer, Intcode, parse
+from utils_proxy import read_puzzle
 
 if TYPE_CHECKING:
     from collections.abc import Iterable

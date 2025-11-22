@@ -3,7 +3,7 @@
 from collections.abc import Callable
 from functools import partial
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 type Move = tuple[str, int]
 type Coord = complex

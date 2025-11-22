@@ -3,7 +3,7 @@
 from collections import Counter, defaultdict
 from itertools import pairwise
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 
 def parse(s: str) -> list[int]:

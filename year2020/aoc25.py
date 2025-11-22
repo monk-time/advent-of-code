@@ -1,6 +1,6 @@
 # https://adventofcode.com/2020/day/25
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 MOD = 20201227
 

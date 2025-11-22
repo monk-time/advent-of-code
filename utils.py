@@ -8,6 +8,13 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from collections.abc import Callable
 
+__all__ = [
+    'border_wrap',
+    'print_peak_memory_used',
+    'read_puzzle',
+    'timed',
+]
+
 
 def read_puzzle(
     number: int | None = None, year: int | None = 2018, *, strip: bool = True

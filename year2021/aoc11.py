@@ -5,7 +5,7 @@ from functools import cache
 from itertools import count, product
 from typing import cast
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 type Coord = tuple[int, int]
 type Coords = tuple[Coord, ...]

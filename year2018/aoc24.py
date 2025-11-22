@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from re import Match
 from typing import TYPE_CHECKING, Any, cast
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 if TYPE_CHECKING:
     from collections.abc import Callable

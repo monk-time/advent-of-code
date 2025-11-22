@@ -2,7 +2,7 @@
 
 from collections import Counter
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 type Groups = list[tuple[Counter[str], int]]
 

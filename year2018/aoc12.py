@@ -5,7 +5,7 @@ from collections import deque
 from itertools import islice
 from typing import TYPE_CHECKING
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 if TYPE_CHECKING:
     from collections.abc import Iterable

@@ -5,7 +5,7 @@ from collections import Counter, defaultdict
 from itertools import chain, groupby
 from operator import itemgetter
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 Naps = list[range]
 Guards = defaultdict[int, Naps]

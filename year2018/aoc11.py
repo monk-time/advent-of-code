@@ -3,7 +3,7 @@
 from itertools import product
 from multiprocessing import Pool
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 GRID = 300
 

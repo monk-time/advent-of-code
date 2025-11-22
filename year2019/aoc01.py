@@ -1,6 +1,6 @@
 # https://adventofcode.com/2019/day/1
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 
 def parse(s: str) -> list[int]:

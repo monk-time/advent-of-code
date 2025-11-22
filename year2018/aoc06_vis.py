@@ -5,7 +5,7 @@ import random
 from PIL import Image, ImageColor
 
 from aoc06 import Point, fill_grid, grid_size, parse_coords
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 random.seed(0)
 

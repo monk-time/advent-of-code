@@ -3,7 +3,7 @@
 from itertools import count
 from math import prod
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 type Grid = list[list[int]]
 

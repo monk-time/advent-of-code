@@ -3,7 +3,7 @@
 
 from operator import lt
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 
 def parse(s: str) -> list[int]:

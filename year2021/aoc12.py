@@ -8,7 +8,7 @@ from collections import defaultdict
 from functools import cache
 from itertools import batched
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 type Graph = defaultdict[str, set[str]]  # adjacency set
 

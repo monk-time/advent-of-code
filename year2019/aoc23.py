@@ -3,8 +3,8 @@
 from collections import deque
 from typing import cast
 
-from helpers import read_puzzle
 from intcode import Computer, Intcode, parse
+from utils_proxy import read_puzzle
 
 type Coord = tuple[int, int]
 

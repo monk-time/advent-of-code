@@ -3,7 +3,7 @@
 from collections import defaultdict, deque
 from itertools import count
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 type Deck = tuple[int, ...]
 type Players = tuple[Deck, Deck]

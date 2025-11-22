@@ -6,7 +6,7 @@ from heapq import heappop, heappush
 from string import ascii_lowercase, ascii_uppercase
 from typing import TYPE_CHECKING
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable

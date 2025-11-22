@@ -2,8 +2,8 @@
 
 from inspect import cleandoc
 
-from helpers import read_puzzle
 from intcode import Computer, Intcode, parse
+from utils_proxy import read_puzzle
 
 
 def find_hull_damage(program: Intcode, springscript: str) -> int:

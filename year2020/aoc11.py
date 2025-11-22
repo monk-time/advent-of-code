@@ -3,7 +3,7 @@
 from collections.abc import Callable, Iterable
 from itertools import product
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 type Coord = tuple[int, int]
 type Grid = tuple[tuple[str, ...], ...]

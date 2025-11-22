@@ -5,7 +5,7 @@ from collections import Counter
 from dataclasses import dataclass
 from typing import Self
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 pattern = re.compile(r'^(?P<x>\d+)-(?P<y>\d+) (?P<char>\w): (?P<pwd>\w+)$')
 

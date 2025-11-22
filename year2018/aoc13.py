@@ -3,7 +3,7 @@
 from itertools import product
 from typing import TYPE_CHECKING, NamedTuple
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterable

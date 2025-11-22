@@ -5,7 +5,7 @@ import re
 from collections import Counter
 from itertools import pairwise, starmap
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 type Pair = tuple[str, str]
 type Rules = dict[Pair, str]

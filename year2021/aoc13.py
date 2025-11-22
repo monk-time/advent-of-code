@@ -6,7 +6,7 @@ from functools import reduce
 from itertools import batched
 from typing import cast
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 type Coord = tuple[int, int]
 type Coords = tuple[Coord, ...]

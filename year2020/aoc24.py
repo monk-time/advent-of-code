@@ -5,7 +5,7 @@ from collections import Counter, defaultdict
 from functools import cache, reduce
 from typing import Literal, get_args
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 type Coord = tuple[int, int]
 # can't use `type` for Dir because of get_args()

@@ -8,7 +8,7 @@ from math import log2
 from operator import attrgetter
 from typing import Self, cast
 
-from helpers import read_puzzle
+from utils_proxy import read_puzzle
 
 type Coord = tuple[int, int, int]
 type Box = tuple[Coord, Coord]
