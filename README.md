@@ -41,6 +41,7 @@ Problems starting from year 2021 are tagged at the start of each file by their d
 #decoding
 #dijkstra
 #early-exit
+#expressions
 #exponential-growth
 #frequency
 #graph-traversal
@@ -52,4 +53,5 @@ Problems starting from year 2021 are tagged at the start of each file by their d
 #reduce
 #segmented-displays
 #sliding-window
+#trees
 #triangular-numbers
