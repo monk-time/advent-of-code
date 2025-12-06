@@ -38,6 +38,7 @@ Problems starting from year 2021 are tagged at the start of each file by their d
 #angle
 #binary
 #brackets
+#cellular-automaton
 #decoding
 #dijkstra
 #early-exit
