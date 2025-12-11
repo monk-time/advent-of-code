@@ -51,8 +51,11 @@ Problems starting from year 2021 are tagged at the start of each file by their d
 #multidimensional-grid
 #paths
 #recursion
+#region-overlap
 #reduce
+#reverse-engineering
 #segmented-displays
 #sliding-window
 #trees
 #triangular-numbers
+#virtual-machine
