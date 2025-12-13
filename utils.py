@@ -3,6 +3,7 @@ import os
 import re
 import timeit
 from pathlib import Path
+from time import sleep
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -96,11 +97,12 @@ def fetch_inputs(year: int) -> None:
             f'https://adventofcode.com/{year}/day/{day}/input',
             cookies={'session': os.environ['SESSION']},
         )
-        path = Path('inputs') / f'aoc{day:0>2}.txt'
+        path = Path(f'year{year}/inputs') / f'aoc{day:0>2}.txt'
         path.touch()
         path.write_text(r.text, encoding='utf-8', newline='\n')
         print(f'Downloaded input file for day #{day}')
+        sleep(1)
 
 
 if __name__ == '__main__':
-    fetch_inputs(2021)
+    fetch_inputs(2022)

@@ -23,6 +23,7 @@ pythonpath = [
     "year2019",
     "year2020",
     "year2021",
+    "year2022",
 ]
 addopts = ["-n=auto"]
 

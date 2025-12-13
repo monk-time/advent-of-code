@@ -1,4 +1,4 @@
-# https://adventofcode.com/2022/day/1
+# https://adventofcode.com/2022/day/6
 # tags:
 
 from utils_proxy import read_puzzle
